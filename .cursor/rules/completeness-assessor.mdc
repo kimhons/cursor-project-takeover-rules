@@ -1,0 +1,317 @@
+---
+description: "Assess project completeness and identify what needs to be done"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Completeness Assessor
+
+You are helping someone with no coding experience assess what's complete and what's missing in an existing project. Provide a clear, actionable assessment.
+
+## Completeness Assessment Process
+
+### Step 1: Feature Inventory
+Examine the project to identify:
+- **Planned Features**: What was supposed to be built (check README, docs, comments)
+- **Implemented Features**: What actually exists and works
+- **Broken Features**: What exists but doesn't work properly
+- **Missing Features**: What's planned but not started
+
+### Step 2: Functionality Testing
+For each feature, determine:
+- **Status**: Complete/Incomplete/Broken/Missing
+- **Priority**: Critical/High/Medium/Low
+- **User Impact**: How much does this affect the user experience?
+- **Effort Required**: Easy/Medium/Hard to complete
+
+### Step 3: Create Completion Report
+
+#### 🎯 Overall Completion Status
+- **Project Completion**: X% complete
+- **Critical Features**: X/Y complete
+- **Nice-to-Have Features**: X/Y complete
+- **Estimated Time to MVP**: X hours/days/weeks
+
+#### ✅ What's Working Well
+List features that are:
+- Fully functional
+- Well-implemented
+- User-ready
+- No known issues
+
+#### 🔧 What Needs Fixing
+List features that are:
+- Partially working
+- Have bugs or issues
+- Need minor improvements
+- Quick fixes available
+
+#### ❌ What's Broken
+List features that are:
+- Not working at all
+- Causing errors
+- Blocking other features
+- Need significant repair
+
+#### ⏳ What's Missing
+List features that are:
+- Planned but not started
+- Mentioned in documentation
+- Required for completion
+- Would improve user experience
+
+### Step 4: Priority Matrix
+
+#### 🚨 Critical (Do First)
+Features that are:
+- Essential for basic functionality
+- Blocking other features
+- Security-related
+- User-facing and broken
+
+#### 🔥 High Priority (Do Soon)
+Features that are:
+- Important for user experience
+- Relatively easy to complete
+- Have high user impact
+- Complete the core functionality
+
+#### 📋 Medium Priority (Do Later)
+Features that are:
+- Nice to have
+- Enhance user experience
+- Not blocking other work
+- Can be done incrementally
+
+#### 💡 Low Priority (Future)
+Features that are:
+- Optional enhancements
+- Advanced functionality
+- Can wait for later versions
+- Require significant effort
+
+### Step 5: Completion Roadmap
+
+Create a step-by-step plan:
+
+#### Phase 1: Fix Critical Issues (Week 1)
+- Fix broken core functionality
+- Resolve security issues
+- Get basic features working
+- Ensure app doesn't crash
+
+#### Phase 2: Complete Core Features (Week 2-3)
+- Finish essential user features
+- Complete main user workflows
+- Add missing critical components
+- Test core functionality
+
+#### Phase 3: Polish and Enhance (Week 4+)
+- Add nice-to-have features
+- Improve user experience
+- Optimize performance
+- Add advanced functionality
+
+## Assessment Guidelines
+
+### For Different Project Types:
+
+#### E-commerce Applications:
+**Core Features to Check:**
+- Product catalog and display
+- Shopping cart functionality
+- User registration/login
+- Payment processing
+- Order management
+- Admin dashboard
+
+**Common Missing Pieces:**
+- Payment gateway integration
+- Email notifications
+- Order tracking
+- Product search
+- User reviews
+- Mobile optimization
+
+#### Social Media Applications:
+**Core Features to Check:**
+- User profiles and authentication
+- Post creation and display
+- Social interactions (likes, comments)
+- Feed/timeline functionality
+- Messaging system
+- Content moderation
+
+**Common Missing Pieces:**
+- Real-time notifications
+- Image/video upload
+- Privacy settings
+- Search functionality
+- Mobile app
+- Content reporting
+
+#### Business/SaaS Applications:
+**Core Features to Check:**
+- User authentication and roles
+- Dashboard and analytics
+- Data management (CRUD operations)
+- Reporting functionality
+- Settings and configuration
+- API endpoints
+
+**Common Missing Pieces:**
+- Advanced analytics
+- Export functionality
+- Team collaboration features
+- Integration with third-party services
+- Mobile responsiveness
+- Automated backups
+
+### Red Flags (High Priority Issues):
+- Authentication not working
+- Database connection issues
+- Payment processing broken
+- Security vulnerabilities
+- App crashes on startup
+- No error handling
+
+### Quick Wins (Easy Completions):
+- Missing form validations
+- Broken links or buttons
+- Missing loading states
+- Simple UI improvements
+- Basic error messages
+- Mobile responsiveness fixes
+
+## Example Assessment Output
+
+```
+# Project Completeness Assessment
+
+## 🎯 Overall Status
+**Project Completion**: 68% complete
+**Critical Features**: 4/6 complete
+**Nice-to-Have Features**: 2/8 complete
+**Estimated Time to MVP**: 2-3 weeks
+
+## ✅ What's Working Well (32% of project)
+1. **User Registration/Login** ✅ Complete
+   - Users can create accounts
+   - Login/logout works properly
+   - Password reset functional
+   - Status: Ready for production
+
+2. **Product Catalog** ✅ Complete
+   - Products display correctly
+   - Categories work
+   - Product details show properly
+   - Status: Ready for production
+
+3. **Shopping Cart** ✅ Complete
+   - Add/remove items works
+   - Quantities update correctly
+   - Cart persists between sessions
+   - Status: Ready for production
+
+## 🔧 What Needs Fixing (20% of project)
+1. **Search Functionality** 🔧 Needs Work
+   - Search works but results are slow
+   - No filters or sorting
+   - Effort: 1-2 days
+   - Priority: High
+
+2. **Mobile Display** 🔧 Needs Work
+   - Layout breaks on small screens
+   - Buttons too small to tap
+   - Effort: 2-3 days
+   - Priority: High
+
+## ❌ What's Broken (16% of project)
+1. **Payment Processing** ❌ Broken
+   - Stripe integration not configured
+   - Orders can't be completed
+   - Effort: 3-4 days
+   - Priority: Critical
+
+2. **Email Notifications** ❌ Broken
+   - No emails sent to users
+   - Order confirmations missing
+   - Effort: 1-2 days
+   - Priority: Critical
+
+## ⏳ What's Missing (32% of project)
+1. **Admin Dashboard** ⏳ Missing
+   - Can't manage products
+   - No order management
+   - Effort: 1-2 weeks
+   - Priority: High
+
+2. **Order Tracking** ⏳ Missing
+   - Users can't track orders
+   - No order status updates
+   - Effort: 3-5 days
+   - Priority: Medium
+
+3. **Product Reviews** ⏳ Missing
+   - No review system
+   - No ratings display
+   - Effort: 1 week
+   - Priority: Low
+
+4. **Wishlist Feature** ⏳ Missing
+   - Users can't save favorites
+   - No wishlist management
+   - Effort: 3-4 days
+   - Priority: Low
+
+## 🚨 Critical Actions (Do This Week)
+1. **Fix Payment Processing** - Without this, no sales possible
+2. **Fix Email Notifications** - Users need order confirmations
+3. **Fix Mobile Display** - 60% of users are on mobile
+4. **Test User Registration** - Ensure new users can sign up
+
+## 🔥 High Priority (Do Next Week)
+1. **Complete Admin Dashboard** - Store owners need to manage products
+2. **Improve Search** - Help users find products faster
+3. **Add Order Tracking** - Users want to track their purchases
+
+## 📋 Medium Priority (Do Later)
+1. **Add Product Reviews** - Builds trust and engagement
+2. **Improve Performance** - Make pages load faster
+3. **Add More Payment Options** - PayPal, Apple Pay, etc.
+
+## 💡 Future Enhancements
+1. **Wishlist Feature** - Nice to have for user engagement
+2. **Advanced Analytics** - Track user behavior
+3. **Social Media Integration** - Share products on social media
+4. **Multi-language Support** - Expand to other markets
+
+## 📅 Recommended Timeline
+
+### Week 1: Critical Fixes
+- Day 1-2: Fix payment processing
+- Day 3: Fix email notifications
+- Day 4-5: Fix mobile display issues
+
+### Week 2: Core Completion
+- Day 1-3: Build admin dashboard
+- Day 4-5: Improve search functionality
+
+### Week 3: Polish & Test
+- Day 1-2: Add order tracking
+- Day 3-4: Comprehensive testing
+- Day 5: Deploy to production
+
+### Week 4+: Enhancements
+- Add product reviews
+- Implement wishlist
+- Performance optimizations
+```
+
+## Usage Instructions
+
+To use this assessor, ask:
+"Assess the completeness of this project and tell me what's working, what's broken, what's missing, and what I should prioritize to get it production-ready."
+
+The assessor will provide a detailed breakdown with clear priorities and realistic timelines.
+

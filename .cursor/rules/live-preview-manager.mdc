@@ -1,0 +1,538 @@
+---
+description: "Enable live preview and hot reload for instant feedback on changes"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Live Preview & Hot Reload Manager
+
+You are helping someone with no coding experience set up live preview and hot reload so they can see their changes instantly as they make them.
+
+## Live Preview Setup Process
+
+### Step 1: Understanding Live Preview
+
+#### What is Live Preview?
+Think of it like having a magic mirror that shows your changes instantly:
+- **Traditional Way**: Make change → Save → Refresh browser → See result
+- **Live Preview**: Make change → See result immediately (no refresh needed)
+
+#### What is Hot Reload?
+- **Hot Reload**: Changes appear instantly without losing your current state
+- **Live Reload**: Page refreshes automatically when you make changes
+- **Fast Refresh**: Smart reloading that preserves component state
+
+### Step 2: Technology-Specific Setup
+
+#### For React Applications:
+
+**Built-in Hot Reload (Create React App):**
+```bash
+# Start development server with hot reload
+npm start
+```
+
+**Expected Behavior:**
+- Changes to components appear instantly
+- React state is preserved during updates
+- Errors show as overlay on screen
+- Console shows compilation status
+
+**Enhanced Setup with Fast Refresh:**
+```javascript
+// In your index.js or App.js
+if (module.hot) {
+  module.hot.accept();
+}
+```
+
+**Vite Setup (Faster Alternative):**
+```bash
+# Install Vite
+npm install -g create-vite
+
+# Create new Vite project or migrate existing
+npm create vite@latest my-app -- --template react
+
+# Start with ultra-fast hot reload
+npm run dev
+```
+
+#### For Vue Applications:
+
+**Vue CLI Hot Reload:**
+```bash
+# Start development server
+npm run serve
+```
+
+**Vite + Vue Setup:**
+```bash
+# Create Vue project with Vite
+npm create vue@latest my-vue-app
+
+# Start development
+npm run dev
+```
+
+**Expected Features:**
+- Component changes appear instantly
+- Vue DevTools integration
+- CSS hot reload
+- Template hot reload
+
+#### For Node.js/Express APIs:
+
+**Nodemon Setup:**
+```bash
+# Install nodemon globally
+npm install -g nodemon
+
+# Or install locally
+npm install --save-dev nodemon
+
+# Add to package.json scripts
+{
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  }
+}
+
+# Start with auto-restart
+npm run dev
+```
+
+**Advanced Nodemon Configuration:**
+```json
+// nodemon.json
+{
+  "watch": ["src", "routes", "models"],
+  "ext": "js,json",
+  "ignore": ["node_modules", "public"],
+  "delay": "1000",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
+```
+
+#### For Static HTML/CSS/JS:
+
+**Live Server (VS Code Extension):**
+1. Install "Live Server" extension in VS Code
+2. Right-click on HTML file
+3. Select "Open with Live Server"
+4. Changes appear instantly in browser
+
+**Browser-Sync Setup:**
+```bash
+# Install browser-sync
+npm install -g browser-sync
+
+# Start live server
+browser-sync start --server --files "*.html, css/*.css, js/*.js"
+
+# For existing server
+browser-sync start --proxy "localhost:3000" --files "**/*"
+```
+
+### Step 3: Advanced Live Preview Features
+
+#### CSS Hot Reload:
+
+**For React with CSS Modules:**
+```javascript
+// Component.module.css changes appear instantly
+import styles from './Component.module.css';
+
+function Component() {
+  return <div className={styles.container}>Content</div>;
+}
+```
+
+**For Sass/SCSS:**
+```bash
+# Install sass
+npm install sass
+
+# Sass files will hot reload automatically
+```
+
+**For Styled Components:**
+```javascript
+import styled from 'styled-components';
+
+// Changes to styled components appear instantly
+const Button = styled.button`
+  background: blue;
+  color: white;
+  padding: 10px;
+`;
+```
+
+#### JavaScript Hot Reload:
+
+**Module Hot Replacement (Webpack):**
+```javascript
+// In your main component
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    // Re-render the app when App.js changes
+    render();
+  });
+}
+```
+
+**Error Overlay:**
+```javascript
+// Errors appear as overlay instead of breaking the app
+if (process.env.NODE_ENV === 'development') {
+  // Error boundary will show overlay
+}
+```
+
+### Step 4: Database Hot Reload
+
+#### For Development Databases:
+
+**MongoDB with Nodemon:**
+```javascript
+// In your server.js
+const mongoose = require('mongoose');
+
+// Auto-reconnect on changes
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+// Watch for model changes
+if (process.env.NODE_ENV === 'development') {
+  mongoose.set('debug', true);
+}
+```
+
+**PostgreSQL with Nodemon:**
+```javascript
+// Auto-reload database connections
+const { Pool } = require('pg');
+
+let pool;
+
+function createPool() {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+  });
+}
+
+createPool();
+
+// Recreate pool on server restart
+if (module.hot) {
+  module.hot.accept(() => {
+    createPool();
+  });
+}
+```
+
+### Step 5: API Hot Reload
+
+#### Express Server Hot Reload:
+
+**Complete Setup:**
+```javascript
+// server.js
+const express = require('express');
+const app = express();
+
+// Enable hot reload for routes
+if (process.env.NODE_ENV === 'development') {
+  // Clear require cache on changes
+  app.use((req, res, next) => {
+    if (req.url.includes('/api/')) {
+      delete require.cache[require.resolve('./routes/api')];
+    }
+    next();
+  });
+}
+
+// Routes will reload automatically
+app.use('/api', require('./routes/api'));
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+**Route Hot Reload:**
+```javascript
+// routes/api.js
+const express = require('express');
+const router = express.Router();
+
+// This route will update without server restart
+router.get('/users', (req, res) => {
+  res.json({ message: 'Users endpoint - changes appear instantly!' });
+});
+
+module.exports = router;
+```
+
+### Step 6: Full-Stack Hot Reload
+
+#### Frontend + Backend Coordination:
+
+**Package.json Scripts:**
+```json
+{
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon backend/server.js",
+    "client": "cd frontend && npm start",
+    "dev:full": "concurrently \"npm run server\" \"npm run client\" \"npm run db\""
+  }
+}
+```
+
+**Concurrently Setup:**
+```bash
+# Install concurrently
+npm install --save-dev concurrently
+
+# Start both frontend and backend with hot reload
+npm run dev
+```
+
+**Expected Output:**
+```
+[0] Backend server running on port 3001
+[1] Frontend server running on port 3000
+[0] Database connected
+[1] Compiled successfully!
+```
+
+### Step 7: Mobile Hot Reload
+
+#### React Native Style Hot Reload:
+
+**Expo Setup:**
+```bash
+# Install Expo CLI
+npm install -g @expo/cli
+
+# Start with hot reload
+expo start
+
+# Scan QR code with Expo Go app
+# Changes appear instantly on your phone
+```
+
+**For Web Apps on Mobile:**
+```bash
+# Find your local IP
+ipconfig getifaddr en0  # Mac
+ipconfig                # Windows
+
+# Access from mobile device
+http://YOUR_IP:3000
+
+# Changes will appear on mobile too
+```
+
+### Step 8: Performance Optimization
+
+#### Fast Refresh Configuration:
+
+**React Fast Refresh:**
+```javascript
+// babel.config.js
+module.exports = {
+  presets: ['@babel/preset-react'],
+  plugins: [
+    process.env.NODE_ENV === 'development' && 'react-refresh/babel'
+  ].filter(Boolean)
+};
+```
+
+**Webpack Hot Module Replacement:**
+```javascript
+// webpack.config.js
+module.exports = {
+  mode: 'development',
+  devServer: {
+    hot: true,
+    liveReload: true,
+    watchFiles: ['src/**/*']
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
+};
+```
+
+#### Optimizing Reload Speed:
+
+**Exclude Large Files:**
+```json
+// nodemon.json
+{
+  "ignore": [
+    "node_modules",
+    "build",
+    "dist",
+    "*.log",
+    "uploads"
+  ]
+}
+```
+
+**Selective File Watching:**
+```javascript
+// Only watch specific directories
+const chokidar = require('chokidar');
+
+chokidar.watch(['src/**/*.js', 'routes/**/*.js'])
+  .on('change', (path) => {
+    console.log(`File ${path} changed, reloading...`);
+    // Trigger reload
+  });
+```
+
+### Step 9: Debugging with Live Reload
+
+#### Browser DevTools Integration:
+
+**Source Maps:**
+```javascript
+// webpack.config.js
+module.exports = {
+  devtool: 'eval-source-map', // For development
+  // Your original source code appears in DevTools
+};
+```
+
+**React DevTools:**
+```javascript
+// Components update in DevTools as you change them
+// State and props are preserved during hot reload
+```
+
+#### Console Debugging:
+
+**Persistent Logging:**
+```javascript
+// Logs persist through hot reloads
+console.log('Component rendered:', new Date());
+
+// Use debugger statements
+debugger; // Execution will pause here
+```
+
+### Step 10: Error Handling
+
+#### Error Overlay Setup:
+
+**React Error Overlay:**
+```javascript
+// Errors appear as overlay instead of white screen
+if (process.env.NODE_ENV === 'development') {
+  const { showReportDialog } = require('electron');
+  
+  window.addEventListener('error', (error) => {
+    console.error('Runtime error:', error);
+  });
+}
+```
+
+**Custom Error Boundary:**
+```javascript
+class HotReloadErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Hot reload error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '20px', background: '#ffebee' }}>
+          <h2>Something went wrong during hot reload</h2>
+          <button onClick={() => window.location.reload()}>
+            Refresh Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+```
+
+## Live Preview Checklist
+
+### ✅ Basic Hot Reload Working When:
+- [ ] Changes to code appear in browser automatically
+- [ ] No manual refresh needed
+- [ ] Console shows "Compiled successfully" messages
+- [ ] Page doesn't lose current state during updates
+
+### ✅ Advanced Features Working When:
+- [ ] CSS changes appear instantly
+- [ ] JavaScript changes preserve component state
+- [ ] API changes restart server automatically
+- [ ] Mobile devices show changes too
+
+### ✅ Production Ready When:
+- [ ] Hot reload disabled in production builds
+- [ ] Source maps configured correctly
+- [ ] Error handling works properly
+- [ ] Performance is acceptable
+
+## Common Issues and Solutions
+
+### Issue: Hot reload not working
+**Solutions:**
+1. Check if development server is running
+2. Verify file watching is enabled
+3. Check for syntax errors in code
+4. Restart development server
+5. Clear browser cache
+
+### Issue: Changes appear but state is lost
+**Solutions:**
+1. Use React Fast Refresh instead of Live Reload
+2. Check if components are properly exported
+3. Avoid anonymous components
+4. Use hooks instead of class components
+
+### Issue: CSS changes not appearing
+**Solutions:**
+1. Check CSS file is imported correctly
+2. Verify CSS modules configuration
+3. Clear browser cache
+4. Check for CSS syntax errors
+
+### Issue: API changes not reloading
+**Solutions:**
+1. Ensure nodemon is watching correct files
+2. Check nodemon configuration
+3. Verify file extensions in watch list
+4. Restart nodemon process
+
+## Usage Instructions
+
+To set up live preview and hot reload, ask:
+"Set up live preview and hot reload for this [React/Vue/Node.js] project so I can see my changes instantly without manual refreshing."
+
+This will configure your development environment for the fastest possible feedback loop while building your application.
+

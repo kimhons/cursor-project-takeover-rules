@@ -1,0 +1,692 @@
+---
+description: "Automate GitHub commits, repository management, and version control"
+globs: ["*"]
+alwaysApply: false
+---
+
+# GitHub Integration Manager
+
+You are helping someone with no coding experience set up automatic GitHub commits, repository management, and seamless version control integration.
+
+## GitHub Integration Setup Process
+
+### Step 1: Understanding GitHub Integration
+
+#### What This Does:
+Think of it like having an assistant that automatically:
+- Saves your work to GitHub after every successful change
+- Creates proper commit messages describing what you did
+- Manages different versions of your project
+- Backs up your work safely in the cloud
+- Enables collaboration with others
+
+#### Why You Need This:
+- Never lose your work again
+- Track what changes were made and when
+- Easily undo changes if something breaks
+- Share your project with others
+- Deploy automatically when you push changes
+
+### Step 2: Initial GitHub Setup
+
+#### Create GitHub Repository:
+
+**Option 1: Create New Repository**
+```bash
+# Initialize git in your project
+git init
+
+# Add all files
+git add .
+
+# Create first commit
+git commit -m "Initial project setup"
+
+# Create repository on GitHub (replace with your username)
+gh repo create your-username/your-project-name --public
+
+# Push to GitHub
+git push -u origin main
+```
+
+**Option 2: Clone Existing Repository**
+```bash
+# Clone existing project
+git clone https://github.com/username/project-name.git
+
+# Navigate to project
+cd project-name
+
+# You're ready to make changes
+```
+
+#### Configure Git Identity:
+```bash
+# Set your name and email (one-time setup)
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Verify configuration
+git config --list
+```
+
+### Step 3: Automated Commit Workflow
+
+#### Smart Commit Messages:
+
+**Conventional Commit Format:**
+```bash
+# Feature additions
+git commit -m "feat: add user authentication system"
+
+# Bug fixes
+git commit -m "fix: resolve login button not working on mobile"
+
+# Documentation
+git commit -m "docs: update README with setup instructions"
+
+# Styling changes
+git commit -m "style: improve mobile responsive design"
+
+# Refactoring
+git commit -m "refactor: optimize database queries for better performance"
+```
+
+**Automated Commit Script:**
+```bash
+#!/bin/bash
+# save-progress.sh
+
+# Check if there are changes
+if [[ -n $(git status -s) ]]; then
+    echo "📝 Saving your progress to GitHub..."
+    
+    # Add all changes
+    git add .
+    
+    # Create commit with timestamp
+    TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+    git commit -m "auto-save: progress update at $TIMESTAMP"
+    
+    # Push to GitHub
+    git push origin main
+    
+    echo "✅ Progress saved successfully!"
+else
+    echo "ℹ️ No changes to save"
+fi
+```
+
+**Make script executable:**
+```bash
+chmod +x save-progress.sh
+
+# Run whenever you want to save progress
+./save-progress.sh
+```
+
+#### Feature Branch Workflow:
+
+**Creating Feature Branches:**
+```bash
+# Create and switch to new feature branch
+git checkout -b feature/user-authentication
+
+# Work on your feature...
+# Make commits as you progress
+
+# When feature is complete, push branch
+git push origin feature/user-authentication
+```
+
+**Merging Features:**
+```bash
+# Switch back to main branch
+git checkout main
+
+# Merge your feature
+git merge feature/user-authentication
+
+# Push updated main branch
+git push origin main
+
+# Delete feature branch (optional)
+git branch -d feature/user-authentication
+git push origin --delete feature/user-authentication
+```
+
+### Step 4: Automated Deployment Integration
+
+#### GitHub Actions for Auto-Deployment:
+
+**Create .github/workflows/deploy.yml:**
+```yaml
+name: Auto Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v20
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.ORG_ID }}
+        vercel-project-id: ${{ secrets.PROJECT_ID }}
+        working-directory: ./
+```
+
+**Vercel Integration:**
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Login to Vercel
+vercel login
+
+# Link project to Vercel
+vercel link
+
+# Deploy
+vercel --prod
+```
+
+**Netlify Integration:**
+```bash
+# Install Netlify CLI
+npm install -g netlify-cli
+
+# Login to Netlify
+netlify login
+
+# Initialize site
+netlify init
+
+# Deploy
+netlify deploy --prod
+```
+
+### Step 5: Repository Management
+
+#### Branch Protection Rules:
+
+**Protect Main Branch:**
+```bash
+# Using GitHub CLI
+gh api repos/:owner/:repo/branches/main/protection \
+  --method PUT \
+  --field required_status_checks='{"strict":true,"contexts":["continuous-integration"]}' \
+  --field enforce_admins=true \
+  --field required_pull_request_reviews='{"required_approving_review_count":1}' \
+  --field restrictions=null
+```
+
+**Or configure via GitHub web interface:**
+1. Go to Settings → Branches
+2. Add rule for `main` branch
+3. Enable "Require pull request reviews"
+4. Enable "Require status checks to pass"
+
+#### Issue and PR Templates:
+
+**Create .github/ISSUE_TEMPLATE/bug_report.md:**
+```markdown
+---
+name: Bug report
+about: Create a report to help us improve
+title: '[BUG] '
+labels: bug
+assignees: ''
+---
+
+**Describe the bug**
+A clear description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. See error
+
+**Expected behavior**
+What you expected to happen.
+
+**Screenshots**
+If applicable, add screenshots.
+
+**Additional context**
+Any other context about the problem.
+```
+
+**Create .github/pull_request_template.md:**
+```markdown
+## Description
+Brief description of changes made.
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+- [ ] Tests pass locally
+- [ ] Manual testing completed
+- [ ] No console errors
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated if needed
+```
+
+### Step 6: Automated Code Quality
+
+#### Pre-commit Hooks:
+
+**Install Husky:**
+```bash
+# Install husky for git hooks
+npm install --save-dev husky
+
+# Initialize husky
+npx husky install
+
+# Add pre-commit hook
+npx husky add .husky/pre-commit "npm test"
+npx husky add .husky/pre-commit "npm run lint"
+```
+
+**Lint-staged Configuration:**
+```json
+// package.json
+{
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{css,scss,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
+```
+
+#### Automated Testing:
+
+**GitHub Actions Test Workflow:**
+```yaml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - run: npm ci
+    - run: npm test -- --coverage
+    - run: npm run lint
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+```
+
+### Step 7: Release Management
+
+#### Semantic Versioning:
+
+**Install Release Tools:**
+```bash
+# Install semantic-release
+npm install --save-dev semantic-release
+
+# Install plugins
+npm install --save-dev @semantic-release/changelog
+npm install --save-dev @semantic-release/git
+```
+
+**Configure .releaserc.json:**
+```json
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    "@semantic-release/npm",
+    "@semantic-release/github",
+    "@semantic-release/git"
+  ]
+}
+```
+
+**Automated Release Workflow:**
+```yaml
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - run: npm ci
+    - run: npm test
+    
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: npx semantic-release
+```
+
+### Step 8: Collaboration Features
+
+#### Code Review Automation:
+
+**Auto-assign Reviewers:**
+```yaml
+# .github/CODEOWNERS
+# Global owners
+* @your-username
+
+# Frontend changes
+/src/components/ @frontend-team
+
+# Backend changes
+/api/ @backend-team
+
+# Documentation
+/docs/ @docs-team
+```
+
+**Review Reminders:**
+```yaml
+name: Review Reminder
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'  # 9 AM weekdays
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Remind reviewers
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: prs } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open'
+          });
+          
+          for (const pr of prs) {
+            if (pr.requested_reviewers.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: '👋 Friendly reminder: This PR is waiting for review!'
+              });
+            }
+          }
+```
+
+#### Project Management Integration:
+
+**Link Issues to Commits:**
+```bash
+# Commit messages that close issues
+git commit -m "fix: resolve login bug
+
+Closes #123"
+
+# Multiple issues
+git commit -m "feat: add user dashboard
+
+Closes #124, #125, #126"
+```
+
+**Project Boards Automation:**
+```yaml
+name: Project Board
+
+on:
+  issues:
+    types: [opened, closed]
+  pull_request:
+    types: [opened, closed, merged]
+
+jobs:
+  add_to_project:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Add to project
+      uses: actions/add-to-project@v0.3.0
+      with:
+        project-url: https://github.com/users/your-username/projects/1
+        github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+```
+
+### Step 9: Backup and Recovery
+
+#### Automated Backups:
+
+**Backup Script:**
+```bash
+#!/bin/bash
+# backup-repo.sh
+
+REPO_NAME="your-project"
+BACKUP_DIR="$HOME/backups"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+# Create backup directory
+mkdir -p "$BACKUP_DIR"
+
+# Clone repository
+git clone --mirror https://github.com/your-username/$REPO_NAME.git "$BACKUP_DIR/${REPO_NAME}_${DATE}.git"
+
+# Create archive
+tar -czf "$BACKUP_DIR/${REPO_NAME}_${DATE}.tar.gz" -C "$BACKUP_DIR" "${REPO_NAME}_${DATE}.git"
+
+# Clean up
+rm -rf "$BACKUP_DIR/${REPO_NAME}_${DATE}.git"
+
+echo "✅ Backup created: ${REPO_NAME}_${DATE}.tar.gz"
+```
+
+**Automated Backup Workflow:**
+```yaml
+name: Weekly Backup
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # 2 AM every Sunday
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Backup repository
+      run: |
+        git clone --mirror ${{ github.server_url }}/${{ github.repository }}.git backup.git
+        tar -czf backup-$(date +%Y%m%d).tar.gz backup.git
+        
+    - name: Upload backup
+      uses: actions/upload-artifact@v3
+      with:
+        name: repository-backup
+        path: backup-*.tar.gz
+        retention-days: 90
+```
+
+### Step 10: Monitoring and Analytics
+
+#### Repository Analytics:
+
+**GitHub Insights Dashboard:**
+- Track commit frequency
+- Monitor contributor activity
+- Analyze code frequency
+- Review pull request metrics
+
+**Custom Analytics Script:**
+```javascript
+// analytics.js
+const { Octokit } = require('@octokit/rest');
+
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN
+});
+
+async function getRepoStats() {
+  const { data: repo } = await octokit.rest.repos.get({
+    owner: 'your-username',
+    repo: 'your-repo'
+  });
+  
+  const { data: commits } = await octokit.rest.repos.listCommits({
+    owner: 'your-username',
+    repo: 'your-repo',
+    since: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+  });
+  
+  console.log(`Repository: ${repo.name}`);
+  console.log(`Stars: ${repo.stargazers_count}`);
+  console.log(`Forks: ${repo.forks_count}`);
+  console.log(`Commits (last 30 days): ${commits.length}`);
+}
+
+getRepoStats();
+```
+
+#### Notification Setup:
+
+**Slack Integration:**
+```yaml
+name: Slack Notifications
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ opened, closed, merged ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Slack Notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#development'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+```
+
+## GitHub Integration Checklist
+
+### ✅ Basic Integration Complete When:
+- [ ] Repository created and linked
+- [ ] Git configured with your identity
+- [ ] Can push and pull changes successfully
+- [ ] Commit messages are descriptive
+
+### ✅ Advanced Integration Complete When:
+- [ ] Automated deployment configured
+- [ ] Branch protection rules enabled
+- [ ] Pre-commit hooks working
+- [ ] GitHub Actions running tests
+
+### ✅ Production Ready When:
+- [ ] Release automation configured
+- [ ] Code review process established
+- [ ] Backup strategy implemented
+- [ ] Monitoring and analytics active
+
+## Common Issues and Solutions
+
+### Issue: Permission denied (publickey)
+**Solutions:**
+1. Generate SSH key: `ssh-keygen -t ed25519 -C "your_email@example.com"`
+2. Add to SSH agent: `ssh-add ~/.ssh/id_ed25519`
+3. Add public key to GitHub account
+4. Test connection: `ssh -T git@github.com`
+
+### Issue: Merge conflicts
+**Solutions:**
+1. Pull latest changes: `git pull origin main`
+2. Resolve conflicts in files
+3. Add resolved files: `git add .`
+4. Complete merge: `git commit`
+
+### Issue: Accidentally committed sensitive data
+**Solutions:**
+1. Remove from history: `git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch path/to/file' --prune-empty --tag-name-filter cat -- --all`
+2. Force push: `git push origin --force --all`
+3. Rotate any exposed secrets immediately
+
+### Issue: GitHub Actions failing
+**Solutions:**
+1. Check workflow syntax in `.github/workflows/`
+2. Verify secrets are configured correctly
+3. Check action logs for specific errors
+4. Test locally before pushing
+
+## Usage Instructions
+
+To set up GitHub integration, ask:
+"Set up automatic GitHub integration for this project with automated commits, deployment, and repository management."
+
+This will configure a complete GitHub workflow that automatically saves your progress, deploys your changes, and manages your repository professionally.
+

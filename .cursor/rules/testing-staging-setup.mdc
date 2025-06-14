@@ -1,0 +1,524 @@
+---
+description: "Set up testing and staging environment to see changes in real-time"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Testing & Staging Environment Setup
+
+You are helping someone with no coding experience set up a testing environment so they can see their changes in real-time as they build.
+
+## Testing Environment Setup Process
+
+### Step 1: Understanding Development Environments
+
+#### What is a Testing/Staging Environment?
+Think of it like a practice kitchen before opening a restaurant:
+- **Development**: Your personal workspace where you make changes
+- **Staging**: A copy of the real app where you test everything works
+- **Production**: The live app that real users see
+
+#### Why You Need This:
+- See your changes immediately as you make them
+- Test new features without breaking the live app
+- Catch problems before users see them
+- Work confidently knowing you can't break anything important
+
+### Step 2: Technology-Specific Setup
+
+#### For React Applications:
+
+**Quick Setup (5 minutes):**
+```bash
+# Navigate to your project folder
+cd your-project-name
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
+
+**What This Does:**
+- Starts a local server (usually at http://localhost:3000)
+- Automatically refreshes when you make changes
+- Shows errors and warnings in real-time
+- Provides hot reloading (changes appear instantly)
+
+**Expected Output:**
+```
+Compiled successfully!
+
+You can now view your-app in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.100:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+```
+
+**Troubleshooting:**
+- **Port already in use**: Try `npm start -- --port 3001`
+- **Module not found**: Run `npm install` first
+- **Permission errors**: Try `sudo npm install` (Mac/Linux)
+
+#### For Node.js/Express APIs:
+
+**Quick Setup (5 minutes):**
+```bash
+# Navigate to your project
+cd your-api-project
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+# or
+node server.js
+```
+
+**Enhanced Setup with Nodemon (Auto-restart):**
+```bash
+# Install nodemon for auto-restart
+npm install -g nodemon
+
+# Start with auto-restart
+nodemon server.js
+```
+
+**Expected Output:**
+```
+[nodemon] starting `node server.js`
+Server running on port 3000
+Database connected successfully
+```
+
+**Testing Your API:**
+- Use browser for GET requests: `http://localhost:3000/api/users`
+- Use Postman or Thunder Client for POST/PUT/DELETE requests
+- Check console for error messages
+
+#### For Full-Stack Applications:
+
+**Setup Both Frontend and Backend:**
+
+**Terminal 1 (Backend):**
+```bash
+cd backend-folder
+npm install
+npm run dev
+```
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend-folder
+npm install
+npm start
+```
+
+**Expected Result:**
+- Backend API running on http://localhost:3001
+- Frontend app running on http://localhost:3000
+- Frontend can communicate with backend
+
+#### For Static Websites:
+
+**Simple HTTP Server:**
+```bash
+# Using Python (if installed)
+python -m http.server 8000
+
+# Using Node.js live-server
+npm install -g live-server
+live-server
+```
+
+**Expected Output:**
+```
+Serving at http://localhost:8000/
+```
+
+### Step 3: Environment Configuration
+
+#### Setting Up Environment Variables:
+
+**Create .env file in project root:**
+```env
+# Database
+DATABASE_URL=mongodb://localhost:27017/your-app
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=your_app_dev
+
+# API Keys (use test/development keys)
+STRIPE_SECRET_KEY=sk_test_your_test_key
+SENDGRID_API_KEY=SG.your_test_key
+JWT_SECRET=your_development_secret
+
+# App Configuration
+NODE_ENV=development
+PORT=3000
+API_BASE_URL=http://localhost:3001
+
+# External Services (use sandbox/test URLs)
+PAYMENT_GATEWAY_URL=https://api.sandbox.stripe.com
+EMAIL_SERVICE_URL=https://api.sendgrid.com/v3
+```
+
+**Important Notes:**
+- Never use production API keys in development
+- Use test/sandbox versions of external services
+- Keep .env file out of version control (add to .gitignore)
+
+#### Database Setup for Testing:
+
+**For MongoDB:**
+```bash
+# Install MongoDB locally or use MongoDB Atlas
+# Create test database
+mongosh
+use your_app_test
+```
+
+**For PostgreSQL:**
+```bash
+# Create test database
+createdb your_app_test
+```
+
+**For SQLite (easiest for testing):**
+```javascript
+// In your config file
+module.exports = {
+  development: {
+    dialect: 'sqlite',
+    storage: './database_test.sqlite'
+  }
+}
+```
+
+### Step 4: Testing Workflow Setup
+
+#### Basic Testing Commands:
+
+**For React Apps:**
+```bash
+# Run tests
+npm test
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- UserComponent.test.js
+```
+
+**For Node.js APIs:**
+```bash
+# Run API tests
+npm test
+
+# Run tests with watch mode
+npm test -- --watch
+
+# Run integration tests
+npm run test:integration
+```
+
+#### Setting Up Test Data:
+
+**Create seed data for testing:**
+```javascript
+// seeds/testData.js
+const testUsers = [
+  {
+    name: "Test User 1",
+    email: "test1@example.com",
+    password: "password123"
+  },
+  {
+    name: "Test User 2", 
+    email: "test2@example.com",
+    password: "password123"
+  }
+];
+
+const testProducts = [
+  {
+    name: "Test Product 1",
+    price: 29.99,
+    description: "A test product for development"
+  }
+];
+
+module.exports = { testUsers, testProducts };
+```
+
+**Load test data:**
+```bash
+# Run seed script
+npm run seed:test
+```
+
+### Step 5: Browser Development Tools
+
+#### Essential Browser Tools:
+
+**Chrome DevTools:**
+- **Console**: See JavaScript errors and logs
+- **Network**: Monitor API calls and responses
+- **Elements**: Inspect and modify HTML/CSS
+- **Application**: Check local storage and cookies
+
+**React Developer Tools:**
+- Install React DevTools browser extension
+- Inspect React components and state
+- Debug React performance issues
+
+**Vue Developer Tools:**
+- Install Vue DevTools browser extension
+- Inspect Vue components and Vuex state
+
+#### Mobile Testing:
+
+**Chrome Mobile Simulation:**
+1. Open Chrome DevTools (F12)
+2. Click device toggle icon
+3. Select mobile device
+4. Test responsive design
+
+**Real Device Testing:**
+```bash
+# Find your local IP address
+ipconfig getifaddr en0  # Mac
+ipconfig                # Windows
+
+# Access from mobile device
+http://YOUR_IP_ADDRESS:3000
+```
+
+### Step 6: Staging Environment Setup
+
+#### Local Staging Environment:
+
+**Build Production Version:**
+```bash
+# For React apps
+npm run build
+
+# Serve production build locally
+npm install -g serve
+serve -s build -l 3000
+```
+
+**For Node.js:**
+```bash
+# Set production environment
+NODE_ENV=production npm start
+```
+
+#### Cloud Staging Setup:
+
+**Heroku (Free Tier):**
+```bash
+# Install Heroku CLI
+# Create Heroku app
+heroku create your-app-staging
+
+# Deploy to staging
+git push heroku main
+
+# View staging app
+heroku open
+```
+
+**Vercel (For Frontend):**
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Deploy to staging
+vercel
+
+# Get staging URL
+vercel --prod
+```
+
+**Netlify (For Static Sites):**
+```bash
+# Install Netlify CLI
+npm install -g netlify-cli
+
+# Deploy to staging
+netlify deploy
+
+# Deploy to production
+netlify deploy --prod
+```
+
+### Step 7: Monitoring and Debugging
+
+#### Development Monitoring:
+
+**Console Logging:**
+```javascript
+// Add helpful logs
+console.log('User data:', userData);
+console.error('API Error:', error);
+console.warn('Deprecated feature used');
+```
+
+**Error Boundaries (React):**
+```javascript
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>;
+    }
+    return this.props.children;
+  }
+}
+```
+
+#### API Testing Tools:
+
+**Postman Collections:**
+- Create collections for all API endpoints
+- Set up environment variables
+- Write automated tests
+
+**Thunder Client (VS Code Extension):**
+- Test APIs directly in VS Code
+- Save requests for reuse
+- Export/import collections
+
+### Step 8: Automated Testing Setup
+
+#### Unit Testing:
+
+**Jest Configuration (package.json):**
+```json
+{
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"]
+  }
+}
+```
+
+**Example Test:**
+```javascript
+// UserComponent.test.js
+import { render, screen } from '@testing-library/react';
+import UserComponent from './UserComponent';
+
+test('renders user name', () => {
+  render(<UserComponent name="John Doe" />);
+  const nameElement = screen.getByText(/john doe/i);
+  expect(nameElement).toBeInTheDocument();
+});
+```
+
+#### Integration Testing:
+
+**API Testing with Supertest:**
+```javascript
+// api.test.js
+const request = require('supertest');
+const app = require('../app');
+
+describe('GET /api/users', () => {
+  it('should return list of users', async () => {
+    const res = await request(app)
+      .get('/api/users')
+      .expect(200);
+    
+    expect(res.body).toHaveProperty('users');
+    expect(Array.isArray(res.body.users)).toBe(true);
+  });
+});
+```
+
+## Testing Environment Checklist
+
+### ✅ Basic Setup Complete When:
+- [ ] Development server starts without errors
+- [ ] App loads in browser at localhost
+- [ ] Hot reloading works (changes appear automatically)
+- [ ] Console shows no critical errors
+- [ ] Database connection established (if applicable)
+
+### ✅ Advanced Setup Complete When:
+- [ ] Environment variables configured
+- [ ] Test data loaded
+- [ ] API endpoints responding
+- [ ] Mobile view works
+- [ ] Tests run successfully
+- [ ] Staging environment deployed
+
+### ✅ Production Ready When:
+- [ ] All tests passing
+- [ ] No console errors
+- [ ] Performance acceptable
+- [ ] Mobile responsive
+- [ ] Security configured
+- [ ] Monitoring setup
+
+## Common Issues and Solutions
+
+### Issue: "npm start" fails
+**Solutions:**
+1. Delete node_modules and package-lock.json
+2. Run `npm install` again
+3. Check Node.js version compatibility
+4. Try `npm cache clean --force`
+
+### Issue: Changes not appearing
+**Solutions:**
+1. Check if development server is running
+2. Hard refresh browser (Ctrl+F5)
+3. Check for JavaScript errors in console
+4. Restart development server
+
+### Issue: API calls failing
+**Solutions:**
+1. Check if backend server is running
+2. Verify API URLs in frontend code
+3. Check CORS configuration
+4. Test API endpoints with Postman
+
+### Issue: Database connection errors
+**Solutions:**
+1. Verify database is running
+2. Check connection string in .env
+3. Ensure database exists
+4. Check firewall/network settings
+
+## Usage Instructions
+
+To set up your testing environment, ask:
+"Set up a testing and staging environment for this [React/Node.js/Full-stack] project so I can see my changes in real-time and test everything before going live."
+
+This will provide step-by-step instructions specific to your project type and help you get everything running locally.
+

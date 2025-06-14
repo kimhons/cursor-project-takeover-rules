@@ -1,0 +1,205 @@
+---
+description: "Analyze any GitHub project and explain it in simple terms"
+globs: ["*"]
+alwaysApply: false
+---
+
+# GitHub Project Analyzer
+
+You are helping someone with no coding experience understand and take over an existing project. Provide a comprehensive, beginner-friendly analysis.
+
+## Project Analysis Process
+
+### Step 1: Initial Project Scan
+When analyzing a project, examine these files first:
+- README.md (project description and setup instructions)
+- package.json or requirements.txt (what tools and libraries are used)
+- Main application files (usually in src/, app/, or root directory)
+- Configuration files (.env, config files)
+- Documentation folder (docs/, documentation/)
+
+### Step 2: Create Project Overview Report
+
+Provide this information in simple terms:
+
+#### 🎯 What This Project Does
+- **Project Type**: [Website/Mobile App/Web App/API/Tool]
+- **Main Purpose**: [What problem does it solve?]
+- **Target Users**: [Who is this for?]
+- **Key Features**: [What can users do with it?]
+
+#### 🏗️ Technical Overview (Simplified)
+- **Technology Stack**: [What it's built with, explained simply]
+- **Database**: [How it stores information]
+- **External Services**: [What other services it connects to]
+- **Hosting/Deployment**: [Where it runs]
+
+#### 📊 Project Status Assessment
+- **Completion Level**: [X% complete]
+- **Working Features**: [List what currently works]
+- **Broken Features**: [List what doesn't work]
+- **Missing Features**: [List what's planned but not built]
+- **Last Updated**: [When was it last worked on]
+
+#### 🔧 Setup Requirements
+- **Prerequisites**: [What you need installed]
+- **Setup Steps**: [How to get it running locally]
+- **Environment Variables**: [What secrets/settings are needed]
+- **Common Issues**: [Known problems and solutions]
+
+### Step 3: Feature Analysis
+
+For each major feature, provide:
+- **Feature Name**: [What it's called]
+- **Status**: [Working/Broken/Incomplete/Missing]
+- **User Impact**: [How important is this to users?]
+- **Technical Complexity**: [Easy/Medium/Hard to fix/complete]
+- **Dependencies**: [What other features does this rely on?]
+
+### Step 4: Risk Assessment
+
+Identify potential issues:
+- **Security Concerns**: [Any obvious security problems]
+- **Performance Issues**: [Things that might be slow]
+- **Scalability Problems**: [Will it handle more users?]
+- **Maintenance Burden**: [How hard is it to maintain?]
+
+### Step 5: Recommendations
+
+Provide actionable next steps:
+- **Immediate Actions**: [What to do first]
+- **Quick Wins**: [Easy improvements with big impact]
+- **Long-term Goals**: [What to work toward]
+- **Learning Resources**: [What to study to understand this better]
+
+## Analysis Guidelines
+
+### For Different Project Types:
+
+#### React/Vue/Angular Applications:
+- Check src/components for UI components
+- Look for routing configuration
+- Identify state management (Redux, Vuex, etc.)
+- Check for API integration
+- Assess mobile responsiveness
+
+#### Node.js/Express APIs:
+- Examine routes and endpoints
+- Check database models and connections
+- Look for authentication/authorization
+- Assess error handling
+- Check for API documentation
+
+#### Full-Stack Applications:
+- Analyze both frontend and backend
+- Check how they communicate
+- Look for shared data models
+- Assess deployment configuration
+- Check for testing setup
+
+#### Static Websites:
+- Check HTML structure and content
+- Assess CSS and styling
+- Look for JavaScript functionality
+- Check for build processes
+- Assess SEO optimization
+
+### Red Flags to Watch For:
+- No README or documentation
+- Hardcoded passwords or API keys
+- No error handling
+- Outdated dependencies
+- No testing
+- Complex code without comments
+- Missing environment configuration
+
+### Green Flags (Good Signs):
+- Clear documentation
+- Well-organized file structure
+- Recent commits
+- Good test coverage
+- Proper error handling
+- Environment variables used correctly
+- Clear naming conventions
+
+## Example Analysis Output
+
+```
+# Project Analysis Report
+
+## 🎯 What This Project Does
+**Project Type**: E-commerce Web Application
+**Main Purpose**: Online store for selling handmade crafts
+**Target Users**: Small business owners and craft buyers
+**Key Features**: Product catalog, shopping cart, user accounts, payment processing
+
+## 🏗️ Technical Overview
+**Technology Stack**: 
+- Frontend: React (like building blocks for web pages)
+- Backend: Node.js with Express (server that handles requests)
+- Database: MongoDB (stores product and user information)
+- Payment: Stripe (handles credit card processing)
+
+**Database**: MongoDB stores products, users, and orders
+**External Services**: Stripe for payments, SendGrid for emails
+**Hosting**: Currently set up for Heroku deployment
+
+## 📊 Project Status Assessment
+**Completion Level**: 75% complete
+**Working Features**: 
+- ✅ Product display
+- ✅ User registration/login
+- ✅ Shopping cart
+**Broken Features**: 
+- ❌ Payment processing (Stripe not configured)
+- ❌ Email notifications (SendGrid keys missing)
+**Missing Features**: 
+- ⏳ Admin dashboard
+- ⏳ Order tracking
+- ⏳ Product reviews
+
+## 🔧 Setup Requirements
+**Prerequisites**: Node.js, MongoDB, Git
+**Setup Steps**: 
+1. Clone repository
+2. Run `npm install`
+3. Set up environment variables
+4. Start MongoDB
+5. Run `npm start`
+**Environment Variables Needed**: 
+- DATABASE_URL (MongoDB connection)
+- STRIPE_SECRET_KEY (payment processing)
+- SENDGRID_API_KEY (email service)
+
+## 🚨 Immediate Actions Needed
+1. **Fix Payment System**: Configure Stripe API keys
+2. **Set Up Email**: Add SendGrid configuration
+3. **Test User Flow**: Verify registration and login work
+4. **Security Review**: Check for exposed API keys
+
+## 🎯 Quick Wins (Easy Improvements)
+1. **Add Loading Indicators**: Show when pages are loading
+2. **Improve Error Messages**: Make error messages user-friendly
+3. **Mobile Optimization**: Fix mobile display issues
+4. **Add Product Search**: Help users find products quickly
+
+## 📈 Long-term Goals
+1. **Admin Dashboard**: Let store owners manage products
+2. **Order Tracking**: Let customers track their orders
+3. **Product Reviews**: Let customers leave reviews
+4. **Analytics**: Track sales and user behavior
+
+## 📚 Learning Resources
+- React basics: [link to tutorial]
+- Node.js fundamentals: [link to course]
+- MongoDB guide: [link to documentation]
+- E-commerce best practices: [link to guide]
+```
+
+## Usage Instructions
+
+To use this analyzer, simply ask:
+"Analyze this GitHub project using the Project Analyzer and give me a complete breakdown of what it does, what's working, what's broken, and what I should do next."
+
+The analyzer will examine your project files and provide a comprehensive, beginner-friendly report that helps you understand exactly what you're working with and how to proceed.
+
