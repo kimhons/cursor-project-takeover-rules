@@ -1,0 +1,1326 @@
+---
+description: "Optimize database performance and implement efficient data management strategies"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Database Optimizer
+
+You are helping someone with no coding experience optimize their database performance and implement efficient data management strategies for better app performance.
+
+## Database Optimization Process
+
+### Step 1: Understanding Database Performance
+
+#### What is Database Optimization?
+Think of database optimization like organizing a massive library:
+- **Indexing**: Like having a card catalog system for instant book finding
+- **Query Optimization**: Like knowing exactly which shelf and section to check
+- **Data Structure**: Like organizing books by category, author, and popularity
+- **Caching**: Like keeping frequently requested books at the front desk
+- **Cleanup**: Like removing outdated books and reorganizing periodically
+
+#### Why Database Performance Matters:
+- **User Experience**: Slow database = slow app = frustrated users
+- **Cost Efficiency**: Optimized databases use fewer server resources
+- **Scalability**: Well-optimized databases handle growth better
+- **Reliability**: Efficient databases are more stable and crash less
+- **Business Impact**: Fast data access directly impacts revenue
+
+#### Common Database Performance Issues:
+- **Slow Queries**: Database searches taking too long
+- **Missing Indexes**: No shortcuts for finding data quickly
+- **Inefficient Schema**: Poor data organization structure
+- **Memory Issues**: Database running out of working memory
+- **Connection Problems**: Too many simultaneous database connections
+
+### Step 2: Database Performance Assessment
+
+#### Database Health Check:
+
+**Performance Metrics Analysis:**
+```javascript
+// database-performance-analyzer.js
+class DatabasePerformanceAnalyzer {
+  async analyzeDatabasePerformance() {
+    const analysis = {
+      queryPerformance: await this.analyzeQueryPerformance(),
+      indexEfficiency: await this.analyzeIndexes(),
+      connectionHealth: await this.analyzeConnections(),
+      storageOptimization: await this.analyzeStorage(),
+      recommendations: []
+    };
+
+    return this.generateOptimizationReport(analysis);
+  }
+
+  async analyzeQueryPerformance() {
+    // Analyze slow queries and performance bottlenecks
+    const slowQueries = await this.findSlowQueries();
+    const queryPatterns = await this.analyzeQueryPatterns();
+    
+    return {
+      slowQueries: slowQueries.map(query => ({
+        sql: query.sql,
+        executionTime: query.execution_time,
+        frequency: query.call_count,
+        impact: this.calculateQueryImpact(query)
+      })),
+      averageQueryTime: this.calculateAverageQueryTime(slowQueries),
+      queryDistribution: queryPatterns,
+      recommendations: this.generateQueryRecommendations(slowQueries)
+    };
+  }
+
+  async findSlowQueries() {
+    // For MongoDB
+    if (this.databaseType === 'mongodb') {
+      return await this.analyzeMongoDBQueries();
+    }
+    
+    // For PostgreSQL
+    if (this.databaseType === 'postgresql') {
+      return await this.analyzePostgreSQLQueries();
+    }
+    
+    // For MySQL
+    if (this.databaseType === 'mysql') {
+      return await this.analyzeMySQLQueries();
+    }
+  }
+
+  async analyzeMongoDBQueries() {
+    // Enable MongoDB profiler and analyze slow operations
+    const db = this.getDatabase();
+    
+    // Enable profiling for operations slower than 100ms
+    await db.setProfilingLevel(2, { slowms: 100 });
+    
+    // Get profiling data
+    const profilingData = await db.collection('system.profile')
+      .find({ ts: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } })
+      .sort({ ts: -1 })
+      .limit(100)
+      .toArray();
+
+    return profilingData.map(op => ({
+      sql: JSON.stringify(op.command),
+      execution_time: op.millis,
+      call_count: 1,
+      collection: op.ns,
+      operation: op.op
+    }));
+  }
+
+  async analyzeIndexes() {
+    const indexAnalysis = {
+      missingIndexes: await this.findMissingIndexes(),
+      unusedIndexes: await this.findUnusedIndexes(),
+      duplicateIndexes: await this.findDuplicateIndexes(),
+      indexEfficiency: await this.calculateIndexEfficiency()
+    };
+
+    return indexAnalysis;
+  }
+
+  async findMissingIndexes() {
+    // Analyze query patterns to identify missing indexes
+    const slowQueries = await this.findSlowQueries();
+    const missingIndexes = [];
+
+    for (const query of slowQueries) {
+      const suggestedIndexes = await this.suggestIndexesForQuery(query);
+      missingIndexes.push(...suggestedIndexes);
+    }
+
+    return this.deduplicateIndexSuggestions(missingIndexes);
+  }
+
+  async suggestIndexesForQuery(query) {
+    // Analyze query structure to suggest optimal indexes
+    const suggestions = [];
+    
+    if (this.databaseType === 'mongodb') {
+      suggestions.push(...this.suggestMongoDBIndexes(query));
+    } else if (this.databaseType === 'postgresql') {
+      suggestions.push(...this.suggestPostgreSQLIndexes(query));
+    }
+
+    return suggestions;
+  }
+
+  generateOptimizationReport(analysis) {
+    const score = this.calculatePerformanceScore(analysis);
+    
+    return {
+      performanceScore: score,
+      summary: {
+        totalSlowQueries: analysis.queryPerformance.slowQueries.length,
+        averageQueryTime: analysis.queryPerformance.averageQueryTime,
+        missingIndexes: analysis.indexEfficiency.missingIndexes.length,
+        unusedIndexes: analysis.indexEfficiency.unusedIndexes.length
+      },
+      criticalIssues: this.identifyCriticalIssues(analysis),
+      recommendations: this.prioritizeRecommendations(analysis),
+      implementationPlan: this.createImplementationPlan(analysis)
+    };
+  }
+}
+```
+
+#### Database Schema Analysis:
+
+**Schema Optimization Assessment:**
+```javascript
+// schema-analyzer.js
+class SchemaAnalyzer {
+  async analyzeSchema() {
+    const schemaAnalysis = {
+      tableStructure: await this.analyzeTableStructure(),
+      relationships: await this.analyzeRelationships(),
+      dataTypes: await this.analyzeDataTypes(),
+      normalization: await this.analyzeNormalization(),
+      redundancy: await this.findDataRedundancy()
+    };
+
+    return this.generateSchemaReport(schemaAnalysis);
+  }
+
+  async analyzeTableStructure() {
+    const tables = await this.getAllTables();
+    const analysis = [];
+
+    for (const table of tables) {
+      const tableInfo = {
+        name: table.name,
+        rowCount: await this.getRowCount(table.name),
+        columns: await this.getColumnInfo(table.name),
+        indexes: await this.getTableIndexes(table.name),
+        size: await this.getTableSize(table.name),
+        issues: []
+      };
+
+      // Check for common issues
+      if (tableInfo.rowCount > 1000000 && tableInfo.indexes.length < 2) {
+        tableInfo.issues.push('Large table with insufficient indexes');
+      }
+
+      if (tableInfo.columns.length > 50) {
+        tableInfo.issues.push('Table has too many columns (consider normalization)');
+      }
+
+      analysis.push(tableInfo);
+    }
+
+    return analysis;
+  }
+
+  async analyzeRelationships() {
+    const relationships = await this.getForeignKeyRelationships();
+    const issues = [];
+
+    for (const rel of relationships) {
+      // Check for missing indexes on foreign keys
+      const hasIndex = await this.checkForeignKeyIndex(rel);
+      if (!hasIndex) {
+        issues.push({
+          type: 'missing_fk_index',
+          table: rel.table,
+          column: rel.column,
+          referencedTable: rel.referencedTable,
+          impact: 'high'
+        });
+      }
+
+      // Check for orphaned records
+      const orphanCount = await this.checkOrphanedRecords(rel);
+      if (orphanCount > 0) {
+        issues.push({
+          type: 'orphaned_records',
+          table: rel.table,
+          count: orphanCount,
+          impact: 'medium'
+        });
+      }
+    }
+
+    return { relationships, issues };
+  }
+
+  async analyzeDataTypes() {
+    const tables = await this.getAllTables();
+    const recommendations = [];
+
+    for (const table of tables) {
+      const columns = await this.getColumnInfo(table.name);
+      
+      for (const column of columns) {
+        // Check for inefficient data types
+        if (column.type === 'TEXT' && column.avgLength < 255) {
+          recommendations.push({
+            table: table.name,
+            column: column.name,
+            current: 'TEXT',
+            recommended: 'VARCHAR(255)',
+            reason: 'TEXT type is overkill for short strings',
+            impact: 'medium'
+          });
+        }
+
+        if (column.type === 'INT' && column.maxValue < 32767) {
+          recommendations.push({
+            table: table.name,
+            column: column.name,
+            current: 'INT',
+            recommended: 'SMALLINT',
+            reason: 'SMALLINT sufficient for value range',
+            impact: 'low'
+          });
+        }
+      }
+    }
+
+    return recommendations;
+  }
+}
+```
+
+### Step 3: Query Optimization Implementation
+
+#### Query Performance Optimization:
+
+**Automated Query Optimizer:**
+```javascript
+// query-optimizer.js
+class QueryOptimizer {
+  constructor(databaseType) {
+    this.databaseType = databaseType;
+    this.optimizationRules = this.loadOptimizationRules();
+  }
+
+  async optimizeQueries() {
+    const slowQueries = await this.identifySlowQueries();
+    const optimizedQueries = [];
+
+    for (const query of slowQueries) {
+      const optimized = await this.optimizeQuery(query);
+      optimizedQueries.push(optimized);
+    }
+
+    return this.generateOptimizationReport(optimizedQueries);
+  }
+
+  async optimizeQuery(query) {
+    const optimization = {
+      original: query,
+      optimized: null,
+      improvements: [],
+      performanceGain: 0
+    };
+
+    // Apply optimization rules
+    let optimizedSQL = query.sql;
+    
+    // Rule 1: Add missing indexes
+    const indexSuggestions = await this.suggestIndexes(query);
+    if (indexSuggestions.length > 0) {
+      optimization.improvements.push({
+        type: 'index_suggestion',
+        description: 'Add missing indexes for better performance',
+        indexes: indexSuggestions,
+        expectedGain: '50-80% faster'
+      });
+    }
+
+    // Rule 2: Optimize WHERE clauses
+    optimizedSQL = this.optimizeWhereClause(optimizedSQL);
+    if (optimizedSQL !== query.sql) {
+      optimization.improvements.push({
+        type: 'where_optimization',
+        description: 'Optimized WHERE clause for better index usage',
+        expectedGain: '20-40% faster'
+      });
+    }
+
+    // Rule 3: Optimize JOINs
+    optimizedSQL = this.optimizeJoins(optimizedSQL);
+    
+    // Rule 4: Add LIMIT clauses where appropriate
+    optimizedSQL = this.addLimitClauses(optimizedSQL);
+
+    // Rule 5: Optimize subqueries
+    optimizedSQL = this.optimizeSubqueries(optimizedSQL);
+
+    optimization.optimized = optimizedSQL;
+    optimization.performanceGain = await this.estimatePerformanceGain(query.sql, optimizedSQL);
+
+    return optimization;
+  }
+
+  optimizeWhereClause(sql) {
+    // Move most selective conditions first
+    // Convert functions in WHERE to index-friendly forms
+    // Example: WHERE YEAR(date_column) = 2023 
+    // Becomes: WHERE date_column >= '2023-01-01' AND date_column < '2024-01-01'
+    
+    let optimized = sql;
+
+    // Optimize date functions
+    optimized = optimized.replace(
+      /WHERE\s+YEAR\((\w+)\)\s*=\s*(\d+)/gi,
+      (match, column, year) => {
+        return `WHERE ${column} >= '${year}-01-01' AND ${column} < '${parseInt(year) + 1}-01-01'`;
+      }
+    );
+
+    // Optimize LIKE patterns
+    optimized = optimized.replace(
+      /WHERE\s+(\w+)\s+LIKE\s+'%([^%]+)'/gi,
+      (match, column, pattern) => {
+        // Suggest full-text search for leading wildcard patterns
+        return `WHERE ${column} LIKE '${pattern}%'`; // Remove leading wildcard if possible
+      }
+    );
+
+    return optimized;
+  }
+
+  optimizeJoins(sql) {
+    // Ensure JOINs use indexed columns
+    // Reorder JOINs for optimal execution
+    // Convert implicit JOINs to explicit JOINs
+    
+    let optimized = sql;
+
+    // Convert comma-separated JOINs to explicit JOINs
+    optimized = optimized.replace(
+      /FROM\s+(\w+)\s*,\s*(\w+)\s+WHERE\s+(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)/gi,
+      'FROM $1 JOIN $2 ON $3.$4 = $5.$6 WHERE'
+    );
+
+    return optimized;
+  }
+
+  async suggestIndexes(query) {
+    const suggestions = [];
+    
+    // Analyze WHERE clauses for index opportunities
+    const whereColumns = this.extractWhereColumns(query.sql);
+    for (const column of whereColumns) {
+      const hasIndex = await this.checkColumnIndex(column.table, column.column);
+      if (!hasIndex) {
+        suggestions.push({
+          table: column.table,
+          columns: [column.column],
+          type: 'btree',
+          reason: 'Used in WHERE clause'
+        });
+      }
+    }
+
+    // Analyze JOIN conditions
+    const joinColumns = this.extractJoinColumns(query.sql);
+    for (const join of joinColumns) {
+      const hasIndex = await this.checkColumnIndex(join.table, join.column);
+      if (!hasIndex) {
+        suggestions.push({
+          table: join.table,
+          columns: [join.column],
+          type: 'btree',
+          reason: 'Used in JOIN condition'
+        });
+      }
+    }
+
+    // Suggest composite indexes for multi-column WHERE clauses
+    const multiColumnConditions = this.extractMultiColumnConditions(query.sql);
+    for (const condition of multiColumnConditions) {
+      suggestions.push({
+        table: condition.table,
+        columns: condition.columns,
+        type: 'btree',
+        reason: 'Composite index for multi-column WHERE clause'
+      });
+    }
+
+    return suggestions;
+  }
+}
+```
+
+#### Index Management System:
+
+**Intelligent Index Manager:**
+```javascript
+// index-manager.js
+class IndexManager {
+  async optimizeIndexes() {
+    const indexOptimization = {
+      created: [],
+      dropped: [],
+      modified: [],
+      recommendations: []
+    };
+
+    // Step 1: Create missing indexes
+    const missingIndexes = await this.findMissingIndexes();
+    for (const index of missingIndexes) {
+      await this.createIndex(index);
+      indexOptimization.created.push(index);
+    }
+
+    // Step 2: Drop unused indexes
+    const unusedIndexes = await this.findUnusedIndexes();
+    for (const index of unusedIndexes) {
+      await this.dropIndex(index);
+      indexOptimization.dropped.push(index);
+    }
+
+    // Step 3: Optimize existing indexes
+    const optimizableIndexes = await this.findOptimizableIndexes();
+    for (const index of optimizableIndexes) {
+      await this.optimizeIndex(index);
+      indexOptimization.modified.push(index);
+    }
+
+    return indexOptimization;
+  }
+
+  async createIndex(indexSpec) {
+    const indexName = this.generateIndexName(indexSpec);
+    
+    if (this.databaseType === 'mongodb') {
+      await this.createMongoDBIndex(indexSpec, indexName);
+    } else if (this.databaseType === 'postgresql') {
+      await this.createPostgreSQLIndex(indexSpec, indexName);
+    } else if (this.databaseType === 'mysql') {
+      await this.createMySQLIndex(indexSpec, indexName);
+    }
+
+    console.log(`Created index: ${indexName} on ${indexSpec.table}(${indexSpec.columns.join(', ')})`);
+  }
+
+  async createMongoDBIndex(indexSpec, indexName) {
+    const db = this.getDatabase();
+    const collection = db.collection(indexSpec.table);
+    
+    const indexKeys = {};
+    for (const column of indexSpec.columns) {
+      indexKeys[column] = 1; // Ascending index
+    }
+
+    const options = {
+      name: indexName,
+      background: true // Create index in background
+    };
+
+    // Add special options based on use case
+    if (indexSpec.unique) {
+      options.unique = true;
+    }
+
+    if (indexSpec.sparse) {
+      options.sparse = true;
+    }
+
+    await collection.createIndex(indexKeys, options);
+  }
+
+  async createPostgreSQLIndex(indexSpec, indexName) {
+    const columns = indexSpec.columns.join(', ');
+    const indexType = indexSpec.type || 'btree';
+    
+    let sql = `CREATE INDEX CONCURRENTLY ${indexName} ON ${indexSpec.table}`;
+    
+    if (indexType !== 'btree') {
+      sql += ` USING ${indexType}`;
+    }
+    
+    sql += ` (${columns})`;
+
+    // Add WHERE clause for partial indexes
+    if (indexSpec.condition) {
+      sql += ` WHERE ${indexSpec.condition}`;
+    }
+
+    await this.executeSQL(sql);
+  }
+
+  async findUnusedIndexes() {
+    const unusedIndexes = [];
+    
+    if (this.databaseType === 'postgresql') {
+      const sql = `
+        SELECT 
+          schemaname,
+          tablename,
+          indexname,
+          idx_tup_read,
+          idx_tup_fetch
+        FROM pg_stat_user_indexes 
+        WHERE idx_tup_read = 0 AND idx_tup_fetch = 0
+        AND indexname NOT LIKE '%_pkey'
+      `;
+      
+      const results = await this.executeSQL(sql);
+      unusedIndexes.push(...results);
+    }
+
+    return unusedIndexes;
+  }
+
+  async analyzeIndexUsage() {
+    const indexUsage = {
+      highUsage: [],
+      mediumUsage: [],
+      lowUsage: [],
+      unused: []
+    };
+
+    const allIndexes = await this.getAllIndexes();
+    
+    for (const index of allIndexes) {
+      const usage = await this.getIndexUsageStats(index);
+      
+      if (usage.reads === 0) {
+        indexUsage.unused.push(index);
+      } else if (usage.reads > 10000) {
+        indexUsage.highUsage.push(index);
+      } else if (usage.reads > 1000) {
+        indexUsage.mediumUsage.push(index);
+      } else {
+        indexUsage.lowUsage.push(index);
+      }
+    }
+
+    return indexUsage;
+  }
+}
+```
+
+### Step 4: Connection and Memory Optimization
+
+#### Connection Pool Management:
+
+**Connection Pool Optimizer:**
+```javascript
+// connection-pool-optimizer.js
+class ConnectionPoolOptimizer {
+  constructor(databaseConfig) {
+    this.config = databaseConfig;
+    this.poolStats = {
+      activeConnections: 0,
+      idleConnections: 0,
+      waitingRequests: 0,
+      totalConnections: 0
+    };
+  }
+
+  optimizeConnectionPool() {
+    const optimization = {
+      currentConfig: this.getCurrentPoolConfig(),
+      recommendedConfig: this.calculateOptimalPoolSize(),
+      improvements: []
+    };
+
+    // Analyze current pool performance
+    const poolAnalysis = this.analyzePoolPerformance();
+    
+    // Generate recommendations
+    optimization.improvements = this.generatePoolRecommendations(poolAnalysis);
+    
+    return optimization;
+  }
+
+  calculateOptimalPoolSize() {
+    // Calculate based on application characteristics
+    const cpuCores = require('os').cpus().length;
+    const expectedConcurrentUsers = this.estimateConcurrentUsers();
+    const averageQueryTime = this.getAverageQueryTime();
+    
+    // Formula: (CPU cores * 2) + effective_spindle_count
+    // For cloud databases, use: CPU cores * 2
+    const basePoolSize = cpuCores * 2;
+    
+    // Adjust based on query patterns
+    let recommendedSize = basePoolSize;
+    
+    if (averageQueryTime > 1000) { // Slow queries
+      recommendedSize = Math.min(basePoolSize * 1.5, 50);
+    } else if (averageQueryTime < 100) { // Fast queries
+      recommendedSize = Math.max(basePoolSize * 0.8, 5);
+    }
+
+    return {
+      min: Math.max(2, Math.floor(recommendedSize * 0.2)),
+      max: Math.min(50, recommendedSize),
+      idle: Math.floor(recommendedSize * 0.3),
+      acquire: 30000, // 30 seconds
+      timeout: 60000, // 60 seconds
+      reapInterval: 1000,
+      createRetryInterval: 200
+    };
+  }
+
+  setupOptimalConnectionPool() {
+    const config = this.calculateOptimalPoolSize();
+    
+    if (this.databaseType === 'postgresql') {
+      return this.setupPostgreSQLPool(config);
+    } else if (this.databaseType === 'mysql') {
+      return this.setupMySQLPool(config);
+    } else if (this.databaseType === 'mongodb') {
+      return this.setupMongoDBPool(config);
+    }
+  }
+
+  setupPostgreSQLPool(config) {
+    const { Pool } = require('pg');
+    
+    const pool = new Pool({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      min: config.min,
+      max: config.max,
+      idleTimeoutMillis: config.idle,
+      connectionTimeoutMillis: config.acquire,
+      statement_timeout: config.timeout,
+      query_timeout: config.timeout,
+      application_name: 'optimized_app',
+      // SSL configuration
+      ssl: process.env.NODE_ENV === 'production' ? {
+        rejectUnauthorized: false
+      } : false
+    });
+
+    // Monitor pool events
+    pool.on('connect', (client) => {
+      this.poolStats.activeConnections++;
+      console.log('New client connected');
+    });
+
+    pool.on('remove', (client) => {
+      this.poolStats.activeConnections--;
+      console.log('Client removed');
+    });
+
+    pool.on('error', (err, client) => {
+      console.error('Pool error:', err);
+    });
+
+    return pool;
+  }
+
+  setupMongoDBPool(config) {
+    const { MongoClient } = require('mongodb');
+    
+    const options = {
+      minPoolSize: config.min,
+      maxPoolSize: config.max,
+      maxIdleTimeMS: config.idle,
+      serverSelectionTimeoutMS: config.acquire,
+      socketTimeoutMS: config.timeout,
+      // Connection management
+      retryWrites: true,
+      retryReads: true,
+      readPreference: 'secondaryPreferred',
+      // Monitoring
+      monitorCommands: true
+    };
+
+    return MongoClient.connect(process.env.MONGODB_URI, options);
+  }
+
+  monitorConnectionPool() {
+    setInterval(() => {
+      const stats = this.getPoolStats();
+      
+      // Log warnings for potential issues
+      if (stats.waitingRequests > 0) {
+        console.warn(`Connection pool bottleneck: ${stats.waitingRequests} waiting requests`);
+      }
+      
+      if (stats.activeConnections / stats.totalConnections > 0.9) {
+        console.warn('Connection pool near capacity');
+      }
+      
+      // Auto-scale if needed
+      this.autoScalePool(stats);
+      
+    }, 30000); // Check every 30 seconds
+  }
+
+  autoScalePool(stats) {
+    const utilizationRate = stats.activeConnections / stats.totalConnections;
+    
+    if (utilizationRate > 0.8 && stats.waitingRequests > 5) {
+      // Increase pool size temporarily
+      this.temporarilyIncreasePoolSize();
+    } else if (utilizationRate < 0.3 && stats.idleConnections > 10) {
+      // Decrease pool size to save resources
+      this.temporarilyDecreasePoolSize();
+    }
+  }
+}
+```
+
+#### Memory and Caching Optimization:
+
+**Database Caching System:**
+```javascript
+// database-cache-optimizer.js
+class DatabaseCacheOptimizer {
+  constructor() {
+    this.cacheStats = {
+      hits: 0,
+      misses: 0,
+      evictions: 0,
+      memory: 0
+    };
+  }
+
+  setupOptimalCaching() {
+    const cacheConfig = this.calculateOptimalCacheConfig();
+    
+    // Setup Redis for query result caching
+    this.setupRedisCache(cacheConfig.redis);
+    
+    // Setup application-level caching
+    this.setupApplicationCache(cacheConfig.application);
+    
+    // Setup database-level caching
+    this.optimizeDatabaseCache(cacheConfig.database);
+    
+    return cacheConfig;
+  }
+
+  calculateOptimalCacheConfig() {
+    const availableMemory = this.getAvailableMemory();
+    const queryPatterns = this.analyzeQueryPatterns();
+    
+    return {
+      redis: {
+        maxMemory: Math.floor(availableMemory * 0.3), // 30% for Redis
+        evictionPolicy: 'allkeys-lru',
+        ttl: this.calculateOptimalTTL(queryPatterns)
+      },
+      application: {
+        maxSize: Math.floor(availableMemory * 0.1), // 10% for app cache
+        ttl: 300000 // 5 minutes
+      },
+      database: {
+        bufferPool: Math.floor(availableMemory * 0.4), // 40% for DB buffer
+        queryCache: Math.floor(availableMemory * 0.1) // 10% for query cache
+      }
+    };
+  }
+
+  setupRedisCache(config) {
+    const Redis = require('redis');
+    
+    const client = Redis.createClient({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: process.env.REDIS_PORT || 6379,
+      password: process.env.REDIS_PASSWORD,
+      db: 0,
+      retryDelayOnFailover: 100,
+      enableReadyCheck: true,
+      maxRetriesPerRequest: 3
+    });
+
+    // Configure memory settings
+    client.config('SET', 'maxmemory', `${config.maxMemory}mb`);
+    client.config('SET', 'maxmemory-policy', config.evictionPolicy);
+
+    // Setup cache wrapper
+    this.cache = {
+      get: async (key) => {
+        try {
+          const result = await client.get(key);
+          if (result) {
+            this.cacheStats.hits++;
+            return JSON.parse(result);
+          } else {
+            this.cacheStats.misses++;
+            return null;
+          }
+        } catch (error) {
+          console.error('Cache get error:', error);
+          return null;
+        }
+      },
+      
+      set: async (key, value, ttl = config.ttl) => {
+        try {
+          await client.setex(key, ttl, JSON.stringify(value));
+        } catch (error) {
+          console.error('Cache set error:', error);
+        }
+      },
+      
+      del: async (key) => {
+        try {
+          await client.del(key);
+        } catch (error) {
+          console.error('Cache delete error:', error);
+        }
+      }
+    };
+
+    return client;
+  }
+
+  createCacheMiddleware() {
+    return (req, res, next) => {
+      // Only cache GET requests
+      if (req.method !== 'GET') {
+        return next();
+      }
+
+      const cacheKey = this.generateCacheKey(req);
+      
+      this.cache.get(cacheKey).then(cachedResult => {
+        if (cachedResult) {
+          // Cache hit - return cached result
+          res.json(cachedResult);
+        } else {
+          // Cache miss - continue to database
+          const originalSend = res.json;
+          res.json = (data) => {
+            // Cache the result before sending
+            this.cache.set(cacheKey, data);
+            originalSend.call(res, data);
+          };
+          next();
+        }
+      }).catch(error => {
+        console.error('Cache middleware error:', error);
+        next();
+      });
+    };
+  }
+
+  generateCacheKey(req) {
+    // Create unique cache key based on request
+    const baseKey = `${req.method}:${req.path}`;
+    const queryString = JSON.stringify(req.query);
+    const userContext = req.user ? req.user.id : 'anonymous';
+    
+    return `${baseKey}:${this.hashString(queryString)}:${userContext}`;
+  }
+
+  setupQueryResultCaching() {
+    // Wrapper for database queries with automatic caching
+    return {
+      cachedQuery: async (sql, params, options = {}) => {
+        const cacheKey = this.generateQueryCacheKey(sql, params);
+        const ttl = options.ttl || 300; // 5 minutes default
+        
+        // Check cache first
+        const cachedResult = await this.cache.get(cacheKey);
+        if (cachedResult && !options.skipCache) {
+          return cachedResult;
+        }
+        
+        // Execute query
+        const result = await this.executeQuery(sql, params);
+        
+        // Cache result if cacheable
+        if (this.isCacheable(sql, result)) {
+          await this.cache.set(cacheKey, result, ttl);
+        }
+        
+        return result;
+      },
+      
+      invalidateCache: async (pattern) => {
+        // Invalidate cache entries matching pattern
+        const keys = await this.cache.keys(pattern);
+        if (keys.length > 0) {
+          await this.cache.del(...keys);
+        }
+      }
+    };
+  }
+
+  isCacheable(sql, result) {
+    // Don't cache if result is too large
+    if (JSON.stringify(result).length > 1024 * 1024) { // 1MB
+      return false;
+    }
+    
+    // Don't cache queries with time-sensitive data
+    if (sql.toLowerCase().includes('now()') || sql.toLowerCase().includes('current_timestamp')) {
+      return false;
+    }
+    
+    // Don't cache empty results
+    if (!result || (Array.isArray(result) && result.length === 0)) {
+      return false;
+    }
+    
+    return true;
+  }
+}
+```
+
+### Step 5: Database Maintenance and Monitoring
+
+#### Automated Database Maintenance:
+
+**Database Maintenance Scheduler:**
+```javascript
+// database-maintenance.js
+class DatabaseMaintenance {
+  constructor() {
+    this.maintenanceTasks = [
+      { name: 'analyze_tables', frequency: 'daily', priority: 'high' },
+      { name: 'vacuum_tables', frequency: 'weekly', priority: 'medium' },
+      { name: 'reindex_tables', frequency: 'monthly', priority: 'low' },
+      { name: 'cleanup_logs', frequency: 'daily', priority: 'medium' },
+      { name: 'backup_database', frequency: 'daily', priority: 'critical' }
+    ];
+  }
+
+  setupMaintenanceSchedule() {
+    const cron = require('node-cron');
+    
+    // Daily maintenance at 2 AM
+    cron.schedule('0 2 * * *', () => {
+      this.runDailyMaintenance();
+    });
+    
+    // Weekly maintenance on Sunday at 3 AM
+    cron.schedule('0 3 * * 0', () => {
+      this.runWeeklyMaintenance();
+    });
+    
+    // Monthly maintenance on 1st day at 4 AM
+    cron.schedule('0 4 1 * *', () => {
+      this.runMonthlyMaintenance();
+    });
+  }
+
+  async runDailyMaintenance() {
+    console.log('Starting daily database maintenance...');
+    
+    try {
+      // Update table statistics
+      await this.updateTableStatistics();
+      
+      // Clean up old logs
+      await this.cleanupOldLogs();
+      
+      // Backup database
+      await this.backupDatabase();
+      
+      // Check for fragmentation
+      await this.checkFragmentation();
+      
+      console.log('Daily maintenance completed successfully');
+    } catch (error) {
+      console.error('Daily maintenance failed:', error);
+      await this.sendMaintenanceAlert('daily', error);
+    }
+  }
+
+  async updateTableStatistics() {
+    if (this.databaseType === 'postgresql') {
+      await this.executeSQL('ANALYZE;');
+    } else if (this.databaseType === 'mysql') {
+      const tables = await this.getAllTables();
+      for (const table of tables) {
+        await this.executeSQL(`ANALYZE TABLE ${table.name};`);
+      }
+    }
+  }
+
+  async cleanupOldLogs() {
+    // Remove logs older than 30 days
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - 30);
+    
+    if (this.databaseType === 'postgresql') {
+      await this.executeSQL(`
+        DELETE FROM application_logs 
+        WHERE created_at < $1
+      `, [cutoffDate]);
+    }
+    
+    // Clean up query logs
+    await this.executeSQL(`
+      DELETE FROM slow_query_log 
+      WHERE start_time < $1
+    `, [cutoffDate]);
+  }
+
+  async checkFragmentation() {
+    const fragmentedTables = [];
+    
+    if (this.databaseType === 'postgresql') {
+      const result = await this.executeSQL(`
+        SELECT 
+          schemaname,
+          tablename,
+          n_dead_tup,
+          n_live_tup,
+          CASE 
+            WHEN n_live_tup > 0 
+            THEN (n_dead_tup::float / n_live_tup::float) * 100 
+            ELSE 0 
+          END as fragmentation_percent
+        FROM pg_stat_user_tables
+        WHERE n_dead_tup > 1000
+        ORDER BY fragmentation_percent DESC;
+      `);
+      
+      fragmentedTables.push(...result.filter(table => table.fragmentation_percent > 20));
+    }
+    
+    // Schedule vacuum for highly fragmented tables
+    for (const table of fragmentedTables) {
+      await this.scheduleVacuum(table);
+    }
+    
+    return fragmentedTables;
+  }
+
+  async scheduleVacuum(table) {
+    console.log(`Scheduling vacuum for fragmented table: ${table.tablename}`);
+    
+    if (this.databaseType === 'postgresql') {
+      // Use VACUUM ANALYZE for better performance
+      await this.executeSQL(`VACUUM ANALYZE ${table.schemaname}.${table.tablename};`);
+    }
+  }
+}
+```
+
+#### Database Performance Monitoring:
+
+**Real-time Performance Monitor:**
+```javascript
+// database-monitor.js
+class DatabaseMonitor {
+  constructor() {
+    this.metrics = {
+      queryTimes: [],
+      connectionCount: 0,
+      cacheHitRate: 0,
+      diskUsage: 0,
+      memoryUsage: 0
+    };
+    
+    this.alerts = {
+      slowQuery: 1000, // 1 second
+      highConnections: 80, // 80% of max
+      lowCacheHit: 0.8, // 80%
+      highDiskUsage: 0.9 // 90%
+    };
+  }
+
+  startMonitoring() {
+    // Monitor every 30 seconds
+    setInterval(() => {
+      this.collectMetrics();
+    }, 30000);
+    
+    // Generate reports every hour
+    setInterval(() => {
+      this.generatePerformanceReport();
+    }, 3600000);
+  }
+
+  async collectMetrics() {
+    try {
+      // Collect query performance metrics
+      this.metrics.queryTimes = await this.getRecentQueryTimes();
+      
+      // Collect connection metrics
+      this.metrics.connectionCount = await this.getConnectionCount();
+      
+      // Collect cache metrics
+      this.metrics.cacheHitRate = await this.getCacheHitRate();
+      
+      // Collect system metrics
+      this.metrics.diskUsage = await this.getDiskUsage();
+      this.metrics.memoryUsage = await this.getMemoryUsage();
+      
+      // Check for alerts
+      await this.checkAlerts();
+      
+    } catch (error) {
+      console.error('Error collecting metrics:', error);
+    }
+  }
+
+  async checkAlerts() {
+    const alerts = [];
+    
+    // Check for slow queries
+    const avgQueryTime = this.calculateAverageQueryTime();
+    if (avgQueryTime > this.alerts.slowQuery) {
+      alerts.push({
+        type: 'slow_queries',
+        severity: 'warning',
+        message: `Average query time: ${avgQueryTime}ms (threshold: ${this.alerts.slowQuery}ms)`,
+        value: avgQueryTime
+      });
+    }
+    
+    // Check connection count
+    const connectionUtilization = this.metrics.connectionCount / this.maxConnections;
+    if (connectionUtilization > this.alerts.highConnections) {
+      alerts.push({
+        type: 'high_connections',
+        severity: 'critical',
+        message: `Connection utilization: ${(connectionUtilization * 100).toFixed(1)}%`,
+        value: connectionUtilization
+      });
+    }
+    
+    // Check cache hit rate
+    if (this.metrics.cacheHitRate < this.alerts.lowCacheHit) {
+      alerts.push({
+        type: 'low_cache_hit',
+        severity: 'warning',
+        message: `Cache hit rate: ${(this.metrics.cacheHitRate * 100).toFixed(1)}%`,
+        value: this.metrics.cacheHitRate
+      });
+    }
+    
+    // Send alerts if any
+    if (alerts.length > 0) {
+      await this.sendAlerts(alerts);
+    }
+  }
+
+  generatePerformanceReport() {
+    const report = {
+      timestamp: new Date(),
+      summary: {
+        averageQueryTime: this.calculateAverageQueryTime(),
+        peakConnections: Math.max(...this.connectionHistory),
+        cacheEfficiency: this.metrics.cacheHitRate,
+        systemHealth: this.calculateHealthScore()
+      },
+      recommendations: this.generateRecommendations(),
+      trends: this.analyzeTrends()
+    };
+    
+    // Save report
+    this.savePerformanceReport(report);
+    
+    // Send to monitoring dashboard
+    this.sendToMonitoringDashboard(report);
+    
+    return report;
+  }
+
+  generateRecommendations() {
+    const recommendations = [];
+    
+    if (this.metrics.cacheHitRate < 0.8) {
+      recommendations.push({
+        type: 'cache_optimization',
+        priority: 'high',
+        description: 'Cache hit rate is below 80%. Consider increasing cache size or optimizing cache keys.',
+        action: 'Increase Redis memory allocation and review caching strategy'
+      });
+    }
+    
+    if (this.calculateAverageQueryTime() > 500) {
+      recommendations.push({
+        type: 'query_optimization',
+        priority: 'high',
+        description: 'Average query time is above 500ms. Review slow queries and add missing indexes.',
+        action: 'Run query optimization analysis and implement suggested indexes'
+      });
+    }
+    
+    return recommendations;
+  }
+}
+```
+
+## Database Optimization Checklist
+
+### ✅ Performance Assessment Complete When:
+- [ ] Slow queries identified and analyzed
+- [ ] Index efficiency evaluated
+- [ ] Connection pool performance measured
+- [ ] Memory usage patterns analyzed
+- [ ] Storage optimization opportunities identified
+
+### ✅ Query Optimization Complete When:
+- [ ] Missing indexes created
+- [ ] Slow queries optimized
+- [ ] Query execution plans improved
+- [ ] Unnecessary queries eliminated
+- [ ] Query result caching implemented
+
+### ✅ Infrastructure Optimization Complete When:
+- [ ] Connection pool properly sized
+- [ ] Memory allocation optimized
+- [ ] Caching strategy implemented
+- [ ] Database configuration tuned
+- [ ] Monitoring and alerting active
+
+### ✅ Maintenance Automation Complete When:
+- [ ] Automated maintenance scheduled
+- [ ] Performance monitoring active
+- [ ] Backup procedures automated
+- [ ] Log cleanup automated
+- [ ] Health checks implemented
+
+### ✅ Monitoring and Alerting Complete When:
+- [ ] Real-time performance monitoring
+- [ ] Alert thresholds configured
+- [ ] Performance reports automated
+- [ ] Trend analysis implemented
+- [ ] Capacity planning active
+
+## Common Database Issues and Solutions
+
+### Issue: Slow Query Performance
+**Solutions:**
+1. Add missing indexes on frequently queried columns
+2. Optimize WHERE clauses and JOIN conditions
+3. Implement query result caching
+4. Review and optimize database schema
+5. Use query execution plan analysis
+
+### Issue: High Connection Usage
+**Solutions:**
+1. Optimize connection pool configuration
+2. Implement connection pooling if not present
+3. Review application connection patterns
+4. Add connection monitoring and alerting
+5. Implement connection retry logic
+
+### Issue: Poor Cache Performance
+**Solutions:**
+1. Increase cache memory allocation
+2. Optimize cache key strategies
+3. Implement cache warming procedures
+4. Review cache TTL settings
+5. Add cache performance monitoring
+
+### Issue: Database Fragmentation
+**Solutions:**
+1. Schedule regular VACUUM operations
+2. Implement automated maintenance tasks
+3. Monitor table fragmentation levels
+4. Optimize data insertion patterns
+5. Consider table partitioning for large tables
+
+## Usage Instructions
+
+To optimize database performance comprehensively, ask:
+"Optimize database performance for this project using @database-optimizer.mdc, focusing on [specific area like query performance, connection pooling, or caching strategy]."
+
+This will provide a complete database optimization plan tailored to your project's specific performance needs and usage patterns.
+
