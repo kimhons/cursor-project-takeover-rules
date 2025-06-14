@@ -1,0 +1,930 @@
+---
+description: "Optimize existing code and systems for better performance automatically"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Performance Optimizer
+
+You are helping someone with no coding experience optimize their project for better performance, faster loading times, and improved user experience.
+
+## Performance Optimization Process
+
+### Step 1: Understanding Performance Optimization
+
+#### What is Performance Optimization?
+Think of performance optimization like tuning a car engine:
+- **Before**: Car runs but uses too much gas, makes noise, runs slowly
+- **After**: Car runs smoothly, efficiently, quietly, and faster
+- **Process**: Identify what's slowing it down, fix those issues systematically
+
+#### Why Performance Matters:
+- **User Experience**: Fast apps feel more professional and responsive
+- **User Retention**: Slow apps cause users to leave and never return
+- **Search Rankings**: Google favors faster websites in search results
+- **Cost Savings**: Efficient apps use fewer server resources
+- **Competitive Advantage**: Speed gives you an edge over slower competitors
+
+#### Performance Impact Statistics:
+- 1 second delay = 7% reduction in conversions
+- 3 second load time = 32% of users leave
+- Mobile users expect pages to load in under 2 seconds
+- 47% of users expect pages to load in under 2 seconds
+
+### Step 2: Performance Analysis and Measurement
+
+#### Performance Audit Checklist:
+
+**Frontend Performance Analysis:**
+```bash
+# Install performance analysis tools
+npm install --save-dev lighthouse webpack-bundle-analyzer
+
+# Run Lighthouse audit
+npx lighthouse http://localhost:3000 --output=html --output-path=./performance-report.html
+
+# Analyze bundle size
+npx webpack-bundle-analyzer build/static/js/*.js
+```
+
+**Key Metrics to Track:**
+```markdown
+## Performance Baseline Measurement
+
+### Core Web Vitals:
+- **Largest Contentful Paint (LCP)**: [Current: X seconds] Target: < 2.5s
+- **First Input Delay (FID)**: [Current: X ms] Target: < 100ms  
+- **Cumulative Layout Shift (CLS)**: [Current: X] Target: < 0.1
+
+### Loading Performance:
+- **First Contentful Paint**: [Current: X seconds] Target: < 1.8s
+- **Time to Interactive**: [Current: X seconds] Target: < 3.5s
+- **Total Blocking Time**: [Current: X ms] Target: < 200ms
+
+### Resource Metrics:
+- **Total Page Size**: [Current: X MB] Target: < 3MB
+- **JavaScript Bundle Size**: [Current: X KB] Target: < 500KB
+- **Image Sizes**: [Current: X MB] Target: Optimized
+- **Number of HTTP Requests**: [Current: X] Target: < 50
+
+### User Experience Metrics:
+- **Page Load Time**: [Current: X seconds] Target: < 3s
+- **Time to First Byte**: [Current: X ms] Target: < 600ms
+- **Speed Index**: [Current: X] Target: < 3.4s
+```
+
+#### Automated Performance Monitoring:
+
+**Continuous Performance Testing:**
+```javascript
+// performance-monitor.js
+class PerformanceMonitor {
+  constructor() {
+    this.metrics = {
+      pageLoadTime: [],
+      apiResponseTime: [],
+      renderTime: [],
+      memoryUsage: []
+    };
+  }
+
+  measurePageLoad() {
+    const startTime = performance.now();
+    
+    window.addEventListener('load', () => {
+      const loadTime = performance.now() - startTime;
+      this.metrics.pageLoadTime.push(loadTime);
+      
+      if (loadTime > 3000) {
+        console.warn(`Slow page load detected: ${loadTime}ms`);
+        this.reportSlowLoad(loadTime);
+      }
+    });
+  }
+
+  measureAPICall(url, startTime) {
+    return (response) => {
+      const responseTime = performance.now() - startTime;
+      this.metrics.apiResponseTime.push(responseTime);
+      
+      if (responseTime > 1000) {
+        console.warn(`Slow API call to ${url}: ${responseTime}ms`);
+      }
+      
+      return response;
+    };
+  }
+
+  generateReport() {
+    return {
+      averagePageLoad: this.average(this.metrics.pageLoadTime),
+      averageAPIResponse: this.average(this.metrics.apiResponseTime),
+      slowestPages: this.findSlowest(this.metrics.pageLoadTime),
+      recommendations: this.generateRecommendations()
+    };
+  }
+}
+```
+
+### Step 3: Frontend Performance Optimization
+
+#### Image Optimization (Often 50-70% of page weight):
+
+**Automatic Image Optimization:**
+```javascript
+// image-optimizer.js
+class ImageOptimizer {
+  optimizeImages() {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+      // Add lazy loading
+      img.loading = 'lazy';
+      
+      // Optimize based on device
+      this.addResponsiveImages(img);
+      
+      // Add WebP support
+      this.addWebPSupport(img);
+    });
+  }
+
+  addResponsiveImages(img) {
+    const src = img.src;
+    const sizes = [400, 800, 1200, 1600];
+    
+    let srcset = sizes.map(size => 
+      `${src.replace('.jpg', `_${size}w.jpg`)} ${size}w`
+    ).join(', ');
+    
+    img.srcset = srcset;
+    img.sizes = '(max-width: 400px) 400px, (max-width: 800px) 800px, 1200px';
+  }
+
+  addWebPSupport(img) {
+    if (this.supportsWebP()) {
+      const webpSrc = img.src.replace(/\.(jpg|jpeg|png)$/, '.webp');
+      
+      const picture = document.createElement('picture');
+      const webpSource = document.createElement('source');
+      webpSource.srcset = webpSrc;
+      webpSource.type = 'image/webp';
+      
+      img.parentNode.insertBefore(picture, img);
+      picture.appendChild(webpSource);
+      picture.appendChild(img);
+    }
+  }
+}
+```
+
+**Image Optimization Checklist:**
+```markdown
+## Image Optimization Tasks
+
+### Automatic Optimizations:
+- [ ] Enable lazy loading for all images
+- [ ] Convert images to WebP format
+- [ ] Generate responsive image sizes
+- [ ] Compress images without quality loss
+- [ ] Remove unused images from bundle
+
+### Manual Optimizations:
+- [ ] Replace large images with optimized versions
+- [ ] Use SVG for icons and simple graphics
+- [ ] Implement progressive JPEG for large photos
+- [ ] Add proper alt text for accessibility
+- [ ] Use CSS sprites for small icons
+
+### Tools to Use:
+- ImageOptim (Mac) or TinyPNG (Web) for compression
+- Squoosh.app for format conversion
+- SVGO for SVG optimization
+```
+
+#### JavaScript Bundle Optimization:
+
+**Code Splitting Implementation:**
+```javascript
+// App.js - Implement lazy loading for routes
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Lazy load components
+const Home = lazy(() => import('./pages/Home'));
+const Products = lazy(() => import('./pages/Products'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Admin = lazy(() => import('./pages/Admin'));
+
+function App() {
+  return (
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+**Bundle Analysis and Optimization:**
+```bash
+# Analyze what's in your bundle
+npx webpack-bundle-analyzer build/static/js/*.js
+
+# Common optimizations to implement:
+# 1. Remove unused dependencies
+npx depcheck
+
+# 2. Update webpack configuration for better splitting
+# 3. Use dynamic imports for large libraries
+# 4. Implement tree shaking to remove unused code
+```
+
+#### CSS Optimization:
+
+**CSS Performance Improvements:**
+```css
+/* Critical CSS - inline in HTML head */
+.critical-above-fold {
+  /* Only styles for content visible immediately */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Non-critical CSS - load asynchronously */
+.non-critical {
+  /* Everything else */
+}
+```
+
+**CSS Optimization Checklist:**
+```markdown
+## CSS Performance Tasks
+
+### Automatic Optimizations:
+- [ ] Minify CSS files
+- [ ] Remove unused CSS (PurgeCSS)
+- [ ] Combine multiple CSS files
+- [ ] Use CSS compression (gzip)
+- [ ] Implement critical CSS inlining
+
+### Manual Optimizations:
+- [ ] Optimize CSS selectors for performance
+- [ ] Use CSS Grid/Flexbox instead of floats
+- [ ] Minimize use of expensive properties (box-shadow, gradients)
+- [ ] Use CSS variables for consistent theming
+- [ ] Implement CSS containment for better rendering
+```
+
+### Step 4: Backend Performance Optimization
+
+#### Database Query Optimization:
+
+**Database Performance Analysis:**
+```javascript
+// database-optimizer.js
+class DatabaseOptimizer {
+  async analyzeSlowQueries() {
+    // For MongoDB
+    const slowQueries = await db.runCommand({
+      profile: 2,
+      slowms: 100
+    });
+
+    // For SQL databases
+    const sqlSlowQueries = await db.query(`
+      SELECT query, avg_timer_wait, count_star 
+      FROM performance_schema.events_statements_summary_by_digest 
+      WHERE avg_timer_wait > 1000000000
+      ORDER BY avg_timer_wait DESC
+      LIMIT 10
+    `);
+
+    return this.generateOptimizationPlan(slowQueries);
+  }
+
+  generateOptimizationPlan(slowQueries) {
+    return slowQueries.map(query => ({
+      query: query.command,
+      currentTime: query.millis,
+      recommendations: this.getQueryRecommendations(query),
+      estimatedImprovement: this.estimateImprovement(query)
+    }));
+  }
+
+  getQueryRecommendations(query) {
+    const recommendations = [];
+    
+    if (!query.indexUsed) {
+      recommendations.push('Add database index for frequently queried fields');
+    }
+    
+    if (query.docsExamined > query.docsReturned * 10) {
+      recommendations.push('Query examines too many documents - optimize filters');
+    }
+    
+    if (query.executionTimeMillis > 1000) {
+      recommendations.push('Consider pagination or result limiting');
+    }
+    
+    return recommendations;
+  }
+}
+```
+
+**Database Optimization Checklist:**
+```markdown
+## Database Performance Tasks
+
+### Index Optimization:
+- [ ] Add indexes for frequently queried fields
+- [ ] Remove unused indexes that slow down writes
+- [ ] Use compound indexes for multi-field queries
+- [ ] Monitor index usage and effectiveness
+
+### Query Optimization:
+- [ ] Optimize slow queries (> 100ms)
+- [ ] Implement query result caching
+- [ ] Use database query profiling tools
+- [ ] Optimize JOIN operations and relationships
+
+### Data Structure Optimization:
+- [ ] Normalize database schema appropriately
+- [ ] Implement data archiving for old records
+- [ ] Optimize data types and field sizes
+- [ ] Use database-specific optimization features
+```
+
+#### API Performance Optimization:
+
+**API Response Optimization:**
+```javascript
+// api-optimizer.js
+class APIOptimizer {
+  // Implement response caching
+  setupCaching() {
+    const cache = new Map();
+    
+    return (req, res, next) => {
+      const key = req.originalUrl;
+      const cachedResponse = cache.get(key);
+      
+      if (cachedResponse) {
+        return res.json(cachedResponse);
+      }
+      
+      // Override res.json to cache response
+      const originalJson = res.json;
+      res.json = function(data) {
+        cache.set(key, data);
+        // Set cache expiration
+        setTimeout(() => cache.delete(key), 300000); // 5 minutes
+        return originalJson.call(this, data);
+      };
+      
+      next();
+    };
+  }
+
+  // Implement response compression
+  setupCompression() {
+    const compression = require('compression');
+    return compression({
+      filter: (req, res) => {
+        if (req.headers['x-no-compression']) {
+          return false;
+        }
+        return compression.filter(req, res);
+      },
+      level: 6,
+      threshold: 1024
+    });
+  }
+
+  // Implement request rate limiting
+  setupRateLimit() {
+    const rateLimit = require('express-rate-limit');
+    return rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100, // limit each IP to 100 requests per windowMs
+      message: 'Too many requests from this IP'
+    });
+  }
+}
+```
+
+### Step 5: Caching Strategies
+
+#### Multi-Level Caching Implementation:
+
+**Browser Caching:**
+```javascript
+// cache-strategy.js
+class CacheStrategy {
+  setupBrowserCaching(app) {
+    // Static assets caching
+    app.use('/static', express.static('public', {
+      maxAge: '1y', // Cache for 1 year
+      etag: true,
+      lastModified: true
+    }));
+
+    // API response caching headers
+    app.use('/api', (req, res, next) => {
+      if (req.method === 'GET') {
+        res.set('Cache-Control', 'public, max-age=300'); // 5 minutes
+      }
+      next();
+    });
+  }
+
+  setupServiceWorkerCaching() {
+    // Service worker for offline caching
+    const cacheStrategy = `
+      const CACHE_NAME = 'app-cache-v1';
+      const urlsToCache = [
+        '/',
+        '/static/css/main.css',
+        '/static/js/main.js',
+        '/api/essential-data'
+      ];
+
+      self.addEventListener('install', event => {
+        event.waitUntil(
+          caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+        );
+      });
+
+      self.addEventListener('fetch', event => {
+        event.respondWith(
+          caches.match(event.request)
+            .then(response => response || fetch(event.request))
+        );
+      });
+    `;
+    
+    return cacheStrategy;
+  }
+}
+```
+
+**Redis Caching for APIs:**
+```javascript
+// redis-cache.js
+const redis = require('redis');
+const client = redis.createClient();
+
+class RedisCache {
+  async get(key) {
+    try {
+      const data = await client.get(key);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Cache get error:', error);
+      return null;
+    }
+  }
+
+  async set(key, data, expiration = 3600) {
+    try {
+      await client.setex(key, expiration, JSON.stringify(data));
+    } catch (error) {
+      console.error('Cache set error:', error);
+    }
+  }
+
+  middleware() {
+    return async (req, res, next) => {
+      const key = `cache:${req.originalUrl}`;
+      const cached = await this.get(key);
+      
+      if (cached) {
+        return res.json(cached);
+      }
+      
+      // Store original res.json
+      const originalJson = res.json;
+      res.json = (data) => {
+        this.set(key, data);
+        return originalJson.call(res, data);
+      };
+      
+      next();
+    };
+  }
+}
+```
+
+### Step 6: Content Delivery Network (CDN) Setup
+
+#### CDN Implementation Guide:
+
+**CDN Setup for Static Assets:**
+```javascript
+// cdn-setup.js
+class CDNSetup {
+  setupCloudflare() {
+    return {
+      steps: [
+        '1. Sign up for Cloudflare account',
+        '2. Add your domain to Cloudflare',
+        '3. Update nameservers to Cloudflare',
+        '4. Enable CDN and optimization features',
+        '5. Configure caching rules for static assets'
+      ],
+      benefits: [
+        'Global content delivery',
+        'Automatic image optimization',
+        'DDoS protection',
+        'SSL certificate included',
+        'Analytics and monitoring'
+      ]
+    };
+  }
+
+  setupAWSCloudFront() {
+    return {
+      configuration: {
+        origins: [{
+          domainName: 'your-app.herokuapp.com',
+          customOriginConfig: {
+            httpPort: 80,
+            httpsPort: 443,
+            originProtocolPolicy: 'https-only'
+          }
+        }],
+        defaultCacheBehavior: {
+          targetOriginId: 'your-app-origin',
+          viewerProtocolPolicy: 'redirect-to-https',
+          cachePolicyId: 'managed-caching-optimized'
+        }
+      }
+    };
+  }
+}
+```
+
+### Step 7: Performance Monitoring and Alerts
+
+#### Real-Time Performance Monitoring:
+
+**Performance Dashboard:**
+```javascript
+// performance-dashboard.js
+class PerformanceDashboard {
+  constructor() {
+    this.metrics = {
+      responseTime: [],
+      errorRate: [],
+      throughput: [],
+      userSatisfaction: []
+    };
+  }
+
+  trackMetrics() {
+    // Track Core Web Vitals
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (entry.entryType === 'largest-contentful-paint') {
+          this.recordMetric('LCP', entry.startTime);
+        }
+        if (entry.entryType === 'first-input') {
+          this.recordMetric('FID', entry.processingStart - entry.startTime);
+        }
+        if (entry.entryType === 'layout-shift') {
+          this.recordMetric('CLS', entry.value);
+        }
+      }
+    }).observe({entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift']});
+  }
+
+  generateAlerts() {
+    const currentMetrics = this.getCurrentMetrics();
+    
+    if (currentMetrics.LCP > 2500) {
+      this.sendAlert('LCP Alert', `LCP is ${currentMetrics.LCP}ms (target: <2500ms)`);
+    }
+    
+    if (currentMetrics.FID > 100) {
+      this.sendAlert('FID Alert', `FID is ${currentMetrics.FID}ms (target: <100ms)`);
+    }
+    
+    if (currentMetrics.CLS > 0.1) {
+      this.sendAlert('CLS Alert', `CLS is ${currentMetrics.CLS} (target: <0.1)`);
+    }
+  }
+
+  createDashboard() {
+    return `
+      <div class="performance-dashboard">
+        <h2>Performance Metrics</h2>
+        
+        <div class="metric-card">
+          <h3>Core Web Vitals</h3>
+          <div class="metric">LCP: ${this.metrics.LCP}ms</div>
+          <div class="metric">FID: ${this.metrics.FID}ms</div>
+          <div class="metric">CLS: ${this.metrics.CLS}</div>
+        </div>
+        
+        <div class="metric-card">
+          <h3>Loading Performance</h3>
+          <div class="metric">Page Load: ${this.metrics.pageLoad}ms</div>
+          <div class="metric">Time to Interactive: ${this.metrics.TTI}ms</div>
+          <div class="metric">First Contentful Paint: ${this.metrics.FCP}ms</div>
+        </div>
+        
+        <div class="metric-card">
+          <h3>Resource Usage</h3>
+          <div class="metric">Bundle Size: ${this.metrics.bundleSize}KB</div>
+          <div class="metric">Image Size: ${this.metrics.imageSize}MB</div>
+          <div class="metric">HTTP Requests: ${this.metrics.requests}</div>
+        </div>
+      </div>
+    `;
+  }
+}
+```
+
+### Step 8: Mobile Performance Optimization
+
+#### Mobile-Specific Optimizations:
+
+**Mobile Performance Checklist:**
+```markdown
+## Mobile Performance Optimization
+
+### Touch and Interaction:
+- [ ] Implement touch-friendly button sizes (44px minimum)
+- [ ] Add touch feedback for all interactive elements
+- [ ] Optimize scroll performance with CSS containment
+- [ ] Implement smooth scrolling and momentum
+
+### Network Optimization:
+- [ ] Implement adaptive loading based on connection speed
+- [ ] Use smaller images for mobile devices
+- [ ] Prioritize above-the-fold content loading
+- [ ] Implement offline functionality with service workers
+
+### Battery and CPU Optimization:
+- [ ] Minimize JavaScript execution on main thread
+- [ ] Use CSS animations instead of JavaScript when possible
+- [ ] Implement efficient event listeners
+- [ ] Optimize background processes and timers
+
+### Mobile-Specific Features:
+- [ ] Implement pull-to-refresh functionality
+- [ ] Add haptic feedback for important actions
+- [ ] Optimize for different screen orientations
+- [ ] Implement proper viewport meta tag
+```
+
+**Adaptive Loading Implementation:**
+```javascript
+// adaptive-loading.js
+class AdaptiveLoading {
+  constructor() {
+    this.connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    this.deviceMemory = navigator.deviceMemory || 4; // Default to 4GB
+  }
+
+  getOptimalStrategy() {
+    const effectiveType = this.connection?.effectiveType || '4g';
+    const saveData = this.connection?.saveData || false;
+    
+    if (saveData || effectiveType === 'slow-2g' || effectiveType === '2g') {
+      return 'minimal';
+    } else if (effectiveType === '3g' || this.deviceMemory < 4) {
+      return 'standard';
+    } else {
+      return 'enhanced';
+    }
+  }
+
+  loadContent(strategy) {
+    switch (strategy) {
+      case 'minimal':
+        this.loadMinimalContent();
+        break;
+      case 'standard':
+        this.loadStandardContent();
+        break;
+      case 'enhanced':
+        this.loadEnhancedContent();
+        break;
+    }
+  }
+
+  loadMinimalContent() {
+    // Load only essential content
+    // Use smaller images
+    // Disable animations
+    // Minimize JavaScript execution
+  }
+
+  loadStandardContent() {
+    // Load normal content
+    // Standard image sizes
+    // Basic animations
+    // Normal JavaScript execution
+  }
+
+  loadEnhancedContent() {
+    // Load full content
+    // High-quality images
+    // Rich animations
+    // Full JavaScript features
+  }
+}
+```
+
+### Step 9: Performance Budget and Monitoring
+
+#### Performance Budget Setup:
+
+**Performance Budget Configuration:**
+```json
+{
+  "performanceBudget": {
+    "resourceSizes": [
+      {
+        "resourceType": "script",
+        "budget": 500
+      },
+      {
+        "resourceType": "total",
+        "budget": 3000
+      },
+      {
+        "resourceType": "image",
+        "budget": 1500
+      }
+    ],
+    "resourceCounts": [
+      {
+        "resourceType": "third-party",
+        "budget": 10
+      }
+    ]
+  },
+  "assertions": [
+    {
+      "metric": "first-contentful-paint",
+      "budget": 2000
+    },
+    {
+      "metric": "largest-contentful-paint", 
+      "budget": 2500
+    },
+    {
+      "metric": "cumulative-layout-shift",
+      "budget": 0.1
+    }
+  ]
+}
+```
+
+**Automated Performance Testing:**
+```javascript
+// performance-testing.js
+const lighthouse = require('lighthouse');
+const chromeLauncher = require('chrome-launcher');
+
+class PerformanceTest {
+  async runAudit(url) {
+    const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
+    const options = {
+      logLevel: 'info',
+      output: 'json',
+      onlyCategories: ['performance'],
+      port: chrome.port
+    };
+
+    const runnerResult = await lighthouse(url, options);
+    await chrome.kill();
+
+    return this.processResults(runnerResult);
+  }
+
+  processResults(results) {
+    const metrics = results.lhr.audits;
+    
+    return {
+      score: results.lhr.categories.performance.score * 100,
+      metrics: {
+        fcp: metrics['first-contentful-paint'].numericValue,
+        lcp: metrics['largest-contentful-paint'].numericValue,
+        fid: metrics['max-potential-fid'].numericValue,
+        cls: metrics['cumulative-layout-shift'].numericValue,
+        tti: metrics['interactive'].numericValue
+      },
+      opportunities: this.extractOpportunities(metrics),
+      passed: this.checkBudget(metrics)
+    };
+  }
+
+  checkBudget(metrics) {
+    const budget = {
+      fcp: 2000,
+      lcp: 2500,
+      cls: 0.1,
+      tti: 3500
+    };
+
+    return {
+      fcp: metrics['first-contentful-paint'].numericValue < budget.fcp,
+      lcp: metrics['largest-contentful-paint'].numericValue < budget.lcp,
+      cls: metrics['cumulative-layout-shift'].numericValue < budget.cls,
+      tti: metrics['interactive'].numericValue < budget.tti
+    };
+  }
+}
+```
+
+## Performance Optimization Checklist
+
+### ✅ Performance Analysis Complete When:
+- [ ] Baseline performance metrics measured
+- [ ] Performance bottlenecks identified
+- [ ] Performance budget defined
+- [ ] Monitoring tools configured
+- [ ] Optimization priorities set
+
+### ✅ Frontend Optimization Complete When:
+- [ ] Images optimized and lazy loaded
+- [ ] JavaScript bundle optimized and split
+- [ ] CSS minified and critical CSS inlined
+- [ ] Caching strategies implemented
+- [ ] CDN configured for static assets
+
+### ✅ Backend Optimization Complete When:
+- [ ] Database queries optimized
+- [ ] API response times improved
+- [ ] Caching implemented at multiple levels
+- [ ] Server compression enabled
+- [ ] Rate limiting configured
+
+### ✅ Mobile Optimization Complete When:
+- [ ] Mobile-specific optimizations implemented
+- [ ] Adaptive loading based on device capabilities
+- [ ] Touch interactions optimized
+- [ ] Offline functionality added
+- [ ] Battery usage optimized
+
+### ✅ Monitoring and Maintenance Complete When:
+- [ ] Real-time performance monitoring active
+- [ ] Automated performance testing in CI/CD
+- [ ] Performance alerts configured
+- [ ] Regular performance reviews scheduled
+- [ ] Performance budget enforced
+
+## Common Performance Issues and Solutions
+
+### Issue: Slow Page Load Times
+**Solutions:**
+1. Optimize images (compress, use WebP, lazy load)
+2. Minimize JavaScript bundle size
+3. Implement code splitting
+4. Use CDN for static assets
+5. Enable server compression
+
+### Issue: Poor Mobile Performance
+**Solutions:**
+1. Implement responsive images
+2. Use adaptive loading strategies
+3. Optimize touch interactions
+4. Minimize JavaScript execution
+5. Implement service worker caching
+
+### Issue: Slow Database Queries
+**Solutions:**
+1. Add appropriate database indexes
+2. Optimize query structure
+3. Implement query result caching
+4. Use database connection pooling
+5. Consider database sharding for scale
+
+### Issue: High Server Response Times
+**Solutions:**
+1. Implement API response caching
+2. Optimize server-side code
+3. Use load balancing
+4. Implement CDN for dynamic content
+5. Upgrade server resources if needed
+
+## Usage Instructions
+
+To optimize your project's performance, ask:
+"Analyze and optimize the performance of this project using @performance-optimizer.mdc, focusing on [specific area like loading speed, mobile performance, or database queries]."
+
+This will provide a comprehensive performance optimization plan tailored to your project's specific needs and bottlenecks.
+

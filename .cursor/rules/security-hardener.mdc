@@ -1,0 +1,978 @@
+---
+description: "Implement enterprise-level security measures to protect user data and prevent attacks"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Security Hardener
+
+You are helping someone with no coding experience implement comprehensive security measures to protect their application and user data from threats.
+
+## Security Implementation Process
+
+### Step 1: Understanding Application Security
+
+#### What is Security Hardening?
+Think of security hardening like fortifying a castle:
+- **Walls and Gates**: Authentication and authorization systems
+- **Guards**: Input validation and monitoring systems  
+- **Watchtowers**: Logging and intrusion detection
+- **Treasure Vault**: Data encryption and secure storage
+- **Emergency Plans**: Incident response and recovery procedures
+
+#### Why Security Matters:
+- **User Trust**: Users need to feel safe using your application
+- **Legal Compliance**: Many industries require specific security standards
+- **Business Protection**: Security breaches can destroy businesses
+- **Data Protection**: User data is valuable and must be protected
+- **Reputation**: Security incidents damage brand reputation permanently
+
+#### Common Security Threats:
+- **SQL Injection**: Malicious database queries
+- **Cross-Site Scripting (XSS)**: Malicious scripts in web pages
+- **Cross-Site Request Forgery (CSRF)**: Unauthorized actions on behalf of users
+- **Brute Force Attacks**: Automated password guessing
+- **Data Breaches**: Unauthorized access to sensitive information
+- **Man-in-the-Middle**: Intercepting communications
+
+### Step 2: Security Assessment and Audit
+
+#### Security Audit Checklist:
+
+**Authentication Security:**
+```markdown
+## Authentication Security Assessment
+
+### Current State Analysis:
+- [ ] How are passwords stored? (Plain text = CRITICAL RISK)
+- [ ] Is there password strength enforcement?
+- [ ] Are there account lockout mechanisms?
+- [ ] Is two-factor authentication available?
+- [ ] How are user sessions managed?
+
+### Password Security:
+- [ ] Minimum password length: 8+ characters
+- [ ] Password complexity requirements
+- [ ] Password hashing with salt (bcrypt/Argon2)
+- [ ] Password reset security measures
+- [ ] Prevention of password reuse
+
+### Session Management:
+- [ ] Secure session token generation
+- [ ] Session timeout implementation
+- [ ] Secure session storage
+- [ ] Session invalidation on logout
+- [ ] Protection against session hijacking
+```
+
+**Data Protection Assessment:**
+```markdown
+## Data Protection Security Assessment
+
+### Data Encryption:
+- [ ] Data encrypted in transit (HTTPS/TLS)
+- [ ] Data encrypted at rest (database encryption)
+- [ ] Encryption key management
+- [ ] Secure backup encryption
+- [ ] API communication encryption
+
+### Data Access Control:
+- [ ] Role-based access control (RBAC)
+- [ ] Principle of least privilege
+- [ ] Data access logging
+- [ ] User permission management
+- [ ] Admin access controls
+
+### Data Privacy:
+- [ ] Personal data identification and classification
+- [ ] Data retention policies
+- [ ] Data deletion procedures
+- [ ] Privacy policy compliance
+- [ ] User consent management
+```
+
+#### Automated Security Scanning:
+
+**Security Vulnerability Scanner:**
+```javascript
+// security-scanner.js
+class SecurityScanner {
+  async scanApplication() {
+    const results = {
+      vulnerabilities: [],
+      securityScore: 0,
+      recommendations: []
+    };
+
+    // Check for common vulnerabilities
+    await this.checkSQLInjection();
+    await this.checkXSSVulnerabilities();
+    await this.checkCSRFProtection();
+    await this.checkAuthenticationSecurity();
+    await this.checkDataEncryption();
+
+    return this.generateSecurityReport(results);
+  }
+
+  async checkSQLInjection() {
+    // Scan for SQL injection vulnerabilities
+    const sqlPatterns = [
+      /SELECT.*FROM.*WHERE.*=.*\$\{/gi,
+      /INSERT.*INTO.*VALUES.*\$\{/gi,
+      /UPDATE.*SET.*WHERE.*\$\{/gi,
+      /DELETE.*FROM.*WHERE.*\$\{/gi
+    ];
+
+    // Scan code files for dangerous patterns
+    const codeFiles = await this.getCodeFiles();
+    
+    for (const file of codeFiles) {
+      const content = await this.readFile(file);
+      for (const pattern of sqlPatterns) {
+        if (pattern.test(content)) {
+          this.addVulnerability('SQL_INJECTION', file, 'HIGH');
+        }
+      }
+    }
+  }
+
+  async checkXSSVulnerabilities() {
+    // Check for XSS vulnerabilities
+    const xssPatterns = [
+      /innerHTML.*=.*\$\{/gi,
+      /document\.write.*\$\{/gi,
+      /eval\(/gi,
+      /dangerouslySetInnerHTML/gi
+    ];
+
+    const frontendFiles = await this.getFrontendFiles();
+    
+    for (const file of frontendFiles) {
+      const content = await this.readFile(file);
+      for (const pattern of xssPatterns) {
+        if (pattern.test(content)) {
+          this.addVulnerability('XSS', file, 'HIGH');
+        }
+      }
+    }
+  }
+
+  generateSecurityReport(results) {
+    return {
+      summary: {
+        totalVulnerabilities: results.vulnerabilities.length,
+        highRisk: results.vulnerabilities.filter(v => v.severity === 'HIGH').length,
+        mediumRisk: results.vulnerabilities.filter(v => v.severity === 'MEDIUM').length,
+        lowRisk: results.vulnerabilities.filter(v => v.severity === 'LOW').length
+      },
+      vulnerabilities: results.vulnerabilities,
+      recommendations: this.generateRecommendations(results),
+      securityScore: this.calculateSecurityScore(results)
+    };
+  }
+}
+```
+
+### Step 3: Authentication and Authorization Security
+
+#### Secure Authentication Implementation:
+
+**Password Security:**
+```javascript
+// auth-security.js
+const bcrypt = require('bcrypt');
+const rateLimit = require('express-rate-limit');
+
+class AuthSecurity {
+  // Secure password hashing
+  async hashPassword(password) {
+    // Validate password strength first
+    if (!this.isPasswordStrong(password)) {
+      throw new Error('Password does not meet security requirements');
+    }
+
+    const saltRounds = 12; // High security salt rounds
+    return await bcrypt.hash(password, saltRounds);
+  }
+
+  isPasswordStrong(password) {
+    const requirements = {
+      minLength: 8,
+      hasUppercase: /[A-Z]/.test(password),
+      hasLowercase: /[a-z]/.test(password),
+      hasNumbers: /\d/.test(password),
+      hasSpecialChars: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      notCommon: !this.isCommonPassword(password)
+    };
+
+    return Object.values(requirements).every(req => req === true);
+  }
+
+  // Rate limiting for login attempts
+  createLoginRateLimit() {
+    return rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 5, // limit each IP to 5 requests per windowMs
+      message: 'Too many login attempts, please try again later',
+      standardHeaders: true,
+      legacyHeaders: false,
+      // Skip successful requests
+      skipSuccessfulRequests: true
+    });
+  }
+
+  // Account lockout after failed attempts
+  async handleFailedLogin(userId) {
+    const user = await User.findById(userId);
+    user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+    user.lastFailedLogin = new Date();
+
+    if (user.failedLoginAttempts >= 5) {
+      user.accountLocked = true;
+      user.lockoutExpires = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+      await this.sendSecurityAlert(user, 'Account locked due to multiple failed login attempts');
+    }
+
+    await user.save();
+  }
+
+  // Two-factor authentication
+  async setupTwoFactor(userId) {
+    const speakeasy = require('speakeasy');
+    
+    const secret = speakeasy.generateSecret({
+      name: 'Your App Name',
+      account: userId,
+      length: 32
+    });
+
+    // Store secret securely in database
+    await User.findByIdAndUpdate(userId, {
+      twoFactorSecret: secret.base32,
+      twoFactorEnabled: false // Enable after verification
+    });
+
+    return {
+      secret: secret.base32,
+      qrCode: secret.otpauth_url
+    };
+  }
+}
+```
+
+**Session Security:**
+```javascript
+// session-security.js
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
+class SessionSecurity {
+  setupSecureSession() {
+    return session({
+      secret: process.env.SESSION_SECRET, // Strong random secret
+      name: 'sessionId', // Don't use default name
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        httpOnly: true, // Prevent XSS access to cookies
+        maxAge: 30 * 60 * 1000, // 30 minutes
+        sameSite: 'strict' // CSRF protection
+      },
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        touchAfter: 24 * 3600 // lazy session update
+      })
+    });
+  }
+
+  // Session validation middleware
+  validateSession(req, res, next) {
+    if (!req.session.userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    // Check session expiry
+    if (req.session.expiresAt && req.session.expiresAt < Date.now()) {
+      req.session.destroy();
+      return res.status(401).json({ error: 'Session expired' });
+    }
+
+    // Update session activity
+    req.session.lastActivity = Date.now();
+    next();
+  }
+
+  // Secure logout
+  async logout(req, res) {
+    const sessionId = req.sessionID;
+    
+    // Log security event
+    await this.logSecurityEvent('USER_LOGOUT', req.session.userId, req.ip);
+    
+    // Destroy session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Session destruction error:', err);
+      }
+      res.clearCookie('sessionId');
+      res.json({ message: 'Logged out successfully' });
+    });
+  }
+}
+```
+
+### Step 4: Input Validation and Sanitization
+
+#### Comprehensive Input Validation:
+
+**Input Validation Framework:**
+```javascript
+// input-validator.js
+const validator = require('validator');
+const DOMPurify = require('isomorphic-dompurify');
+
+class InputValidator {
+  // Validate and sanitize user input
+  validateUserInput(data, schema) {
+    const errors = [];
+    const sanitized = {};
+
+    for (const [field, rules] of Object.entries(schema)) {
+      const value = data[field];
+
+      // Check required fields
+      if (rules.required && (!value || value.trim() === '')) {
+        errors.push(`${field} is required`);
+        continue;
+      }
+
+      if (value) {
+        // Sanitize input
+        let sanitizedValue = this.sanitizeInput(value, rules.type);
+
+        // Validate based on type
+        const validationResult = this.validateByType(sanitizedValue, rules);
+        if (!validationResult.isValid) {
+          errors.push(`${field}: ${validationResult.error}`);
+        } else {
+          sanitized[field] = validationResult.value;
+        }
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      sanitizedData: sanitized
+    };
+  }
+
+  sanitizeInput(value, type) {
+    // Basic sanitization
+    let sanitized = value.toString().trim();
+
+    switch (type) {
+      case 'email':
+        sanitized = validator.normalizeEmail(sanitized);
+        break;
+      case 'html':
+        sanitized = DOMPurify.sanitize(sanitized);
+        break;
+      case 'text':
+        sanitized = validator.escape(sanitized);
+        break;
+      case 'url':
+        sanitized = validator.trim(sanitized);
+        break;
+    }
+
+    return sanitized;
+  }
+
+  validateByType(value, rules) {
+    switch (rules.type) {
+      case 'email':
+        if (!validator.isEmail(value)) {
+          return { isValid: false, error: 'Invalid email format' };
+        }
+        break;
+
+      case 'password':
+        if (!this.isPasswordStrong(value)) {
+          return { isValid: false, error: 'Password does not meet security requirements' };
+        }
+        break;
+
+      case 'url':
+        if (!validator.isURL(value)) {
+          return { isValid: false, error: 'Invalid URL format' };
+        }
+        break;
+
+      case 'text':
+        if (rules.maxLength && value.length > rules.maxLength) {
+          return { isValid: false, error: `Text too long (max ${rules.maxLength} characters)` };
+        }
+        if (rules.minLength && value.length < rules.minLength) {
+          return { isValid: false, error: `Text too short (min ${rules.minLength} characters)` };
+        }
+        break;
+
+      case 'number':
+        if (!validator.isNumeric(value.toString())) {
+          return { isValid: false, error: 'Must be a valid number' };
+        }
+        const num = parseFloat(value);
+        if (rules.min && num < rules.min) {
+          return { isValid: false, error: `Must be at least ${rules.min}` };
+        }
+        if (rules.max && num > rules.max) {
+          return { isValid: false, error: `Must be no more than ${rules.max}` };
+        }
+        break;
+    }
+
+    return { isValid: true, value };
+  }
+
+  // SQL Injection prevention
+  preventSQLInjection(query, params) {
+    // Use parameterized queries
+    const sanitizedParams = params.map(param => {
+      if (typeof param === 'string') {
+        // Remove dangerous SQL keywords
+        return param.replace(/('|(\\)|(;)|(\|)|(\*)|(%)|(\?)|(<)|(>)|(\{)|(\})|(\[)|(\]))/g, '');
+      }
+      return param;
+    });
+
+    return { query, params: sanitizedParams };
+  }
+
+  // XSS prevention
+  preventXSS(content) {
+    return DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
+      ALLOWED_ATTR: []
+    });
+  }
+}
+```
+
+**CSRF Protection:**
+```javascript
+// csrf-protection.js
+const csrf = require('csurf');
+
+class CSRFProtection {
+  setupCSRFProtection() {
+    return csrf({
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      }
+    });
+  }
+
+  // CSRF token validation middleware
+  validateCSRFToken(req, res, next) {
+    const token = req.headers['x-csrf-token'] || req.body._csrf;
+    
+    if (!token) {
+      return res.status(403).json({ error: 'CSRF token missing' });
+    }
+
+    // Token validation is handled by csrf middleware
+    next();
+  }
+
+  // Generate CSRF token for frontend
+  getCSRFToken(req, res) {
+    res.json({ csrfToken: req.csrfToken() });
+  }
+}
+```
+
+### Step 5: Data Encryption and Protection
+
+#### Data Encryption Implementation:
+
+**Encryption Service:**
+```javascript
+// encryption-service.js
+const crypto = require('crypto');
+
+class EncryptionService {
+  constructor() {
+    this.algorithm = 'aes-256-gcm';
+    this.keyLength = 32;
+    this.ivLength = 16;
+    this.tagLength = 16;
+  }
+
+  // Encrypt sensitive data
+  encrypt(text, key) {
+    const iv = crypto.randomBytes(this.ivLength);
+    const cipher = crypto.createCipher(this.algorithm, key, iv);
+    
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    const tag = cipher.getAuthTag();
+    
+    return {
+      encrypted,
+      iv: iv.toString('hex'),
+      tag: tag.toString('hex')
+    };
+  }
+
+  // Decrypt sensitive data
+  decrypt(encryptedData, key) {
+    const decipher = crypto.createDecipher(
+      this.algorithm, 
+      key, 
+      Buffer.from(encryptedData.iv, 'hex')
+    );
+    
+    decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
+    
+    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
+  }
+
+  // Hash sensitive data (one-way)
+  hash(data, salt) {
+    return crypto.pbkdf2Sync(data, salt, 100000, 64, 'sha512').toString('hex');
+  }
+
+  // Generate secure random tokens
+  generateSecureToken(length = 32) {
+    return crypto.randomBytes(length).toString('hex');
+  }
+
+  // Secure data storage
+  async storeSecureData(data, userId) {
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    const encrypted = this.encrypt(JSON.stringify(data), encryptionKey);
+    
+    return await SecureData.create({
+      userId,
+      data: encrypted.encrypted,
+      iv: encrypted.iv,
+      tag: encrypted.tag,
+      createdAt: new Date()
+    });
+  }
+}
+```
+
+**Database Security:**
+```javascript
+// database-security.js
+class DatabaseSecurity {
+  // Secure database connection
+  setupSecureConnection() {
+    return {
+      uri: process.env.MONGODB_URI,
+      options: {
+        ssl: true,
+        sslValidate: true,
+        sslCA: process.env.DB_SSL_CERT,
+        authSource: 'admin',
+        retryWrites: true,
+        w: 'majority'
+      }
+    };
+  }
+
+  // Database access control
+  createDatabaseUser(username, role) {
+    return {
+      user: username,
+      pwd: this.generateSecurePassword(),
+      roles: [
+        {
+          role: role, // 'read', 'readWrite', 'dbAdmin'
+          db: process.env.DB_NAME
+        }
+      ]
+    };
+  }
+
+  // Audit database access
+  async logDatabaseAccess(operation, collection, userId, query) {
+    await DatabaseAuditLog.create({
+      operation,
+      collection,
+      userId,
+      query: this.sanitizeQuery(query),
+      timestamp: new Date(),
+      ipAddress: this.getCurrentIP()
+    });
+  }
+
+  // Backup encryption
+  async createSecureBackup() {
+    const backupData = await this.exportDatabase();
+    const encrypted = this.encryptBackup(backupData);
+    
+    return await this.storeBackupSecurely(encrypted);
+  }
+}
+```
+
+### Step 6: Security Headers and HTTPS
+
+#### Security Headers Implementation:
+
+**HTTP Security Headers:**
+```javascript
+// security-headers.js
+const helmet = require('helmet');
+
+class SecurityHeaders {
+  setupSecurityHeaders(app) {
+    // Use Helmet for basic security headers
+    app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com"],
+          imgSrc: ["'self'", "data:", "https:"],
+          scriptSrc: ["'self'"],
+          connectSrc: ["'self'"],
+          frameSrc: ["'none'"],
+          objectSrc: ["'none'"],
+          upgradeInsecureRequests: []
+        }
+      },
+      hsts: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true
+      }
+    }));
+
+    // Additional custom headers
+    app.use((req, res, next) => {
+      // Prevent clickjacking
+      res.setHeader('X-Frame-Options', 'DENY');
+      
+      // Prevent MIME type sniffing
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      
+      // XSS protection
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+      
+      // Referrer policy
+      res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+      
+      // Feature policy
+      res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+      
+      next();
+    });
+  }
+
+  // HTTPS enforcement
+  enforceHTTPS(req, res, next) {
+    if (process.env.NODE_ENV === 'production' && !req.secure && req.get('x-forwarded-proto') !== 'https') {
+      return res.redirect(301, `https://${req.get('host')}${req.url}`);
+    }
+    next();
+  }
+
+  // SSL/TLS configuration
+  getSSLConfig() {
+    return {
+      key: process.env.SSL_PRIVATE_KEY,
+      cert: process.env.SSL_CERTIFICATE,
+      ca: process.env.SSL_CA_BUNDLE,
+      secureProtocol: 'TLSv1_2_method',
+      ciphers: [
+        'ECDHE-RSA-AES128-GCM-SHA256',
+        'ECDHE-RSA-AES256-GCM-SHA384',
+        'ECDHE-RSA-AES128-SHA256',
+        'ECDHE-RSA-AES256-SHA384'
+      ].join(':'),
+      honorCipherOrder: true
+    };
+  }
+}
+```
+
+### Step 7: Security Monitoring and Incident Response
+
+#### Security Monitoring System:
+
+**Security Event Monitoring:**
+```javascript
+// security-monitor.js
+class SecurityMonitor {
+  constructor() {
+    this.suspiciousActivities = new Map();
+    this.alertThresholds = {
+      failedLogins: 5,
+      rapidRequests: 100,
+      suspiciousPatterns: 3
+    };
+  }
+
+  // Monitor for suspicious activities
+  monitorSecurityEvents(req, res, next) {
+    const clientIP = req.ip;
+    const userAgent = req.get('User-Agent');
+    
+    // Check for suspicious patterns
+    this.checkSuspiciousPatterns(req);
+    
+    // Monitor request rate
+    this.monitorRequestRate(clientIP);
+    
+    // Log security events
+    this.logSecurityEvent(req);
+    
+    next();
+  }
+
+  checkSuspiciousPatterns(req) {
+    const suspiciousPatterns = [
+      /(\bor\b|\band\b).*=.*\d+/i, // SQL injection patterns
+      /<script|javascript:|vbscript:/i, // XSS patterns
+      /\.\.\//g, // Directory traversal
+      /\/etc\/passwd|\/etc\/shadow/i, // System file access
+      /cmd\.exe|powershell|bash/i // Command injection
+    ];
+
+    const url = req.url;
+    const body = JSON.stringify(req.body);
+    
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(url) || pattern.test(body)) {
+        this.triggerSecurityAlert('SUSPICIOUS_PATTERN', req.ip, {
+          pattern: pattern.toString(),
+          url,
+          body: body.substring(0, 200)
+        });
+      }
+    }
+  }
+
+  monitorRequestRate(clientIP) {
+    const now = Date.now();
+    const timeWindow = 60000; // 1 minute
+    
+    if (!this.requestCounts) {
+      this.requestCounts = new Map();
+    }
+
+    const requests = this.requestCounts.get(clientIP) || [];
+    const recentRequests = requests.filter(time => now - time < timeWindow);
+    recentRequests.push(now);
+    
+    this.requestCounts.set(clientIP, recentRequests);
+
+    if (recentRequests.length > this.alertThresholds.rapidRequests) {
+      this.triggerSecurityAlert('RATE_LIMIT_EXCEEDED', clientIP, {
+        requestCount: recentRequests.length,
+        timeWindow: timeWindow
+      });
+    }
+  }
+
+  async triggerSecurityAlert(type, source, details) {
+    const alert = {
+      type,
+      source,
+      details,
+      timestamp: new Date(),
+      severity: this.calculateSeverity(type)
+    };
+
+    // Log to security database
+    await SecurityAlert.create(alert);
+
+    // Send immediate notification for high severity
+    if (alert.severity === 'HIGH') {
+      await this.sendImmediateAlert(alert);
+    }
+
+    // Auto-block if necessary
+    if (this.shouldAutoBlock(type, source)) {
+      await this.blockIP(source);
+    }
+  }
+
+  async sendImmediateAlert(alert) {
+    // Send email/SMS to security team
+    const message = `
+      SECURITY ALERT: ${alert.type}
+      Source: ${alert.source}
+      Time: ${alert.timestamp}
+      Details: ${JSON.stringify(alert.details)}
+    `;
+
+    await this.sendNotification(message);
+  }
+}
+```
+
+**Incident Response System:**
+```javascript
+// incident-response.js
+class IncidentResponse {
+  async handleSecurityIncident(incident) {
+    const response = {
+      incidentId: this.generateIncidentId(),
+      type: incident.type,
+      severity: incident.severity,
+      status: 'ACTIVE',
+      startTime: new Date(),
+      actions: []
+    };
+
+    // Immediate response actions
+    switch (incident.severity) {
+      case 'CRITICAL':
+        await this.executeCriticalResponse(incident, response);
+        break;
+      case 'HIGH':
+        await this.executeHighResponse(incident, response);
+        break;
+      case 'MEDIUM':
+        await this.executeMediumResponse(incident, response);
+        break;
+    }
+
+    // Log incident
+    await SecurityIncident.create(response);
+    
+    return response;
+  }
+
+  async executeCriticalResponse(incident, response) {
+    // Immediate containment
+    if (incident.source) {
+      await this.blockIP(incident.source);
+      response.actions.push('IP_BLOCKED');
+    }
+
+    // Alert security team immediately
+    await this.alertSecurityTeam('CRITICAL', incident);
+    response.actions.push('SECURITY_TEAM_ALERTED');
+
+    // Enable enhanced monitoring
+    await this.enableEnhancedMonitoring();
+    response.actions.push('ENHANCED_MONITORING_ENABLED');
+
+    // Consider service isolation
+    if (incident.type === 'DATA_BREACH') {
+      await this.isolateAffectedServices();
+      response.actions.push('SERVICES_ISOLATED');
+    }
+  }
+
+  async executeRecoveryPlan(incidentId) {
+    const incident = await SecurityIncident.findById(incidentId);
+    
+    const recoverySteps = [
+      'Assess damage and scope',
+      'Remove malicious access',
+      'Patch vulnerabilities',
+      'Restore from clean backups if needed',
+      'Verify system integrity',
+      'Resume normal operations',
+      'Conduct post-incident review'
+    ];
+
+    for (const step of recoverySteps) {
+      await this.executeRecoveryStep(step, incident);
+    }
+  }
+}
+```
+
+## Security Hardening Checklist
+
+### ✅ Security Assessment Complete When:
+- [ ] Comprehensive security audit performed
+- [ ] Vulnerabilities identified and prioritized
+- [ ] Security baseline established
+- [ ] Compliance requirements identified
+- [ ] Security policies documented
+
+### ✅ Authentication Security Complete When:
+- [ ] Strong password policies enforced
+- [ ] Secure password hashing implemented
+- [ ] Account lockout mechanisms active
+- [ ] Two-factor authentication available
+- [ ] Session security properly configured
+
+### ✅ Data Protection Complete When:
+- [ ] Data encrypted in transit and at rest
+- [ ] Access controls properly implemented
+- [ ] Input validation and sanitization active
+- [ ] SQL injection prevention implemented
+- [ ] XSS and CSRF protection enabled
+
+### ✅ Infrastructure Security Complete When:
+- [ ] Security headers properly configured
+- [ ] HTTPS enforced across all endpoints
+- [ ] Database security hardened
+- [ ] Backup encryption implemented
+- [ ] Network security measures active
+
+### ✅ Monitoring and Response Complete When:
+- [ ] Security monitoring system active
+- [ ] Incident response procedures documented
+- [ ] Security alerts configured
+- [ ] Regular security reviews scheduled
+- [ ] Staff security training completed
+
+## Common Security Issues and Solutions
+
+### Issue: Weak Authentication
+**Solutions:**
+1. Implement strong password policies
+2. Add two-factor authentication
+3. Use secure session management
+4. Implement account lockout mechanisms
+5. Monitor for suspicious login patterns
+
+### Issue: Data Exposure
+**Solutions:**
+1. Encrypt all sensitive data
+2. Implement proper access controls
+3. Use secure communication protocols
+4. Regular security audits
+5. Data classification and handling policies
+
+### Issue: Injection Attacks
+**Solutions:**
+1. Use parameterized queries
+2. Implement input validation
+3. Sanitize all user input
+4. Use prepared statements
+5. Regular code security reviews
+
+### Issue: Insufficient Monitoring
+**Solutions:**
+1. Implement comprehensive logging
+2. Set up security alerts
+3. Monitor for suspicious activities
+4. Regular security assessments
+5. Incident response procedures
+
+## Usage Instructions
+
+To implement comprehensive security measures, ask:
+"Analyze and harden the security of this project using @security-hardener.mdc, focusing on [specific area like authentication, data protection, or monitoring]."
+
+This will provide a detailed security implementation plan tailored to your project's specific needs and threat model.
+

@@ -1,524 +1,1081 @@
 ---
-description: "Set up testing and staging environment to see changes in real-time"
+description: "Set up comprehensive testing environments to see your app in action as you build"
 globs: ["*"]
 alwaysApply: false
 ---
 
 # Testing & Staging Environment Setup
 
-You are helping someone with no coding experience set up a testing environment so they can see their changes in real-time as they build.
+You are helping someone with no coding experience set up testing environments so they can see their app working in real-time as they build and modify it.
 
 ## Testing Environment Setup Process
 
-### Step 1: Understanding Development Environments
+### Step 1: Understanding Testing Environments
 
-#### What is a Testing/Staging Environment?
-Think of it like a practice kitchen before opening a restaurant:
-- **Development**: Your personal workspace where you make changes
-- **Staging**: A copy of the real app where you test everything works
-- **Production**: The live app that real users see
+#### What are Testing Environments?
+Think of testing environments like having different versions of your house:
+- **Development House**: Where you experiment and make changes (your computer)
+- **Staging House**: Exact replica of final house for testing (cloud preview)
+- **Production House**: The real house where people live (live website)
+- **Testing Rooms**: Special rooms to test specific features (automated tests)
 
-#### Why You Need This:
-- See your changes immediately as you make them
-- Test new features without breaking the live app
-- Catch problems before users see them
-- Work confidently knowing you can't break anything important
+#### Why You Need Testing Environments:
+- **See Changes Immediately**: Watch your app update as you code
+- **Test Before Going Live**: Catch problems before users see them
+- **Safe Experimentation**: Try new features without breaking the live app
+- **Team Collaboration**: Share progress with others easily
+- **User Testing**: Get feedback before final launch
 
-### Step 2: Technology-Specific Setup
+#### Types of Testing You'll Set Up:
+- **Local Development**: See changes instantly on your computer
+- **Staging Environment**: Test in production-like conditions
+- **Automated Testing**: Computer checks your code automatically
+- **User Testing**: Real people test your app
+- **Performance Testing**: Make sure your app runs fast
 
-#### For React Applications:
+### Step 2: Local Development Environment Setup
 
-**Quick Setup (5 minutes):**
+#### Development Server Configuration:
+
+**Local Development Setup:**
 ```bash
-# Navigate to your project folder
-cd your-project-name
+# For React/Node.js projects
+# Create development configuration
+echo "Creating local development environment..."
 
-# Install dependencies
-npm install
+# Install development dependencies
+npm install --save-dev nodemon concurrently cross-env
 
-# Start development server
-npm start
+# Create development scripts in package.json
 ```
 
-**What This Does:**
-- Starts a local server (usually at http://localhost:3000)
-- Automatically refreshes when you make changes
-- Shows errors and warnings in real-time
-- Provides hot reloading (changes appear instantly)
-
-**Expected Output:**
-```
-Compiled successfully!
-
-You can now view your-app in the browser.
-
-  Local:            http://localhost:3000
-  On Your Network:  http://192.168.1.100:3000
-
-Note that the development build is not optimized.
-To create a production build, use npm run build.
-```
-
-**Troubleshooting:**
-- **Port already in use**: Try `npm start -- --port 3001`
-- **Module not found**: Run `npm install` first
-- **Permission errors**: Try `sudo npm install` (Mac/Linux)
-
-#### For Node.js/Express APIs:
-
-**Quick Setup (5 minutes):**
-```bash
-# Navigate to your project
-cd your-api-project
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-# or
-node server.js
-```
-
-**Enhanced Setup with Nodemon (Auto-restart):**
-```bash
-# Install nodemon for auto-restart
-npm install -g nodemon
-
-# Start with auto-restart
-nodemon server.js
-```
-
-**Expected Output:**
-```
-[nodemon] starting `node server.js`
-Server running on port 3000
-Database connected successfully
-```
-
-**Testing Your API:**
-- Use browser for GET requests: `http://localhost:3000/api/users`
-- Use Postman or Thunder Client for POST/PUT/DELETE requests
-- Check console for error messages
-
-#### For Full-Stack Applications:
-
-**Setup Both Frontend and Backend:**
-
-**Terminal 1 (Backend):**
-```bash
-cd backend-folder
-npm install
-npm run dev
-```
-
-**Terminal 2 (Frontend):**
-```bash
-cd frontend-folder
-npm install
-npm start
-```
-
-**Expected Result:**
-- Backend API running on http://localhost:3001
-- Frontend app running on http://localhost:3000
-- Frontend can communicate with backend
-
-#### For Static Websites:
-
-**Simple HTTP Server:**
-```bash
-# Using Python (if installed)
-python -m http.server 8000
-
-# Using Node.js live-server
-npm install -g live-server
-live-server
-```
-
-**Expected Output:**
-```
-Serving at http://localhost:8000/
-```
-
-### Step 3: Environment Configuration
-
-#### Setting Up Environment Variables:
-
-**Create .env file in project root:**
-```env
-# Database
-DATABASE_URL=mongodb://localhost:27017/your-app
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=your_app_dev
-
-# API Keys (use test/development keys)
-STRIPE_SECRET_KEY=sk_test_your_test_key
-SENDGRID_API_KEY=SG.your_test_key
-JWT_SECRET=your_development_secret
-
-# App Configuration
-NODE_ENV=development
-PORT=3000
-API_BASE_URL=http://localhost:3001
-
-# External Services (use sandbox/test URLs)
-PAYMENT_GATEWAY_URL=https://api.sandbox.stripe.com
-EMAIL_SERVICE_URL=https://api.sendgrid.com/v3
-```
-
-**Important Notes:**
-- Never use production API keys in development
-- Use test/sandbox versions of external services
-- Keep .env file out of version control (add to .gitignore)
-
-#### Database Setup for Testing:
-
-**For MongoDB:**
-```bash
-# Install MongoDB locally or use MongoDB Atlas
-# Create test database
-mongosh
-use your_app_test
-```
-
-**For PostgreSQL:**
-```bash
-# Create test database
-createdb your_app_test
-```
-
-**For SQLite (easiest for testing):**
-```javascript
-// In your config file
-module.exports = {
-  development: {
-    dialect: 'sqlite',
-    storage: './database_test.sqlite'
-  }
-}
-```
-
-### Step 4: Testing Workflow Setup
-
-#### Basic Testing Commands:
-
-**For React Apps:**
-```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm test -- --coverage
-
-# Run specific test file
-npm test -- UserComponent.test.js
-```
-
-**For Node.js APIs:**
-```bash
-# Run API tests
-npm test
-
-# Run tests with watch mode
-npm test -- --watch
-
-# Run integration tests
-npm run test:integration
-```
-
-#### Setting Up Test Data:
-
-**Create seed data for testing:**
-```javascript
-// seeds/testData.js
-const testUsers = [
-  {
-    name: "Test User 1",
-    email: "test1@example.com",
-    password: "password123"
-  },
-  {
-    name: "Test User 2", 
-    email: "test2@example.com",
-    password: "password123"
-  }
-];
-
-const testProducts = [
-  {
-    name: "Test Product 1",
-    price: 29.99,
-    description: "A test product for development"
-  }
-];
-
-module.exports = { testUsers, testProducts };
-```
-
-**Load test data:**
-```bash
-# Run seed script
-npm run seed:test
-```
-
-### Step 5: Browser Development Tools
-
-#### Essential Browser Tools:
-
-**Chrome DevTools:**
-- **Console**: See JavaScript errors and logs
-- **Network**: Monitor API calls and responses
-- **Elements**: Inspect and modify HTML/CSS
-- **Application**: Check local storage and cookies
-
-**React Developer Tools:**
-- Install React DevTools browser extension
-- Inspect React components and state
-- Debug React performance issues
-
-**Vue Developer Tools:**
-- Install Vue DevTools browser extension
-- Inspect Vue components and Vuex state
-
-#### Mobile Testing:
-
-**Chrome Mobile Simulation:**
-1. Open Chrome DevTools (F12)
-2. Click device toggle icon
-3. Select mobile device
-4. Test responsive design
-
-**Real Device Testing:**
-```bash
-# Find your local IP address
-ipconfig getifaddr en0  # Mac
-ipconfig                # Windows
-
-# Access from mobile device
-http://YOUR_IP_ADDRESS:3000
-```
-
-### Step 6: Staging Environment Setup
-
-#### Local Staging Environment:
-
-**Build Production Version:**
-```bash
-# For React apps
-npm run build
-
-# Serve production build locally
-npm install -g serve
-serve -s build -l 3000
-```
-
-**For Node.js:**
-```bash
-# Set production environment
-NODE_ENV=production npm start
-```
-
-#### Cloud Staging Setup:
-
-**Heroku (Free Tier):**
-```bash
-# Install Heroku CLI
-# Create Heroku app
-heroku create your-app-staging
-
-# Deploy to staging
-git push heroku main
-
-# View staging app
-heroku open
-```
-
-**Vercel (For Frontend):**
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy to staging
-vercel
-
-# Get staging URL
-vercel --prod
-```
-
-**Netlify (For Static Sites):**
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Deploy to staging
-netlify deploy
-
-# Deploy to production
-netlify deploy --prod
-```
-
-### Step 7: Monitoring and Debugging
-
-#### Development Monitoring:
-
-**Console Logging:**
-```javascript
-// Add helpful logs
-console.log('User data:', userData);
-console.error('API Error:', error);
-console.warn('Deprecated feature used');
-```
-
-**Error Boundaries (React):**
-```javascript
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('Error caught:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
-    }
-    return this.props.children;
-  }
-}
-```
-
-#### API Testing Tools:
-
-**Postman Collections:**
-- Create collections for all API endpoints
-- Set up environment variables
-- Write automated tests
-
-**Thunder Client (VS Code Extension):**
-- Test APIs directly in VS Code
-- Save requests for reuse
-- Export/import collections
-
-### Step 8: Automated Testing Setup
-
-#### Unit Testing:
-
-**Jest Configuration (package.json):**
+**Development Scripts Configuration:**
 ```json
 {
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "nodemon server.js",
+    "client:dev": "react-scripts start",
+    "build:dev": "cross-env NODE_ENV=development npm run build",
+    "test:dev": "jest --watch",
+    "start:local": "cross-env NODE_ENV=development PORT=3000 node server.js"
   },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"]
+  "nodemonConfig": {
+    "watch": ["server", "src"],
+    "ext": "js,jsx,json",
+    "ignore": ["node_modules", "build"],
+    "delay": "1000"
   }
 }
 ```
 
-**Example Test:**
+**Hot Reload Setup for Instant Changes:**
 ```javascript
-// UserComponent.test.js
-import { render, screen } from '@testing-library/react';
-import UserComponent from './UserComponent';
+// hot-reload-setup.js
+class HotReloadSetup {
+  setupHotReload() {
+    if (process.env.NODE_ENV === 'development') {
+      // Enable hot module replacement
+      if (module.hot) {
+        module.hot.accept('./App', () => {
+          const NextApp = require('./App').default;
+          // Re-render the app with new changes
+          this.renderApp(NextApp);
+        });
+      }
 
-test('renders user name', () => {
-  render(<UserComponent name="John Doe" />);
-  const nameElement = screen.getByText(/john doe/i);
-  expect(nameElement).toBeInTheDocument();
-});
+      // Setup live reload for CSS changes
+      this.setupCSSHotReload();
+      
+      // Setup automatic browser refresh
+      this.setupBrowserSync();
+    }
+  }
+
+  setupCSSHotReload() {
+    // Watch for CSS file changes
+    const chokidar = require('chokidar');
+    
+    chokidar.watch('./src/**/*.css').on('change', (path) => {
+      console.log(`CSS file changed: ${path}`);
+      // Inject new CSS without page refresh
+      this.injectCSS(path);
+    });
+  }
+
+  setupBrowserSync() {
+    const browserSync = require('browser-sync');
+    
+    browserSync.init({
+      proxy: 'localhost:3000',
+      files: ['src/**/*'],
+      port: 3001,
+      open: false,
+      notify: false
+    });
+  }
+
+  injectCSS(cssPath) {
+    // Read the CSS file
+    const fs = require('fs');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+    
+    // Inject into page without refresh
+    const style = document.createElement('style');
+    style.textContent = cssContent;
+    document.head.appendChild(style);
+  }
+}
 ```
 
-#### Integration Testing:
+#### Environment Configuration:
 
-**API Testing with Supertest:**
+**Environment Variables Setup:**
+```bash
+# .env.development
+NODE_ENV=development
+PORT=3000
+API_URL=http://localhost:3001
+DATABASE_URL=mongodb://localhost:27017/myapp_dev
+DEBUG=true
+LOG_LEVEL=debug
+
+# Enable development features
+REACT_APP_DEV_TOOLS=true
+REACT_APP_API_URL=http://localhost:3001/api
+REACT_APP_SOCKET_URL=ws://localhost:3001
+```
+
+**Development Database Setup:**
 ```javascript
-// api.test.js
-const request = require('supertest');
-const app = require('../app');
-
-describe('GET /api/users', () => {
-  it('should return list of users', async () => {
-    const res = await request(app)
-      .get('/api/users')
-      .expect(200);
+// dev-database-setup.js
+class DevDatabaseSetup {
+  async setupDevelopmentDatabase() {
+    const mongoose = require('mongoose');
     
-    expect(res.body).toHaveProperty('users');
-    expect(Array.isArray(res.body.users)).toBe(true);
+    // Connect to development database
+    await mongoose.connect(process.env.DATABASE_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+
+    // Seed development data
+    await this.seedDevelopmentData();
+    
+    console.log('Development database ready!');
+  }
+
+  async seedDevelopmentData() {
+    // Create sample users for testing
+    const User = require('./models/User');
+    
+    const sampleUsers = [
+      {
+        name: 'Test User 1',
+        email: 'test1@example.com',
+        password: 'password123',
+        role: 'user'
+      },
+      {
+        name: 'Test Admin',
+        email: 'admin@example.com', 
+        password: 'admin123',
+        role: 'admin'
+      }
+    ];
+
+    for (const userData of sampleUsers) {
+      const existingUser = await User.findOne({ email: userData.email });
+      if (!existingUser) {
+        await User.create(userData);
+        console.log(`Created test user: ${userData.email}`);
+      }
+    }
+
+    // Create sample data for other models
+    await this.createSampleProducts();
+    await this.createSampleOrders();
+  }
+
+  async createSampleProducts() {
+    const Product = require('./models/Product');
+    
+    const sampleProducts = [
+      {
+        name: 'Sample Product 1',
+        price: 29.99,
+        description: 'This is a sample product for testing',
+        category: 'Electronics',
+        inStock: true
+      },
+      {
+        name: 'Sample Product 2', 
+        price: 49.99,
+        description: 'Another sample product for testing',
+        category: 'Clothing',
+        inStock: true
+      }
+    ];
+
+    for (const productData of sampleProducts) {
+      const existingProduct = await Product.findOne({ name: productData.name });
+      if (!existingProduct) {
+        await Product.create(productData);
+        console.log(`Created sample product: ${productData.name}`);
+      }
+    }
+  }
+}
+```
+
+### Step 3: Staging Environment Setup
+
+#### Cloud Staging Environment:
+
+**Staging Environment Configuration:**
+```bash
+# .env.staging
+NODE_ENV=staging
+PORT=3000
+API_URL=https://myapp-staging.herokuapp.com
+DATABASE_URL=mongodb+srv://user:pass@cluster.mongodb.net/myapp_staging
+DEBUG=false
+LOG_LEVEL=info
+
+# Staging-specific settings
+REACT_APP_API_URL=https://myapp-staging.herokuapp.com/api
+REACT_APP_ANALYTICS_ID=staging-analytics-id
+```
+
+**Automated Staging Deployment:**
+```yaml
+# .github/workflows/staging-deploy.yml
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Build for staging
+      run: npm run build:staging
+      
+    - name: Deploy to Heroku Staging
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "myapp-staging"
+        heroku_email: "your-email@example.com"
+        
+    - name: Run staging tests
+      run: npm run test:staging
+      
+    - name: Notify team
+      run: |
+        echo "Staging deployment complete!"
+        echo "Preview URL: https://myapp-staging.herokuapp.com"
+```
+
+**Staging Environment Manager:**
+```javascript
+// staging-environment.js
+class StagingEnvironment {
+  constructor() {
+    this.stagingURL = process.env.STAGING_URL;
+    this.apiURL = process.env.STAGING_API_URL;
+  }
+
+  async setupStagingEnvironment() {
+    console.log('Setting up staging environment...');
+    
+    // Deploy latest code to staging
+    await this.deployToStaging();
+    
+    // Run staging tests
+    await this.runStagingTests();
+    
+    // Setup staging data
+    await this.setupStagingData();
+    
+    // Generate preview links
+    const previewLinks = await this.generatePreviewLinks();
+    
+    console.log('Staging environment ready!');
+    console.log('Preview URLs:', previewLinks);
+    
+    return previewLinks;
+  }
+
+  async deployToStaging() {
+    // Build the application
+    const { exec } = require('child_process');
+    
+    return new Promise((resolve, reject) => {
+      exec('npm run build:staging', (error, stdout, stderr) => {
+        if (error) {
+          console.error('Build failed:', error);
+          reject(error);
+        } else {
+          console.log('Build successful:', stdout);
+          resolve(stdout);
+        }
+      });
+    });
+  }
+
+  async runStagingTests() {
+    // Run automated tests against staging environment
+    const testResults = await this.runEndToEndTests();
+    
+    if (testResults.failed > 0) {
+      throw new Error(`Staging tests failed: ${testResults.failed} failures`);
+    }
+    
+    console.log('All staging tests passed!');
+    return testResults;
+  }
+
+  async setupStagingData() {
+    // Reset staging database with fresh test data
+    await this.resetStagingDatabase();
+    await this.seedStagingData();
+    
+    console.log('Staging data setup complete');
+  }
+
+  async generatePreviewLinks() {
+    return {
+      main: `${this.stagingURL}`,
+      admin: `${this.stagingURL}/admin`,
+      api: `${this.apiURL}/docs`,
+      testAccounts: {
+        user: 'test@example.com / password123',
+        admin: 'admin@example.com / admin123'
+      }
+    };
+  }
+}
+```
+
+### Step 4: Automated Testing Setup
+
+#### Test Suite Configuration:
+
+**Unit Testing Setup:**
+```javascript
+// test-setup.js
+const { configure } = require('@testing-library/react');
+const { setupServer } = require('msw/node');
+const { rest } = require('msw');
+
+// Configure testing library
+configure({ testIdAttribute: 'data-testid' });
+
+// Setup mock server for API calls
+const server = setupServer(
+  rest.get('/api/users', (req, res, ctx) => {
+    return res(ctx.json([
+      { id: 1, name: 'Test User', email: 'test@example.com' }
+    ]));
+  }),
+  
+  rest.post('/api/login', (req, res, ctx) => {
+    return res(ctx.json({
+      token: 'mock-token',
+      user: { id: 1, name: 'Test User' }
+    }));
+  })
+);
+
+// Start server before all tests
+beforeAll(() => server.listen());
+
+// Reset handlers after each test
+afterEach(() => server.resetHandlers());
+
+// Clean up after all tests
+afterAll(() => server.close());
+
+// Global test utilities
+global.testUtils = {
+  createMockUser: () => ({
+    id: 1,
+    name: 'Test User',
+    email: 'test@example.com',
+    role: 'user'
+  }),
+  
+  createMockProduct: () => ({
+    id: 1,
+    name: 'Test Product',
+    price: 29.99,
+    description: 'Test product description'
+  })
+};
+```
+
+**Component Testing Framework:**
+```javascript
+// component-testing.js
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+class ComponentTesting {
+  // Test component rendering
+  testComponentRender(Component, props = {}) {
+    const { container } = render(<Component {...props} />);
+    
+    return {
+      container,
+      getByText: (text) => screen.getByText(text),
+      getByTestId: (testId) => screen.getByTestId(testId),
+      queryByText: (text) => screen.queryByText(text)
+    };
+  }
+
+  // Test user interactions
+  async testUserInteraction(Component, interactions) {
+    const user = userEvent.setup();
+    render(<Component />);
+    
+    for (const interaction of interactions) {
+      switch (interaction.type) {
+        case 'click':
+          await user.click(screen.getByTestId(interaction.target));
+          break;
+        case 'type':
+          await user.type(screen.getByTestId(interaction.target), interaction.text);
+          break;
+        case 'select':
+          await user.selectOptions(screen.getByTestId(interaction.target), interaction.value);
+          break;
+      }
+    }
+    
+    return screen;
+  }
+
+  // Test API integration
+  async testAPIIntegration(Component, apiCalls) {
+    render(<Component />);
+    
+    // Wait for API calls to complete
+    for (const apiCall of apiCalls) {
+      await waitFor(() => {
+        expect(screen.getByTestId(apiCall.loadingIndicator)).not.toBeInTheDocument();
+      });
+      
+      // Verify expected data is displayed
+      expect(screen.getByText(apiCall.expectedText)).toBeInTheDocument();
+    }
+  }
+}
+
+// Example test file
+describe('UserProfile Component', () => {
+  const testing = new ComponentTesting();
+  
+  test('renders user information correctly', () => {
+    const mockUser = global.testUtils.createMockUser();
+    const { getByText } = testing.testComponentRender(UserProfile, { user: mockUser });
+    
+    expect(getByText(mockUser.name)).toBeInTheDocument();
+    expect(getByText(mockUser.email)).toBeInTheDocument();
+  });
+  
+  test('handles profile update', async () => {
+    const mockUser = global.testUtils.createMockUser();
+    
+    await testing.testUserInteraction(UserProfile, [
+      { type: 'click', target: 'edit-button' },
+      { type: 'type', target: 'name-input', text: 'Updated Name' },
+      { type: 'click', target: 'save-button' }
+    ]);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Profile updated successfully')).toBeInTheDocument();
+    });
   });
 });
 ```
 
+#### End-to-End Testing:
+
+**E2E Testing with Playwright:**
+```javascript
+// e2e-testing.js
+const { test, expect } = require('@playwright/test');
+
+class E2ETestSuite {
+  constructor() {
+    this.baseURL = process.env.TEST_URL || 'http://localhost:3000';
+  }
+
+  // Test complete user workflows
+  async testUserJourney(page, journey) {
+    for (const step of journey.steps) {
+      await this.executeStep(page, step);
+    }
+  }
+
+  async executeStep(page, step) {
+    switch (step.action) {
+      case 'navigate':
+        await page.goto(`${this.baseURL}${step.path}`);
+        break;
+      case 'click':
+        await page.click(step.selector);
+        break;
+      case 'fill':
+        await page.fill(step.selector, step.value);
+        break;
+      case 'wait':
+        await page.waitForSelector(step.selector);
+        break;
+      case 'verify':
+        await expect(page.locator(step.selector)).toContainText(step.text);
+        break;
+    }
+  }
+}
+
+// Example E2E tests
+test.describe('User Registration Flow', () => {
+  const e2e = new E2ETestSuite();
+  
+  test('user can register and login', async ({ page }) => {
+    const userJourney = {
+      steps: [
+        { action: 'navigate', path: '/register' },
+        { action: 'fill', selector: '[data-testid="name-input"]', value: 'Test User' },
+        { action: 'fill', selector: '[data-testid="email-input"]', value: 'test@example.com' },
+        { action: 'fill', selector: '[data-testid="password-input"]', value: 'password123' },
+        { action: 'click', selector: '[data-testid="register-button"]' },
+        { action: 'wait', selector: '[data-testid="success-message"]' },
+        { action: 'verify', selector: '[data-testid="success-message"]', text: 'Registration successful' }
+      ]
+    };
+    
+    await e2e.testUserJourney(page, userJourney);
+  });
+  
+  test('user can complete purchase', async ({ page }) => {
+    // Login first
+    await page.goto(`${e2e.baseURL}/login`);
+    await page.fill('[data-testid="email-input"]', 'test@example.com');
+    await page.fill('[data-testid="password-input"]', 'password123');
+    await page.click('[data-testid="login-button"]');
+    
+    // Complete purchase flow
+    const purchaseJourney = {
+      steps: [
+        { action: 'navigate', path: '/products' },
+        { action: 'click', selector: '[data-testid="product-1"]' },
+        { action: 'click', selector: '[data-testid="add-to-cart"]' },
+        { action: 'navigate', path: '/cart' },
+        { action: 'click', selector: '[data-testid="checkout-button"]' },
+        { action: 'fill', selector: '[data-testid="card-number"]', value: '4242424242424242' },
+        { action: 'click', selector: '[data-testid="complete-purchase"]' },
+        { action: 'verify', selector: '[data-testid="order-confirmation"]', text: 'Order confirmed' }
+      ]
+    };
+    
+    await e2e.testUserJourney(page, purchaseJourney);
+  });
+});
+```
+
+### Step 5: Live Preview and Hot Reload
+
+#### Real-Time Development Experience:
+
+**Live Preview Setup:**
+```javascript
+// live-preview.js
+class LivePreview {
+  constructor() {
+    this.websocket = null;
+    this.previewURL = null;
+  }
+
+  async setupLivePreview() {
+    // Start development server with live reload
+    await this.startDevServer();
+    
+    // Setup WebSocket for real-time updates
+    this.setupWebSocket();
+    
+    // Setup file watchers
+    this.setupFileWatchers();
+    
+    // Generate shareable preview links
+    const previewLinks = await this.generatePreviewLinks();
+    
+    console.log('Live preview ready!');
+    console.log('Local URL:', 'http://localhost:3000');
+    console.log('Network URL:', previewLinks.network);
+    console.log('Shareable URL:', previewLinks.shareable);
+    
+    return previewLinks;
+  }
+
+  async startDevServer() {
+    const express = require('express');
+    const app = express();
+    const http = require('http');
+    const socketIo = require('socket.io');
+    
+    const server = http.createServer(app);
+    const io = socketIo(server);
+    
+    // Serve static files
+    app.use(express.static('build'));
+    
+    // Setup WebSocket for live updates
+    io.on('connection', (socket) => {
+      console.log('Client connected for live preview');
+      
+      socket.on('disconnect', () => {
+        console.log('Client disconnected');
+      });
+    });
+    
+    server.listen(3000, () => {
+      console.log('Development server running on port 3000');
+    });
+    
+    this.websocket = io;
+  }
+
+  setupFileWatchers() {
+    const chokidar = require('chokidar');
+    
+    // Watch for file changes
+    const watcher = chokidar.watch(['src/**/*', 'public/**/*'], {
+      ignored: /node_modules/,
+      persistent: true
+    });
+    
+    watcher.on('change', (path) => {
+      console.log(`File changed: ${path}`);
+      this.handleFileChange(path);
+    });
+  }
+
+  handleFileChange(filePath) {
+    const fileExtension = filePath.split('.').pop();
+    
+    switch (fileExtension) {
+      case 'js':
+      case 'jsx':
+        this.reloadJavaScript();
+        break;
+      case 'css':
+        this.reloadCSS();
+        break;
+      case 'html':
+        this.reloadPage();
+        break;
+      default:
+        this.reloadPage();
+    }
+  }
+
+  reloadJavaScript() {
+    // Hot reload JavaScript modules
+    if (this.websocket) {
+      this.websocket.emit('js-reload', {
+        type: 'javascript',
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  reloadCSS() {
+    // Hot reload CSS without page refresh
+    if (this.websocket) {
+      this.websocket.emit('css-reload', {
+        type: 'css',
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  reloadPage() {
+    // Full page reload for other changes
+    if (this.websocket) {
+      this.websocket.emit('page-reload', {
+        type: 'page',
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  async generatePreviewLinks() {
+    const os = require('os');
+    const networkInterfaces = os.networkInterfaces();
+    
+    // Get local IP address
+    let localIP = 'localhost';
+    for (const interfaceName in networkInterfaces) {
+      const interfaces = networkInterfaces[interfaceName];
+      for (const interface of interfaces) {
+        if (interface.family === 'IPv4' && !interface.internal) {
+          localIP = interface.address;
+          break;
+        }
+      }
+    }
+    
+    // Generate ngrok tunnel for external sharing
+    const ngrok = require('ngrok');
+    const shareableURL = await ngrok.connect(3000);
+    
+    return {
+      local: 'http://localhost:3000',
+      network: `http://${localIP}:3000`,
+      shareable: shareableURL
+    };
+  }
+}
+```
+
+**Client-Side Live Reload:**
+```javascript
+// live-reload-client.js
+class LiveReloadClient {
+  constructor() {
+    this.socket = null;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
+  }
+
+  connect() {
+    this.socket = io();
+    
+    this.socket.on('connect', () => {
+      console.log('Connected to live reload server');
+      this.reconnectAttempts = 0;
+      this.showConnectionStatus('connected');
+    });
+    
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from live reload server');
+      this.showConnectionStatus('disconnected');
+      this.attemptReconnect();
+    });
+    
+    this.socket.on('js-reload', () => {
+      console.log('Reloading JavaScript...');
+      this.reloadJavaScript();
+    });
+    
+    this.socket.on('css-reload', () => {
+      console.log('Reloading CSS...');
+      this.reloadCSS();
+    });
+    
+    this.socket.on('page-reload', () => {
+      console.log('Reloading page...');
+      window.location.reload();
+    });
+  }
+
+  reloadJavaScript() {
+    // Reload JavaScript modules without losing state
+    if (module.hot) {
+      module.hot.accept();
+    } else {
+      window.location.reload();
+    }
+  }
+
+  reloadCSS() {
+    // Reload CSS files without page refresh
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    
+    links.forEach(link => {
+      const href = link.href;
+      const newHref = href.includes('?') 
+        ? href.split('?')[0] + '?v=' + Date.now()
+        : href + '?v=' + Date.now();
+      
+      link.href = newHref;
+    });
+  }
+
+  showConnectionStatus(status) {
+    // Show connection status indicator
+    let indicator = document.getElementById('live-reload-indicator');
+    
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.id = 'live-reload-indicator';
+      indicator.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 9999;
+        transition: all 0.3s ease;
+      `;
+      document.body.appendChild(indicator);
+    }
+    
+    if (status === 'connected') {
+      indicator.textContent = '🟢 Live Reload Active';
+      indicator.style.backgroundColor = '#4CAF50';
+      indicator.style.color = 'white';
+    } else {
+      indicator.textContent = '🔴 Live Reload Disconnected';
+      indicator.style.backgroundColor = '#f44336';
+      indicator.style.color = 'white';
+    }
+  }
+
+  attemptReconnect() {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      
+      setTimeout(() => {
+        this.connect();
+      }, 2000 * this.reconnectAttempts);
+    }
+  }
+}
+
+// Auto-start live reload in development
+if (process.env.NODE_ENV === 'development') {
+  const liveReload = new LiveReloadClient();
+  liveReload.connect();
+}
+```
+
+### Step 6: Testing Dashboard and Monitoring
+
+#### Testing Dashboard Interface:
+
+**Testing Dashboard:**
+```html
+<!-- testing-dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Testing Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+        .status-green { background-color: #e8f5e8; border-color: #4CAF50; }
+        .status-red { background-color: #ffeaea; border-color: #f44336; }
+        .status-yellow { background-color: #fff8e1; border-color: #ff9800; }
+        .button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .button-primary { background-color: #007AFF; color: white; }
+        .button-secondary { background-color: #6c757d; color: white; }
+        .log { background-color: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Testing Dashboard</h1>
+    
+    <div class="dashboard">
+        <!-- Environment Status -->
+        <div class="card status-green">
+            <h3>Environment Status</h3>
+            <p><strong>Development:</strong> ✅ Running</p>
+            <p><strong>Staging:</strong> ✅ Deployed</p>
+            <p><strong>Production:</strong> ✅ Live</p>
+            <button class="button button-primary" onclick="refreshEnvironments()">Refresh Status</button>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="card status-green">
+            <h3>Test Results</h3>
+            <p><strong>Unit Tests:</strong> 45/45 passing</p>
+            <p><strong>Integration Tests:</strong> 12/12 passing</p>
+            <p><strong>E2E Tests:</strong> 8/8 passing</p>
+            <button class="button button-primary" onclick="runAllTests()">Run All Tests</button>
+        </div>
+        
+        <!-- Performance Metrics -->
+        <div class="card status-yellow">
+            <h3>Performance</h3>
+            <p><strong>Load Time:</strong> 2.3s (Target: <2s)</p>
+            <p><strong>Bundle Size:</strong> 450KB (Target: <500KB)</p>
+            <p><strong>Lighthouse Score:</strong> 85/100</p>
+            <button class="button button-secondary" onclick="runPerformanceTest()">Run Performance Test</button>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <button class="button button-primary" onclick="deployToStaging()">Deploy to Staging</button>
+            <button class="button button-primary" onclick="generatePreviewLink()">Generate Preview Link</button>
+            <button class="button button-secondary" onclick="resetTestData()">Reset Test Data</button>
+            <button class="button button-secondary" onclick="viewLogs()">View Logs</button>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="card">
+            <h3>Recent Activity</h3>
+            <div class="log" id="activity-log">
+                <div>✅ Tests passed - 2 minutes ago</div>
+                <div>🚀 Deployed to staging - 15 minutes ago</div>
+                <div>🔧 Fixed mobile layout issue - 1 hour ago</div>
+                <div>✅ All tests passing - 2 hours ago</div>
+            </div>
+        </div>
+        
+        <!-- Preview Links -->
+        <div class="card">
+            <h3>Preview Links</h3>
+            <p><strong>Local:</strong> <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+            <p><strong>Staging:</strong> <a href="#" id="staging-link" target="_blank">Generate Link</a></p>
+            <p><strong>Mobile Preview:</strong> <a href="#" id="mobile-link" target="_blank">Generate QR Code</a></p>
+            <button class="button button-primary" onclick="generateQRCode()">Generate QR Code</button>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard functionality
+        function refreshEnvironments() {
+            console.log('Refreshing environment status...');
+            // Implementation would check actual environment status
+        }
+        
+        function runAllTests() {
+            console.log('Running all tests...');
+            // Implementation would trigger test suite
+        }
+        
+        function runPerformanceTest() {
+            console.log('Running performance tests...');
+            // Implementation would run Lighthouse audit
+        }
+        
+        function deployToStaging() {
+            console.log('Deploying to staging...');
+            // Implementation would trigger staging deployment
+        }
+        
+        function generatePreviewLink() {
+            console.log('Generating preview link...');
+            // Implementation would create shareable preview URL
+        }
+        
+        function resetTestData() {
+            console.log('Resetting test data...');
+            // Implementation would reset test database
+        }
+        
+        function viewLogs() {
+            console.log('Opening logs...');
+            // Implementation would show detailed logs
+        }
+        
+        function generateQRCode() {
+            console.log('Generating QR code for mobile testing...');
+            // Implementation would create QR code for mobile access
+        }
+    </script>
+</body>
+</html>
+```
+
 ## Testing Environment Checklist
 
-### ✅ Basic Setup Complete When:
-- [ ] Development server starts without errors
-- [ ] App loads in browser at localhost
-- [ ] Hot reloading works (changes appear automatically)
-- [ ] Console shows no critical errors
-- [ ] Database connection established (if applicable)
-
-### ✅ Advanced Setup Complete When:
+### ✅ Local Development Complete When:
+- [ ] Development server running with hot reload
 - [ ] Environment variables configured
-- [ ] Test data loaded
-- [ ] API endpoints responding
-- [ ] Mobile view works
-- [ ] Tests run successfully
-- [ ] Staging environment deployed
+- [ ] Development database seeded with test data
+- [ ] File watchers active for instant updates
+- [ ] Browser sync working across devices
 
-### ✅ Production Ready When:
-- [ ] All tests passing
-- [ ] No console errors
-- [ ] Performance acceptable
-- [ ] Mobile responsive
-- [ ] Security configured
-- [ ] Monitoring setup
+### ✅ Staging Environment Complete When:
+- [ ] Staging server deployed and accessible
+- [ ] Automated deployment pipeline working
+- [ ] Staging database configured
+- [ ] Preview links generated and shareable
+- [ ] Staging tests passing
 
-## Common Issues and Solutions
+### ✅ Automated Testing Complete When:
+- [ ] Unit tests covering core functionality
+- [ ] Integration tests for API endpoints
+- [ ] End-to-end tests for user workflows
+- [ ] Performance tests monitoring metrics
+- [ ] Test dashboard showing real-time status
 
-### Issue: "npm start" fails
-**Solutions:**
-1. Delete node_modules and package-lock.json
-2. Run `npm install` again
-3. Check Node.js version compatibility
-4. Try `npm cache clean --force`
+### ✅ Live Preview Complete When:
+- [ ] Real-time updates working
+- [ ] Shareable preview links generated
+- [ ] Mobile testing capabilities active
+- [ ] Cross-device synchronization working
+- [ ] Connection status monitoring active
 
-### Issue: Changes not appearing
+### ✅ Testing Dashboard Complete When:
+- [ ] Environment status monitoring
+- [ ] Test results visualization
+- [ ] Performance metrics tracking
+- [ ] Quick action buttons functional
+- [ ] Activity logging active
+
+## Common Testing Issues and Solutions
+
+### Issue: Changes Not Reflecting
 **Solutions:**
 1. Check if development server is running
-2. Hard refresh browser (Ctrl+F5)
-3. Check for JavaScript errors in console
-4. Restart development server
+2. Verify file watchers are active
+3. Clear browser cache and reload
+4. Check for JavaScript errors in console
 
-### Issue: API calls failing
+### Issue: Tests Failing
 **Solutions:**
-1. Check if backend server is running
-2. Verify API URLs in frontend code
-3. Check CORS configuration
-4. Test API endpoints with Postman
+1. Check test environment configuration
+2. Verify test data is properly seeded
+3. Update tests to match code changes
+4. Check for timing issues in async tests
 
-### Issue: Database connection errors
+### Issue: Staging Deployment Problems
 **Solutions:**
-1. Verify database is running
-2. Check connection string in .env
-3. Ensure database exists
-4. Check firewall/network settings
+1. Verify environment variables are set
+2. Check build process for errors
+3. Ensure database connections work
+4. Verify all dependencies are installed
+
+### Issue: Preview Links Not Working
+**Solutions:**
+1. Check network connectivity
+2. Verify port forwarding settings
+3. Update firewall rules if needed
+4. Use alternative sharing methods (ngrok, etc.)
 
 ## Usage Instructions
 
-To set up your testing environment, ask:
-"Set up a testing and staging environment for this [React/Node.js/Full-stack] project so I can see my changes in real-time and test everything before going live."
+To set up comprehensive testing environments, ask:
+"Set up testing and staging environments for this project using @testing-staging-setup.mdc, including [specific requirements like live preview, automated testing, or mobile testing]."
 
-This will provide step-by-step instructions specific to your project type and help you get everything running locally.
+This will provide a complete testing infrastructure that lets you see your app in action as you build it, catch issues early, and share progress with others easily.
 

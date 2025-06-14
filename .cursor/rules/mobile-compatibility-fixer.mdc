@@ -1,0 +1,1144 @@
+---
+description: "Ensure perfect mobile experience across all devices and screen sizes"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Mobile Compatibility Fixer
+
+You are helping someone with no coding experience ensure their application works perfectly on mobile devices and provides an excellent user experience across all screen sizes.
+
+## Mobile Compatibility Process
+
+### Step 1: Understanding Mobile Compatibility
+
+#### What is Mobile Compatibility?
+Think of mobile compatibility like making sure your house is accessible to everyone:
+- **Different Door Sizes**: Apps must work on screens from 4" phones to 13" tablets
+- **Different Ways to Navigate**: Touch instead of mouse, gestures instead of clicks
+- **Different Capabilities**: Slower internet, less processing power, battery concerns
+- **Different Contexts**: People use mobile apps while walking, in bright sunlight, with one hand
+
+#### Why Mobile Matters:
+- **User Dominance**: 60%+ of web traffic comes from mobile devices
+- **User Expectations**: Mobile users expect apps to work perfectly on their devices
+- **Search Rankings**: Google prioritizes mobile-friendly websites
+- **Business Impact**: Poor mobile experience = lost customers and revenue
+- **Accessibility**: Mobile compatibility often improves accessibility for all users
+
+#### Mobile User Behavior:
+- **Shorter Attention Spans**: Mobile users make decisions in seconds
+- **Touch-First Interaction**: Everything must be easily tappable
+- **Context Switching**: Users multitask and get interrupted frequently
+- **Performance Sensitivity**: Slow loading = immediate abandonment
+- **Thumb Navigation**: Most interaction happens with thumbs
+
+### Step 2: Mobile Compatibility Audit
+
+#### Mobile Experience Assessment:
+
+**Device and Screen Testing:**
+```markdown
+## Mobile Device Testing Checklist
+
+### Screen Size Testing:
+- [ ] iPhone SE (375x667) - Small phone
+- [ ] iPhone 12 (390x844) - Standard phone  
+- [ ] iPhone 12 Pro Max (428x926) - Large phone
+- [ ] iPad (768x1024) - Standard tablet
+- [ ] iPad Pro (1024x1366) - Large tablet
+- [ ] Samsung Galaxy S21 (360x800) - Android phone
+- [ ] Samsung Galaxy Tab (800x1280) - Android tablet
+
+### Orientation Testing:
+- [ ] Portrait mode functionality
+- [ ] Landscape mode functionality
+- [ ] Orientation change handling
+- [ ] Content reflow on rotation
+- [ ] Navigation accessibility in both modes
+
+### Touch Interaction Testing:
+- [ ] All buttons easily tappable (44px minimum)
+- [ ] Touch targets properly spaced
+- [ ] Swipe gestures work correctly
+- [ ] Pinch-to-zoom functionality
+- [ ] Long press interactions
+```
+
+**Performance on Mobile:**
+```markdown
+## Mobile Performance Assessment
+
+### Loading Performance:
+- [ ] Page loads in under 3 seconds on 3G
+- [ ] Images optimized for mobile bandwidth
+- [ ] JavaScript bundle size under 500KB
+- [ ] CSS optimized for mobile rendering
+- [ ] Fonts load quickly and efficiently
+
+### Runtime Performance:
+- [ ] Smooth scrolling on all devices
+- [ ] Animations run at 60fps
+- [ ] No janky interactions or delays
+- [ ] Memory usage stays reasonable
+- [ ] Battery usage optimized
+
+### Network Optimization:
+- [ ] Works on slow 3G connections
+- [ ] Graceful degradation on poor networks
+- [ ] Offline functionality where appropriate
+- [ ] Progressive loading of content
+- [ ] Efficient caching strategies
+```
+
+#### Automated Mobile Testing:
+
+**Mobile Compatibility Scanner:**
+```javascript
+// mobile-compatibility-scanner.js
+class MobileCompatibilityScanner {
+  async scanMobileCompatibility() {
+    const results = {
+      issues: [],
+      score: 0,
+      recommendations: []
+    };
+
+    await this.checkViewportConfiguration();
+    await this.checkTouchTargets();
+    await this.checkResponsiveDesign();
+    await this.checkMobilePerformance();
+    await this.checkMobileUsability();
+
+    return this.generateMobileReport(results);
+  }
+
+  async checkViewportConfiguration() {
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    
+    if (!viewportMeta) {
+      this.addIssue('MISSING_VIEWPORT', 'No viewport meta tag found', 'HIGH');
+      return;
+    }
+
+    const content = viewportMeta.getAttribute('content');
+    const requiredSettings = [
+      'width=device-width',
+      'initial-scale=1'
+    ];
+
+    for (const setting of requiredSettings) {
+      if (!content.includes(setting)) {
+        this.addIssue('VIEWPORT_CONFIG', `Missing viewport setting: ${setting}`, 'MEDIUM');
+      }
+    }
+  }
+
+  async checkTouchTargets() {
+    const interactiveElements = document.querySelectorAll('button, a, input, select, textarea');
+    
+    for (const element of interactiveElements) {
+      const rect = element.getBoundingClientRect();
+      const minSize = 44; // 44px minimum touch target size
+      
+      if (rect.width < minSize || rect.height < minSize) {
+        this.addIssue('SMALL_TOUCH_TARGET', 
+          `Touch target too small: ${rect.width}x${rect.height}px (minimum: ${minSize}px)`, 
+          'MEDIUM'
+        );
+      }
+
+      // Check spacing between touch targets
+      const nearbyElements = this.findNearbyElements(element, 8); // 8px minimum spacing
+      if (nearbyElements.length > 0) {
+        this.addIssue('TOUCH_TARGET_SPACING', 
+          'Touch targets too close together', 
+          'LOW'
+        );
+      }
+    }
+  }
+
+  async checkResponsiveDesign() {
+    const breakpoints = [320, 375, 414, 768, 1024, 1200];
+    
+    for (const width of breakpoints) {
+      // Simulate different screen sizes
+      const issues = await this.testAtBreakpoint(width);
+      this.results.issues.push(...issues);
+    }
+  }
+
+  async testAtBreakpoint(width) {
+    const issues = [];
+    
+    // Check for horizontal scrolling
+    if (document.body.scrollWidth > width) {
+      issues.push({
+        type: 'HORIZONTAL_SCROLL',
+        message: `Horizontal scrolling detected at ${width}px width`,
+        severity: 'HIGH'
+      });
+    }
+
+    // Check for content overflow
+    const overflowElements = this.findOverflowElements();
+    if (overflowElements.length > 0) {
+      issues.push({
+        type: 'CONTENT_OVERFLOW',
+        message: `Content overflow detected at ${width}px width`,
+        severity: 'MEDIUM'
+      });
+    }
+
+    return issues;
+  }
+}
+```
+
+### Step 3: Responsive Design Implementation
+
+#### CSS Framework for Mobile-First Design:
+
+**Mobile-First CSS Structure:**
+```css
+/* mobile-first-styles.css */
+
+/* Base styles for mobile (320px+) */
+.container {
+  width: 100%;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+.button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 16px;
+  font-size: 16px; /* Prevents zoom on iOS */
+  border-radius: 8px;
+  border: none;
+  background: #007AFF;
+  color: white;
+  cursor: pointer;
+  touch-action: manipulation; /* Prevents double-tap zoom */
+}
+
+.input-field {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 16px;
+  font-size: 16px; /* Prevents zoom on iOS */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Navigation optimized for mobile */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  min-width: 44px;
+  text-decoration: none;
+  color: #666;
+}
+
+.mobile-nav-item.active {
+  color: #007AFF;
+}
+
+/* Small phones (375px+) */
+@media (min-width: 375px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+/* Large phones (414px+) */
+@media (min-width: 414px) {
+  .container {
+    padding: 0 24px;
+  }
+  
+  .button {
+    padding: 14px 20px;
+  }
+}
+
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+    padding: 0 32px;
+  }
+  
+  .mobile-nav {
+    position: static;
+    background: transparent;
+    border: none;
+    justify-content: flex-start;
+    gap: 24px;
+  }
+  
+  .mobile-nav-item {
+    flex-direction: row;
+    gap: 8px;
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+    padding: 0 40px;
+  }
+}
+
+/* Touch-specific styles */
+@media (hover: none) and (pointer: coarse) {
+  .button:hover {
+    /* Remove hover effects on touch devices */
+    background: #007AFF;
+  }
+  
+  .button:active {
+    background: #0056CC;
+    transform: scale(0.98);
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .icon {
+    background-image: url('icon@2x.png');
+    background-size: 24px 24px;
+  }
+}
+```
+
+**Responsive Grid System:**
+```css
+/* responsive-grid.css */
+
+.grid {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Mobile: Single column */
+.grid-mobile-1 {
+  grid-template-columns: 1fr;
+}
+
+/* Mobile: Two columns for small items */
+.grid-mobile-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Tablet: Responsive columns */
+@media (min-width: 768px) {
+  .grid-tablet-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-tablet-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .grid-tablet-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Desktop: More columns */
+@media (min-width: 1024px) {
+  .grid-desktop-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .grid-desktop-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .grid-desktop-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Flexible grid items */
+.grid-item {
+  min-width: 0; /* Prevents overflow */
+}
+
+.grid-item-span-2 {
+  grid-column: span 2;
+}
+
+.grid-item-span-full {
+  grid-column: 1 / -1;
+}
+```
+
+#### JavaScript for Mobile Interactions:
+
+**Touch Gesture Handler:**
+```javascript
+// mobile-interactions.js
+class MobileInteractions {
+  constructor() {
+    this.touchStartX = 0;
+    this.touchStartY = 0;
+    this.touchEndX = 0;
+    this.touchEndY = 0;
+    this.minSwipeDistance = 50;
+  }
+
+  setupMobileInteractions() {
+    // Handle touch events
+    document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+    document.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+    document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', this.handleOrientationChange.bind(this));
+
+    // Prevent zoom on double tap for specific elements
+    this.preventDoubleTabZoom();
+
+    // Setup pull-to-refresh
+    this.setupPullToRefresh();
+  }
+
+  handleTouchStart(event) {
+    this.touchStartX = event.touches[0].clientX;
+    this.touchStartY = event.touches[0].clientY;
+  }
+
+  handleTouchMove(event) {
+    // Prevent scrolling when swiping horizontally
+    const touchX = event.touches[0].clientX;
+    const touchY = event.touches[0].clientY;
+    const deltaX = Math.abs(touchX - this.touchStartX);
+    const deltaY = Math.abs(touchY - this.touchStartY);
+
+    if (deltaX > deltaY && deltaX > 10) {
+      event.preventDefault(); // Prevent vertical scroll during horizontal swipe
+    }
+  }
+
+  handleTouchEnd(event) {
+    this.touchEndX = event.changedTouches[0].clientX;
+    this.touchEndY = event.changedTouches[0].clientY;
+
+    this.handleSwipeGesture();
+  }
+
+  handleSwipeGesture() {
+    const deltaX = this.touchEndX - this.touchStartX;
+    const deltaY = this.touchEndY - this.touchStartY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+
+    // Horizontal swipe
+    if (absDeltaX > absDeltaY && absDeltaX > this.minSwipeDistance) {
+      if (deltaX > 0) {
+        this.onSwipeRight();
+      } else {
+        this.onSwipeLeft();
+      }
+    }
+
+    // Vertical swipe
+    if (absDeltaY > absDeltaX && absDeltaY > this.minSwipeDistance) {
+      if (deltaY > 0) {
+        this.onSwipeDown();
+      } else {
+        this.onSwipeUp();
+      }
+    }
+  }
+
+  onSwipeLeft() {
+    // Navigate to next page/section
+    this.triggerCustomEvent('swipeLeft');
+  }
+
+  onSwipeRight() {
+    // Navigate to previous page/section or open menu
+    this.triggerCustomEvent('swipeRight');
+  }
+
+  onSwipeUp() {
+    // Show more content or navigate up
+    this.triggerCustomEvent('swipeUp');
+  }
+
+  onSwipeDown() {
+    // Refresh content or navigate down
+    this.triggerCustomEvent('swipeDown');
+  }
+
+  handleOrientationChange() {
+    // Wait for orientation change to complete
+    setTimeout(() => {
+      // Recalculate layouts
+      this.recalculateLayouts();
+      
+      // Trigger resize events
+      window.dispatchEvent(new Event('resize'));
+      
+      // Update viewport height for mobile browsers
+      this.updateViewportHeight();
+    }, 100);
+  }
+
+  updateViewportHeight() {
+    // Fix for mobile browser viewport height issues
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  preventDoubleTabZoom() {
+    // Prevent double-tap zoom on specific elements
+    const preventZoomElements = document.querySelectorAll('.prevent-zoom');
+    
+    preventZoomElements.forEach(element => {
+      let lastTouchEnd = 0;
+      
+      element.addEventListener('touchend', (event) => {
+        const now = new Date().getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+    });
+  }
+
+  setupPullToRefresh() {
+    let startY = 0;
+    let currentY = 0;
+    let pullDistance = 0;
+    const threshold = 100;
+
+    document.addEventListener('touchstart', (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].pageY;
+      }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (window.scrollY === 0 && startY) {
+        currentY = e.touches[0].pageY;
+        pullDistance = currentY - startY;
+
+        if (pullDistance > 0) {
+          // Show pull indicator
+          this.showPullIndicator(pullDistance, threshold);
+        }
+      }
+    });
+
+    document.addEventListener('touchend', () => {
+      if (pullDistance > threshold) {
+        this.triggerRefresh();
+      }
+      this.hidePullIndicator();
+      startY = 0;
+      pullDistance = 0;
+    });
+  }
+}
+```
+
+### Step 4: Mobile Performance Optimization
+
+#### Mobile-Specific Performance Optimizations:
+
+**Image Optimization for Mobile:**
+```javascript
+// mobile-image-optimization.js
+class MobileImageOptimization {
+  optimizeImagesForMobile() {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+      this.setupResponsiveImages(img);
+      this.setupLazyLoading(img);
+      this.setupWebPSupport(img);
+    });
+  }
+
+  setupResponsiveImages(img) {
+    const src = img.src;
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    
+    // Create srcset for different screen densities
+    const srcset = [
+      `${src.replace('.jpg', '_1x.jpg')} 1x`,
+      `${src.replace('.jpg', '_2x.jpg')} 2x`,
+      `${src.replace('.jpg', '_3x.jpg')} 3x`
+    ].join(', ');
+    
+    img.srcset = srcset;
+    
+    // Set sizes based on viewport
+    img.sizes = `
+      (max-width: 375px) 375px,
+      (max-width: 414px) 414px,
+      (max-width: 768px) 768px,
+      100vw
+    `;
+  }
+
+  setupLazyLoading(img) {
+    // Use Intersection Observer for efficient lazy loading
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.classList.remove('lazy');
+            observer.unobserve(img);
+          }
+        });
+      });
+
+      img.classList.add('lazy');
+      img.dataset.src = img.src;
+      img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
+      imageObserver.observe(img);
+    }
+  }
+
+  setupWebPSupport(img) {
+    // Check WebP support and use WebP images if available
+    if (this.supportsWebP()) {
+      const webpSrc = img.src.replace(/\.(jpg|jpeg|png)$/, '.webp');
+      
+      // Create picture element for WebP support
+      const picture = document.createElement('picture');
+      const webpSource = document.createElement('source');
+      webpSource.srcset = webpSrc;
+      webpSource.type = 'image/webp';
+      
+      img.parentNode.insertBefore(picture, img);
+      picture.appendChild(webpSource);
+      picture.appendChild(img);
+    }
+  }
+
+  supportsWebP() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
+    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  }
+}
+```
+
+**Mobile Network Optimization:**
+```javascript
+// mobile-network-optimization.js
+class MobileNetworkOptimization {
+  constructor() {
+    this.connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  }
+
+  optimizeForConnection() {
+    if (!this.connection) return;
+
+    const effectiveType = this.connection.effectiveType;
+    const saveData = this.connection.saveData;
+
+    if (saveData || effectiveType === 'slow-2g' || effectiveType === '2g') {
+      this.enableDataSaverMode();
+    } else if (effectiveType === '3g') {
+      this.enableStandardMode();
+    } else {
+      this.enableHighQualityMode();
+    }
+
+    // Listen for connection changes
+    this.connection.addEventListener('change', () => {
+      this.optimizeForConnection();
+    });
+  }
+
+  enableDataSaverMode() {
+    // Reduce image quality
+    this.setImageQuality('low');
+    
+    // Disable auto-playing videos
+    this.disableAutoplay();
+    
+    // Reduce animation complexity
+    this.reduceAnimations();
+    
+    // Prioritize critical content
+    this.loadCriticalContentOnly();
+  }
+
+  enableStandardMode() {
+    this.setImageQuality('medium');
+    this.enableSelectiveAutoplay();
+    this.enableStandardAnimations();
+    this.loadStandardContent();
+  }
+
+  enableHighQualityMode() {
+    this.setImageQuality('high');
+    this.enableFullAutoplay();
+    this.enableRichAnimations();
+    this.loadFullContent();
+  }
+
+  preloadCriticalResources() {
+    // Preload critical CSS
+    const criticalCSS = document.createElement('link');
+    criticalCSS.rel = 'preload';
+    criticalCSS.as = 'style';
+    criticalCSS.href = '/css/critical.css';
+    document.head.appendChild(criticalCSS);
+
+    // Preload critical fonts
+    const criticalFont = document.createElement('link');
+    criticalFont.rel = 'preload';
+    criticalFont.as = 'font';
+    criticalFont.type = 'font/woff2';
+    criticalFont.href = '/fonts/main.woff2';
+    criticalFont.crossOrigin = 'anonymous';
+    document.head.appendChild(criticalFont);
+
+    // Preload critical images
+    const heroImage = new Image();
+    heroImage.src = '/images/hero-mobile.webp';
+  }
+}
+```
+
+### Step 5: Mobile User Experience Enhancements
+
+#### Mobile-Specific UX Improvements:
+
+**Mobile Navigation System:**
+```javascript
+// mobile-navigation.js
+class MobileNavigation {
+  constructor() {
+    this.isMenuOpen = false;
+    this.menuToggle = document.querySelector('.menu-toggle');
+    this.mobileMenu = document.querySelector('.mobile-menu');
+    this.menuOverlay = document.querySelector('.menu-overlay');
+  }
+
+  setupMobileNavigation() {
+    // Hamburger menu functionality
+    this.menuToggle.addEventListener('click', this.toggleMenu.bind(this));
+    this.menuOverlay.addEventListener('click', this.closeMenu.bind(this));
+
+    // Swipe to close menu
+    this.setupSwipeToClose();
+
+    // Tab navigation for accessibility
+    this.setupTabNavigation();
+
+    // Bottom navigation for mobile
+    this.setupBottomNavigation();
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    
+    if (this.isMenuOpen) {
+      this.openMenu();
+    } else {
+      this.closeMenu();
+    }
+  }
+
+  openMenu() {
+    this.mobileMenu.classList.add('open');
+    this.menuOverlay.classList.add('visible');
+    document.body.classList.add('menu-open');
+    
+    // Focus first menu item for accessibility
+    const firstMenuItem = this.mobileMenu.querySelector('a, button');
+    if (firstMenuItem) {
+      firstMenuItem.focus();
+    }
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
+    this.mobileMenu.classList.remove('open');
+    this.menuOverlay.classList.remove('visible');
+    document.body.classList.remove('menu-open');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    // Return focus to menu toggle
+    this.menuToggle.focus();
+  }
+
+  setupBottomNavigation() {
+    const bottomNav = document.querySelector('.bottom-navigation');
+    if (!bottomNav) return;
+
+    // Highlight current page
+    const currentPath = window.location.pathname;
+    const navItems = bottomNav.querySelectorAll('.nav-item');
+    
+    navItems.forEach(item => {
+      const href = item.getAttribute('href');
+      if (href === currentPath) {
+        item.classList.add('active');
+      }
+    });
+
+    // Add haptic feedback on supported devices
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (navigator.vibrate) {
+          navigator.vibrate(10); // Short vibration
+        }
+      });
+    });
+  }
+}
+```
+
+**Mobile Form Optimization:**
+```javascript
+// mobile-forms.js
+class MobileFormOptimization {
+  optimizeForms() {
+    const forms = document.querySelectorAll('form');
+    
+    forms.forEach(form => {
+      this.optimizeFormInputs(form);
+      this.setupFormValidation(form);
+      this.setupAutoComplete(form);
+    });
+  }
+
+  optimizeFormInputs(form) {
+    const inputs = form.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(input => {
+      // Set appropriate input types for mobile keyboards
+      this.setMobileInputType(input);
+      
+      // Add proper autocomplete attributes
+      this.setAutoComplete(input);
+      
+      // Optimize for touch
+      this.optimizeForTouch(input);
+    });
+  }
+
+  setMobileInputType(input) {
+    const name = input.name || input.id || '';
+    const type = input.type;
+
+    // Email inputs
+    if (name.includes('email') || type === 'email') {
+      input.type = 'email';
+      input.inputMode = 'email';
+    }
+
+    // Phone inputs
+    if (name.includes('phone') || name.includes('tel')) {
+      input.type = 'tel';
+      input.inputMode = 'tel';
+    }
+
+    // Number inputs
+    if (name.includes('number') || name.includes('amount') || name.includes('price')) {
+      input.type = 'number';
+      input.inputMode = 'numeric';
+    }
+
+    // URL inputs
+    if (name.includes('url') || name.includes('website')) {
+      input.type = 'url';
+      input.inputMode = 'url';
+    }
+
+    // Search inputs
+    if (name.includes('search')) {
+      input.type = 'search';
+    }
+  }
+
+  setAutoComplete(input) {
+    const name = input.name || input.id || '';
+
+    const autoCompleteMap = {
+      'email': 'email',
+      'phone': 'tel',
+      'firstname': 'given-name',
+      'lastname': 'family-name',
+      'address': 'street-address',
+      'city': 'address-level2',
+      'state': 'address-level1',
+      'zip': 'postal-code',
+      'country': 'country',
+      'cc-number': 'cc-number',
+      'cc-exp': 'cc-exp',
+      'cc-csc': 'cc-csc'
+    };
+
+    for (const [key, value] of Object.entries(autoCompleteMap)) {
+      if (name.includes(key)) {
+        input.autocomplete = value;
+        break;
+      }
+    }
+  }
+
+  optimizeForTouch(input) {
+    // Ensure minimum touch target size
+    const computedStyle = window.getComputedStyle(input);
+    const height = parseInt(computedStyle.height);
+    
+    if (height < 44) {
+      input.style.minHeight = '44px';
+      input.style.padding = '12px';
+    }
+
+    // Prevent zoom on iOS
+    if (input.type === 'text' || input.type === 'email' || input.type === 'password') {
+      const fontSize = parseInt(computedStyle.fontSize);
+      if (fontSize < 16) {
+        input.style.fontSize = '16px';
+      }
+    }
+  }
+}
+```
+
+### Step 6: Mobile Testing and Validation
+
+#### Comprehensive Mobile Testing Framework:
+
+**Mobile Testing Suite:**
+```javascript
+// mobile-testing.js
+class MobileTesting {
+  async runMobileTests() {
+    const results = {
+      passed: 0,
+      failed: 0,
+      tests: []
+    };
+
+    // Run all mobile compatibility tests
+    await this.testViewportConfiguration(results);
+    await this.testTouchTargets(results);
+    await this.testResponsiveDesign(results);
+    await this.testMobilePerformance(results);
+    await this.testMobileAccessibility(results);
+
+    return this.generateTestReport(results);
+  }
+
+  async testViewportConfiguration(results) {
+    const test = { name: 'Viewport Configuration', status: 'PASS', issues: [] };
+
+    // Check viewport meta tag
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (!viewport) {
+      test.status = 'FAIL';
+      test.issues.push('Missing viewport meta tag');
+    } else {
+      const content = viewport.getAttribute('content');
+      if (!content.includes('width=device-width')) {
+        test.status = 'FAIL';
+        test.issues.push('Viewport should include width=device-width');
+      }
+      if (!content.includes('initial-scale=1')) {
+        test.status = 'FAIL';
+        test.issues.push('Viewport should include initial-scale=1');
+      }
+    }
+
+    results.tests.push(test);
+    if (test.status === 'PASS') results.passed++; else results.failed++;
+  }
+
+  async testTouchTargets(results) {
+    const test = { name: 'Touch Target Sizes', status: 'PASS', issues: [] };
+    const minSize = 44;
+
+    const interactiveElements = document.querySelectorAll('button, a, input, select, textarea');
+    
+    for (const element of interactiveElements) {
+      const rect = element.getBoundingClientRect();
+      if (rect.width < minSize || rect.height < minSize) {
+        test.status = 'FAIL';
+        test.issues.push(`Element too small: ${rect.width}x${rect.height}px (min: ${minSize}px)`);
+      }
+    }
+
+    results.tests.push(test);
+    if (test.status === 'PASS') results.passed++; else results.failed++;
+  }
+
+  async testResponsiveDesign(results) {
+    const test = { name: 'Responsive Design', status: 'PASS', issues: [] };
+    const breakpoints = [320, 375, 414, 768, 1024];
+
+    for (const width of breakpoints) {
+      // Simulate viewport width
+      const issues = await this.testBreakpoint(width);
+      if (issues.length > 0) {
+        test.status = 'FAIL';
+        test.issues.push(...issues);
+      }
+    }
+
+    results.tests.push(test);
+    if (test.status === 'PASS') results.passed++; else results.failed++;
+  }
+
+  async testMobilePerformance(results) {
+    const test = { name: 'Mobile Performance', status: 'PASS', issues: [] };
+
+    // Test loading performance
+    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+    if (loadTime > 3000) {
+      test.status = 'FAIL';
+      test.issues.push(`Page load time too slow: ${loadTime}ms (target: <3000ms)`);
+    }
+
+    // Test bundle size
+    const scripts = document.querySelectorAll('script[src]');
+    let totalSize = 0;
+    for (const script of scripts) {
+      // Estimate script size (would need actual measurement in real implementation)
+      totalSize += 100; // Placeholder
+    }
+    
+    if (totalSize > 500) {
+      test.status = 'FAIL';
+      test.issues.push(`JavaScript bundle too large: ${totalSize}KB (target: <500KB)`);
+    }
+
+    results.tests.push(test);
+    if (test.status === 'PASS') results.passed++; else results.failed++;
+  }
+
+  generateTestReport(results) {
+    const passRate = (results.passed / (results.passed + results.failed)) * 100;
+    
+    return {
+      summary: {
+        totalTests: results.tests.length,
+        passed: results.passed,
+        failed: results.failed,
+        passRate: Math.round(passRate)
+      },
+      tests: results.tests,
+      recommendations: this.generateRecommendations(results),
+      mobileReadiness: passRate >= 90 ? 'EXCELLENT' : passRate >= 75 ? 'GOOD' : 'NEEDS_IMPROVEMENT'
+    };
+  }
+}
+```
+
+## Mobile Compatibility Checklist
+
+### ✅ Mobile Assessment Complete When:
+- [ ] All device sizes tested (phones, tablets)
+- [ ] Touch interactions verified
+- [ ] Performance measured on mobile networks
+- [ ] Mobile usability evaluated
+- [ ] Accessibility tested on mobile devices
+
+### ✅ Responsive Design Complete When:
+- [ ] Mobile-first CSS implemented
+- [ ] Flexible grid system in place
+- [ ] Images optimized for all screen sizes
+- [ ] Typography scales properly
+- [ ] Navigation works on all devices
+
+### ✅ Mobile Performance Complete When:
+- [ ] Page loads under 3 seconds on 3G
+- [ ] Images optimized for mobile bandwidth
+- [ ] JavaScript bundle under 500KB
+- [ ] Smooth scrolling and animations
+- [ ] Battery usage optimized
+
+### ✅ Mobile UX Complete When:
+- [ ] Touch targets minimum 44px
+- [ ] Intuitive mobile navigation
+- [ ] Forms optimized for mobile input
+- [ ] Gestures work naturally
+- [ ] Offline functionality where appropriate
+
+### ✅ Mobile Testing Complete When:
+- [ ] Automated mobile tests passing
+- [ ] Manual testing on real devices
+- [ ] Performance benchmarks met
+- [ ] Accessibility standards met
+- [ ] User feedback positive
+
+## Common Mobile Issues and Solutions
+
+### Issue: Small Touch Targets
+**Solutions:**
+1. Ensure minimum 44px touch target size
+2. Add adequate spacing between interactive elements
+3. Use larger buttons and form controls
+4. Test with actual fingers, not mouse cursor
+
+### Issue: Poor Mobile Performance
+**Solutions:**
+1. Optimize images for mobile bandwidth
+2. Minimize JavaScript bundle size
+3. Use efficient CSS for mobile rendering
+4. Implement lazy loading for content
+
+### Issue: Difficult Mobile Navigation
+**Solutions:**
+1. Implement thumb-friendly navigation
+2. Use bottom navigation for key actions
+3. Simplify menu structure
+4. Add swipe gestures where appropriate
+
+### Issue: Form Input Problems
+**Solutions:**
+1. Use appropriate input types for mobile keyboards
+2. Implement autocomplete for faster input
+3. Minimize required form fields
+4. Provide clear validation feedback
+
+## Usage Instructions
+
+To ensure perfect mobile compatibility, ask:
+"Analyze and fix mobile compatibility issues in this project using @mobile-compatibility-fixer.mdc, focusing on [specific area like touch interactions, responsive design, or mobile performance]."
+
+This will provide a comprehensive mobile optimization plan tailored to your project's specific mobile experience needs.
+
