@@ -1,0 +1,373 @@
+---
+description: "Generate personalized completion plans for any project takeover"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Takeover Checklist Generator
+
+You are helping someone with no coding experience create a personalized plan to complete an existing project they've taken over.
+
+## Takeover Planning Process
+
+### Step 1: Project Assessment Questions
+
+Before creating a completion plan, gather this information:
+
+#### About the Project:
+- What type of project is this? (website, web app, mobile app, API, etc.)
+- What is the main purpose/goal of this project?
+- Who are the intended users?
+- What stage is the project in? (early development, mostly complete, abandoned, etc.)
+
+#### About the Current State:
+- What features are currently working?
+- What features are broken or incomplete?
+- When was the last commit/update made?
+- Are there any obvious bugs or issues?
+- Is there existing documentation?
+
+#### About Your Goals:
+- What do you want to achieve with this project?
+- Do you want to complete it as-is or modify the direction?
+- What's your timeline for completion?
+- Do you have any specific requirements or constraints?
+
+#### About Your Resources:
+- How much time can you dedicate per week?
+- Do you have access to the original developers?
+- Do you have access to any external services it uses?
+- What's your budget for tools/services if needed?
+
+### Step 2: Risk Assessment
+
+#### High Risk Items (Address First):
+- Security vulnerabilities
+- Broken core functionality
+- Missing critical dependencies
+- Outdated frameworks with security issues
+- Hardcoded credentials or sensitive data
+- No backup or version control
+
+#### Medium Risk Items (Address Soon):
+- Deprecated dependencies
+- Poor code organization
+- Missing tests
+- Performance issues
+- Incomplete features
+- Poor documentation
+
+#### Low Risk Items (Address Later):
+- Code style inconsistencies
+- Minor UI improvements
+- Optional features
+- Optimization opportunities
+
+### Step 3: Completion Plan Template
+
+Generate a personalized plan using this structure:
+
+```markdown
+# Project Takeover Completion Plan
+
+## Project Overview
+**Project Name**: [Name]
+**Type**: [Website/Web App/Mobile App/etc.]
+**Current Status**: [% Complete estimate]
+**Target Completion**: [Date]
+
+## Phase 1: Foundation & Safety (Week 1)
+**Goal**: Make the project safe to work with and understand what you have
+
+### Critical Tasks:
+- [ ] **Backup Everything** (30 minutes)
+  - Create full project backup
+  - Set up version control if missing
+  - Document current state
+
+- [ ] **Security Audit** (2 hours)
+  - Scan for hardcoded secrets
+  - Check for security vulnerabilities
+  - Update any critical security issues
+
+- [ ] **Environment Setup** (1-3 hours)
+  - Get project running locally
+  - Install all dependencies
+  - Document setup process
+
+- [ ] **Basic Documentation** (1 hour)
+  - Create README if missing
+  - Document how to run the project
+  - List known issues
+
+### Success Criteria:
+- Project runs locally without errors
+- No critical security vulnerabilities
+- Basic documentation exists
+- Full backup created
+
+## Phase 2: Stabilization (Week 2)
+**Goal**: Fix broken functionality and establish reliable foundation
+
+### Core Functionality Tasks:
+- [ ] **Fix Critical Bugs** (4-8 hours)
+  - [List specific bugs found]
+  - Prioritize user-facing issues
+  - Test fixes thoroughly
+
+- [ ] **Update Dependencies** (2-4 hours)
+  - Update outdated packages
+  - Resolve compatibility issues
+  - Test after updates
+
+- [ ] **Add Basic Testing** (3-5 hours)
+  - Create tests for core functionality
+  - Set up automated testing
+  - Document testing procedures
+
+### Success Criteria:
+- All critical bugs fixed
+- Dependencies up to date
+- Basic test coverage in place
+- Project stable and reliable
+
+## Phase 3: Completion (Week 3-4)
+**Goal**: Complete missing features and polish the project
+
+### Feature Completion Tasks:
+- [ ] **Complete Missing Features** (8-15 hours)
+  - [List specific incomplete features]
+  - Implement based on original intent
+  - Test new functionality
+
+- [ ] **UI/UX Improvements** (4-8 hours)
+  - Fix visual bugs
+  - Improve user experience
+  - Ensure mobile compatibility
+
+- [ ] **Performance Optimization** (2-4 hours)
+  - Optimize slow operations
+  - Reduce bundle size if applicable
+  - Improve loading times
+
+### Success Criteria:
+- All planned features complete
+- Good user experience
+- Acceptable performance
+- Ready for deployment
+
+## Phase 4: Launch Preparation (Week 5)
+**Goal**: Prepare for production deployment
+
+### Deployment Tasks:
+- [ ] **Production Setup** (3-6 hours)
+  - Configure production environment
+  - Set up hosting/deployment
+  - Configure domain and SSL
+
+- [ ] **Final Testing** (2-4 hours)
+  - Test in production environment
+  - Verify all features work
+  - Test with real users if possible
+
+- [ ] **Documentation & Handoff** (2-3 hours)
+  - Complete user documentation
+  - Create maintenance guide
+  - Document deployment process
+
+### Success Criteria:
+- Project deployed and accessible
+- All features working in production
+- Complete documentation
+- Ready for users
+
+## Ongoing Maintenance Plan
+
+### Weekly Tasks (30 minutes/week):
+- Monitor for errors or issues
+- Check for security updates
+- Review user feedback
+- Plan future improvements
+
+### Monthly Tasks (2 hours/month):
+- Update dependencies
+- Review performance metrics
+- Backup project and data
+- Plan new features
+
+### Quarterly Tasks (4 hours/quarter):
+- Security audit
+- Performance optimization
+- User experience review
+- Technology stack evaluation
+
+## Risk Mitigation Strategies
+
+### If You Get Stuck:
+1. **Document the Problem**: Write down exactly what's not working
+2. **Research Solutions**: Look for similar issues online
+3. **Ask for Help**: Use community forums or hire a consultant
+4. **Consider Alternatives**: Sometimes a different approach is better
+
+### If Timeline Slips:
+1. **Reassess Priorities**: Focus on most important features first
+2. **Reduce Scope**: Consider what can be added later
+3. **Get Help**: Bring in additional resources if budget allows
+4. **Communicate**: Update stakeholders about revised timeline
+
+### If Budget Runs Out:
+1. **Prioritize Ruthlessly**: Focus only on essential features
+2. **Use Free Alternatives**: Replace paid services with free options
+3. **Seek Funding**: Look for additional budget or investment
+4. **Phase the Launch**: Launch with minimum viable features
+
+## Success Metrics
+
+### Technical Metrics:
+- [ ] Project runs without errors
+- [ ] All tests pass
+- [ ] Performance meets requirements
+- [ ] Security vulnerabilities addressed
+
+### User Metrics:
+- [ ] Users can complete primary tasks
+- [ ] Good user experience on all devices
+- [ ] Minimal user-reported issues
+- [ ] Positive user feedback
+
+### Business Metrics:
+- [ ] Project launched on time
+- [ ] Within budget constraints
+- [ ] Meets original requirements
+- [ ] Ready for future development
+
+## Emergency Contacts & Resources
+
+### Technical Help:
+- Original developers (if available)
+- Community forums for the technology stack
+- Professional consultants or agencies
+- Online documentation and tutorials
+
+### Business Help:
+- Project stakeholders
+- Domain/hosting providers
+- Legal counsel (if needed)
+- Marketing/launch support
+
+## Next Steps After Completion
+
+### Immediate (First Month):
+- Monitor for issues and user feedback
+- Fix any critical bugs quickly
+- Gather user analytics and feedback
+- Plan first round of improvements
+
+### Short Term (3-6 Months):
+- Implement user-requested features
+- Optimize based on real usage data
+- Expand marketing and user acquisition
+- Consider mobile app if web-only
+
+### Long Term (6+ Months):
+- Major feature additions
+- Technology stack upgrades
+- Scaling for growth
+- Integration with other systems
+```
+
+### Step 4: Customization Guidelines
+
+#### For Different Project Types:
+
+**E-commerce Projects:**
+- Focus on payment security first
+- Ensure mobile shopping experience
+- Test checkout process thoroughly
+- Verify inventory management
+
+**Content/Blog Projects:**
+- Prioritize content management system
+- Ensure SEO optimization
+- Test content publishing workflow
+- Verify comment/user systems
+
+**SaaS/Web Apps:**
+- Focus on user authentication security
+- Ensure data backup and recovery
+- Test subscription/billing if applicable
+- Verify API functionality
+
+**Portfolio/Marketing Sites:**
+- Prioritize visual design and performance
+- Ensure mobile responsiveness
+- Optimize for search engines
+- Test contact forms and lead capture
+
+#### For Different Skill Levels:
+
+**Complete Beginner:**
+- Longer time estimates
+- More detailed explanations
+- Emphasis on learning resources
+- Recommendation to get help for complex tasks
+
+**Some Technical Experience:**
+- Standard time estimates
+- Focus on project-specific challenges
+- Balanced approach to DIY vs. getting help
+- Emphasis on best practices
+
+**Experienced (Non-Developer):**
+- Shorter time estimates
+- Focus on strategic decisions
+- Emphasis on efficiency and automation
+- Advanced optimization recommendations
+
+### Step 5: Progress Tracking
+
+#### Weekly Check-ins:
+```markdown
+## Week [X] Progress Report
+
+### Completed This Week:
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
+
+### Challenges Encountered:
+- Challenge 1: [Description and how resolved]
+- Challenge 2: [Description and current status]
+
+### Next Week's Priorities:
+1. [Most important task]
+2. [Second priority]
+3. [Third priority]
+
+### Timeline Status:
+- On track / Slightly behind / Significantly behind
+- Reason for any delays:
+- Adjustments needed:
+
+### Budget Status:
+- Spent so far: $[amount]
+- Remaining budget: $[amount]
+- Any budget concerns:
+
+### Questions/Help Needed:
+- [Specific questions or areas where help is needed]
+```
+
+## Takeover Checklist Generator Usage
+
+### Basic Usage:
+"Create a completion plan for this [project type] using @takeover-checklist-generator.mdc. The project is [current state] and I want to [goals]."
+
+### Advanced Usage:
+"Generate a detailed takeover plan using @takeover-checklist-generator.mdc for this e-commerce site. I have 10 hours per week, 8-week timeline, and need to add payment processing and mobile optimization."
+
+### With Context:
+"Using @takeover-checklist-generator.mdc and @github-project-analyzer.mdc, create a completion plan based on the analysis of this React project."
+
+This will generate a personalized, realistic plan that takes into account your specific situation, skills, and constraints.
+

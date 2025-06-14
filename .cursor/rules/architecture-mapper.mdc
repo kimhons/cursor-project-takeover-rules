@@ -1,0 +1,592 @@
+---
+description: "Map project architecture and understand how components connect"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Architecture Mapper
+
+You are helping someone with no coding experience understand how their project's components connect and work together.
+
+## Architecture Mapping Process
+
+### Step 1: Understanding Project Architecture
+
+#### What is Project Architecture?
+Think of project architecture like a city map:
+- **Buildings**: Individual components/modules
+- **Roads**: How data flows between components
+- **Utilities**: Shared services and databases
+- **Districts**: Different layers (frontend, backend, database)
+
+#### Why Architecture Mapping Matters:
+- **Understanding**: See how everything fits together
+- **Debugging**: Find where problems might be occurring
+- **Enhancement**: Know where to add new features safely
+- **Maintenance**: Understand dependencies before making changes
+
+### Step 2: Component Discovery
+
+#### Frontend Architecture Mapping:
+
+**React Component Hierarchy:**
+```bash
+# Install dependency analyzer
+npm install --save-dev madge
+
+# Generate component dependency graph
+npx madge --image components-graph.svg src/
+
+# Analyze circular dependencies
+npx madge --circular src/
+```
+
+**Component Relationship Analysis:**
+```javascript
+// architecture-analyzer.js
+const fs = require('fs');
+const path = require('path');
+
+class ComponentAnalyzer {
+  analyzeReactProject(srcPath) {
+    const components = this.findComponents(srcPath);
+    const relationships = this.mapRelationships(components);
+    
+    return {
+      componentCount: components.length,
+      componentTree: this.buildComponentTree(components),
+      dataFlow: this.analyzeDataFlow(relationships),
+      sharedComponents: this.findSharedComponents(relationships)
+    };
+  }
+
+  findComponents(dirPath) {
+    const components = [];
+    const files = fs.readdirSync(dirPath);
+    
+    files.forEach(file => {
+      const filePath = path.join(dirPath, file);
+      const stat = fs.statSync(filePath);
+      
+      if (stat.isDirectory()) {
+        components.push(...this.findComponents(filePath));
+      } else if (file.endsWith('.jsx') || file.endsWith('.js')) {
+        const content = fs.readFileSync(filePath, 'utf8');
+        if (this.isReactComponent(content)) {
+          components.push({
+            name: path.basename(file, path.extname(file)),
+            path: filePath,
+            type: this.getComponentType(content),
+            imports: this.extractImports(content),
+            exports: this.extractExports(content)
+          });
+        }
+      }
+    });
+    
+    return components;
+  }
+}
+```
+
+#### Backend Architecture Mapping:
+
+**API Endpoint Discovery:**
+```javascript
+// api-mapper.js
+class APIMapper {
+  mapExpressRoutes(appPath) {
+    const routes = [];
+    const routeFiles = this.findRouteFiles(appPath);
+    
+    routeFiles.forEach(file => {
+      const content = fs.readFileSync(file, 'utf8');
+      const endpoints = this.extractEndpoints(content);
+      routes.push(...endpoints);
+    });
+    
+    return {
+      totalEndpoints: routes.length,
+      endpointsByMethod: this.groupByMethod(routes),
+      routeHierarchy: this.buildRouteHierarchy(routes),
+      middleware: this.findMiddleware(routeFiles)
+    };
+  }
+
+  extractEndpoints(content) {
+    const endpoints = [];
+    const routeRegex = /router\.(get|post|put|delete|patch)\(['"`]([^'"`]+)['"`]/g;
+    let match;
+    
+    while ((match = routeRegex.exec(content)) !== null) {
+      endpoints.push({
+        method: match[1].toUpperCase(),
+        path: match[2],
+        handler: this.findHandler(content, match[0])
+      });
+    }
+    
+    return endpoints;
+  }
+}
+```
+
+### Step 3: Database Architecture Analysis
+
+#### Database Schema Mapping:
+
+**MongoDB Schema Analysis:**
+```javascript
+// mongodb-analyzer.js
+class MongoDBAnalyzer {
+  async analyzeDatabase(connectionString) {
+    const mongoose = require('mongoose');
+    await mongoose.connect(connectionString);
+    
+    const collections = await mongoose.connection.db.listCollections().toArray();
+    const schema = {};
+    
+    for (const collection of collections) {
+      const sampleDoc = await mongoose.connection.db
+        .collection(collection.name)
+        .findOne();
+      
+      schema[collection.name] = {
+        fields: this.analyzeFields(sampleDoc),
+        relationships: await this.findRelationships(collection.name),
+        indexes: await this.getIndexes(collection.name)
+      };
+    }
+    
+    return {
+      collections: collections.length,
+      totalDocuments: await this.getTotalDocuments(),
+      schema: schema,
+      relationships: this.mapRelationships(schema)
+    };
+  }
+}
+```
+
+**SQL Database Analysis:**
+```sql
+-- database-schema.sql
+-- Generate schema documentation
+SELECT 
+  table_name,
+  column_name,
+  data_type,
+  is_nullable,
+  column_default
+FROM information_schema.columns 
+WHERE table_schema = 'your_database'
+ORDER BY table_name, ordinal_position;
+
+-- Find foreign key relationships
+SELECT 
+  tc.table_name,
+  kcu.column_name,
+  ccu.table_name AS foreign_table_name,
+  ccu.column_name AS foreign_column_name
+FROM information_schema.table_constraints AS tc
+JOIN information_schema.key_column_usage AS kcu
+  ON tc.constraint_name = kcu.constraint_name
+JOIN information_schema.constraint_column_usage AS ccu
+  ON ccu.constraint_name = tc.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY';
+```
+
+### Step 4: Data Flow Analysis
+
+#### Request/Response Flow Mapping:
+
+**Full-Stack Data Flow:**
+```javascript
+// data-flow-analyzer.js
+class DataFlowAnalyzer {
+  mapDataFlow(projectPath) {
+    return {
+      userInteractions: this.mapUserInteractions(),
+      apiCalls: this.mapAPICalls(),
+      databaseOperations: this.mapDatabaseOps(),
+      externalServices: this.mapExternalServices(),
+      dataTransformations: this.mapTransformations()
+    };
+  }
+
+  mapUserInteractions() {
+    // Analyze frontend event handlers
+    return [
+      {
+        trigger: 'User clicks login button',
+        component: 'LoginForm.jsx',
+        action: 'handleLogin()',
+        dataFlow: 'Form data → API call → Database → Response → UI update'
+      },
+      {
+        trigger: 'User adds item to cart',
+        component: 'ProductCard.jsx', 
+        action: 'addToCart()',
+        dataFlow: 'Product data → Redux store → Local storage → UI update'
+      }
+    ];
+  }
+
+  mapAPICalls() {
+    // Analyze API endpoint usage
+    return [
+      {
+        endpoint: 'POST /api/auth/login',
+        caller: 'authService.js',
+        purpose: 'User authentication',
+        dataIn: 'email, password',
+        dataOut: 'JWT token, user profile',
+        errorHandling: 'Try/catch with user feedback'
+      }
+    ];
+  }
+}
+```
+
+### Step 5: Dependency Analysis
+
+#### Package Dependency Mapping:
+
+**Dependency Tree Analysis:**
+```bash
+# Generate dependency tree
+npm list --depth=0
+
+# Analyze dependency sizes
+npx bundlephobia-cli
+
+# Check for unused dependencies
+npx depcheck
+
+# Find duplicate dependencies
+npm ls --depth=0 | grep -E "├─|└─" | sort
+```
+
+**Dependency Risk Assessment:**
+```javascript
+// dependency-analyzer.js
+class DependencyAnalyzer {
+  async analyzeDependencies(packageJsonPath) {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
+    const dependencies = {
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies
+    };
+
+    const analysis = {};
+    
+    for (const [name, version] of Object.entries(dependencies)) {
+      const info = await this.getPackageInfo(name);
+      analysis[name] = {
+        version: version,
+        latestVersion: info.latest,
+        isOutdated: this.isOutdated(version, info.latest),
+        securityIssues: await this.checkSecurity(name, version),
+        size: info.size,
+        weeklyDownloads: info.downloads,
+        lastUpdated: info.lastUpdated,
+        riskLevel: this.calculateRisk(info)
+      };
+    }
+
+    return {
+      totalDependencies: Object.keys(dependencies).length,
+      outdatedCount: this.countOutdated(analysis),
+      securityIssues: this.countSecurityIssues(analysis),
+      highRiskPackages: this.findHighRisk(analysis),
+      recommendations: this.generateRecommendations(analysis)
+    };
+  }
+}
+```
+
+### Step 6: Service Integration Mapping
+
+#### External Service Analysis:
+
+**API Integration Discovery:**
+```javascript
+// service-mapper.js
+class ServiceMapper {
+  mapExternalServices(projectPath) {
+    const services = [];
+    const configFiles = this.findConfigFiles(projectPath);
+    
+    configFiles.forEach(file => {
+      const content = fs.readFileSync(file, 'utf8');
+      services.push(...this.extractServiceConfigs(content));
+    });
+
+    return {
+      totalServices: services.length,
+      servicesByType: this.groupByType(services),
+      authenticationMethods: this.mapAuthMethods(services),
+      dataExchange: this.mapDataExchange(services),
+      errorHandling: this.mapErrorHandling(services)
+    };
+  }
+
+  extractServiceConfigs(content) {
+    const services = [];
+    
+    // Look for common service patterns
+    const patterns = [
+      /stripe\.com/g,           // Payment processing
+      /sendgrid\.com/g,         // Email service
+      /amazonaws\.com/g,        // AWS services
+      /googleapis\.com/g,       // Google APIs
+      /api\.github\.com/g,      // GitHub API
+      /api\.twitter\.com/g      // Twitter API
+    ];
+
+    patterns.forEach(pattern => {
+      const matches = content.match(pattern);
+      if (matches) {
+        services.push(this.identifyService(pattern, matches));
+      }
+    });
+
+    return services;
+  }
+}
+```
+
+### Step 7: Security Architecture Analysis
+
+#### Security Layer Mapping:
+
+**Authentication & Authorization Flow:**
+```javascript
+// security-mapper.js
+class SecurityMapper {
+  mapSecurityArchitecture(projectPath) {
+    return {
+      authenticationFlow: this.mapAuthFlow(),
+      authorizationLayers: this.mapAuthLayers(),
+      dataProtection: this.mapDataProtection(),
+      securityMiddleware: this.mapSecurityMiddleware(),
+      vulnerabilityPoints: this.identifyVulnerabilities()
+    };
+  }
+
+  mapAuthFlow() {
+    return {
+      loginProcess: [
+        'User submits credentials',
+        'Server validates against database',
+        'JWT token generated and signed',
+        'Token sent to client',
+        'Client stores token (localStorage/cookie)',
+        'Token included in subsequent requests',
+        'Server validates token on each request'
+      ],
+      logoutProcess: [
+        'Client removes token from storage',
+        'Optional: Server blacklists token',
+        'User redirected to login page'
+      ],
+      tokenRefresh: [
+        'Client detects token expiration',
+        'Refresh token sent to server',
+        'New access token generated',
+        'Client updates stored token'
+      ]
+    };
+  }
+}
+```
+
+### Step 8: Performance Architecture
+
+#### Performance Bottleneck Mapping:
+
+**Performance Critical Paths:**
+```javascript
+// performance-mapper.js
+class PerformanceMapper {
+  mapPerformancePaths(projectPath) {
+    return {
+      criticalRenderingPath: this.mapRenderingPath(),
+      databaseQueries: this.mapSlowQueries(),
+      assetLoading: this.mapAssetLoading(),
+      cacheStrategy: this.mapCaching(),
+      optimizationOpportunities: this.findOptimizations()
+    };
+  }
+
+  mapRenderingPath() {
+    return [
+      {
+        step: 'Initial HTML Load',
+        component: 'index.html',
+        timing: '~200ms',
+        optimization: 'Minimize HTML, inline critical CSS'
+      },
+      {
+        step: 'JavaScript Bundle Load',
+        component: 'main.js',
+        timing: '~800ms',
+        optimization: 'Code splitting, lazy loading'
+      },
+      {
+        step: 'API Data Fetch',
+        component: 'UserProfile component',
+        timing: '~300ms',
+        optimization: 'Caching, prefetching'
+      }
+    ];
+  }
+}
+```
+
+### Step 9: Visual Architecture Documentation
+
+#### Architecture Diagram Generation:
+
+**Automated Diagram Creation:**
+```javascript
+// diagram-generator.js
+class DiagramGenerator {
+  generateArchitectureDiagram(analysis) {
+    const mermaidDiagram = `
+graph TD
+    A[User Browser] --> B[React Frontend]
+    B --> C[API Gateway]
+    C --> D[Express Server]
+    D --> E[MongoDB Database]
+    D --> F[Redis Cache]
+    D --> G[External APIs]
+    
+    subgraph "Frontend Layer"
+        B --> B1[Components]
+        B --> B2[State Management]
+        B --> B3[Routing]
+    end
+    
+    subgraph "Backend Layer"
+        D --> D1[Authentication]
+        D --> D2[Business Logic]
+        D --> D3[Data Access]
+    end
+    
+    subgraph "Data Layer"
+        E --> E1[User Collection]
+        E --> E2[Product Collection]
+        E --> E3[Order Collection]
+    end
+    `;
+
+    return {
+      mermaidDiagram,
+      componentCount: analysis.components.length,
+      layerCount: 3,
+      integrationPoints: analysis.integrations.length
+    };
+  }
+}
+```
+
+### Step 10: Architecture Health Assessment
+
+#### Architecture Quality Metrics:
+
+**Architecture Score Calculator:**
+```javascript
+// architecture-health.js
+class ArchitectureHealth {
+  calculateHealthScore(architecture) {
+    const metrics = {
+      modularity: this.assessModularity(architecture),
+      coupling: this.assessCoupling(architecture),
+      cohesion: this.assessCohesion(architecture),
+      scalability: this.assessScalability(architecture),
+      maintainability: this.assessMaintainability(architecture),
+      testability: this.assessTestability(architecture)
+    };
+
+    const weights = {
+      modularity: 0.20,
+      coupling: 0.15,
+      cohesion: 0.15,
+      scalability: 0.20,
+      maintainability: 0.15,
+      testability: 0.15
+    };
+
+    let totalScore = 0;
+    Object.keys(weights).forEach(metric => {
+      totalScore += metrics[metric] * weights[metric];
+    });
+
+    return {
+      overallScore: Math.round(totalScore),
+      grade: this.getGrade(totalScore),
+      metrics: metrics,
+      recommendations: this.generateRecommendations(metrics)
+    };
+  }
+}
+```
+
+## Architecture Mapping Checklist
+
+### ✅ Basic Architecture Mapped When:
+- [ ] Component hierarchy documented
+- [ ] Data flow paths identified
+- [ ] Database schema understood
+- [ ] API endpoints cataloged
+
+### ✅ Advanced Architecture Analysis Complete When:
+- [ ] Dependency relationships mapped
+- [ ] Security layers documented
+- [ ] Performance bottlenecks identified
+- [ ] Integration points cataloged
+
+### ✅ Architecture Documentation Ready When:
+- [ ] Visual diagrams generated
+- [ ] Architecture health assessed
+- [ ] Improvement recommendations provided
+- [ ] Documentation is up-to-date
+
+## Common Architecture Issues and Solutions
+
+### Issue: Tight Coupling Between Components
+**Solutions:**
+1. Implement dependency injection
+2. Use event-driven architecture
+3. Create abstraction layers
+4. Apply SOLID principles
+
+### Issue: Circular Dependencies
+**Solutions:**
+1. Refactor shared code into separate modules
+2. Use dependency inversion
+3. Implement mediator pattern
+4. Break large modules into smaller ones
+
+### Issue: Poor Data Flow
+**Solutions:**
+1. Implement unidirectional data flow
+2. Use state management libraries
+3. Centralize API calls
+4. Add proper error boundaries
+
+### Issue: Scalability Bottlenecks
+**Solutions:**
+1. Implement horizontal scaling
+2. Add caching layers
+3. Optimize database queries
+4. Use microservices architecture
+
+## Usage Instructions
+
+To map your project's architecture, ask:
+"Map the architecture of this project using the Architecture Mapper and show me how all the components connect, including data flow, dependencies, and integration points."
+
+This will provide a comprehensive understanding of your project's structure and how to work with it effectively.
+

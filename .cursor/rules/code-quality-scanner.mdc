@@ -1,0 +1,451 @@
+---
+description: "Scan code quality and identify improvement opportunities"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Code Quality Scanner
+
+You are helping someone with no coding experience scan their project for code quality issues and improvement opportunities.
+
+## Code Quality Scanning Process
+
+### Step 1: Understanding Code Quality
+
+#### What is Code Quality?
+Think of code quality like the structural integrity of a building:
+- **Good Code**: Well-organized, easy to understand, reliable, secure
+- **Poor Code**: Messy, hard to maintain, prone to bugs, security risks
+
+#### Why Code Quality Matters:
+- **Reliability**: Good code works consistently without breaking
+- **Security**: Quality code protects against hackers and data breaches
+- **Performance**: Well-written code runs faster and uses less resources
+- **Maintainability**: Quality code is easier to update and fix
+
+### Step 2: Automated Quality Scanning
+
+#### JavaScript/Node.js Projects:
+
+**ESLint Setup (Code Style and Error Detection):**
+```bash
+# Install ESLint
+npm install --save-dev eslint
+
+# Initialize ESLint configuration
+npx eslint --init
+
+# Run ESLint scan
+npx eslint src/
+```
+
+**Expected Output:**
+```
+/src/components/UserProfile.js
+  12:5   error    'userName' is defined but never used    no-unused-vars
+  23:15  warning  Missing semicolon                       semi
+  45:8   error    'password' should not be in plain text  security/detect-unsafe-regex
+
+✖ 3 problems (2 errors, 1 warning)
+  1 error and 0 warnings potentially fixable with --fix
+```
+
+**SonarJS Setup (Advanced Code Analysis):**
+```bash
+# Install SonarJS
+npm install --save-dev eslint-plugin-sonarjs
+
+# Add to .eslintrc.js
+{
+  "extends": ["plugin:sonarjs/recommended"],
+  "plugins": ["sonarjs"]
+}
+```
+
+#### React Projects:
+
+**React-Specific Linting:**
+```bash
+# Install React ESLint plugin
+npm install --save-dev eslint-plugin-react eslint-plugin-react-hooks
+
+# Configuration for .eslintrc.js
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "react/prop-types": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}
+```
+
+#### Python Projects:
+
+**Pylint Setup:**
+```bash
+# Install Pylint
+pip install pylint
+
+# Run quality scan
+pylint your_project/
+
+# Generate detailed report
+pylint your_project/ --output-format=json > quality_report.json
+```
+
+### Step 3: Security Vulnerability Scanning
+
+#### Node.js Security Audit:
+
+**NPM Audit:**
+```bash
+# Check for security vulnerabilities
+npm audit
+
+# Fix automatically fixable issues
+npm audit fix
+
+# Force fix (use with caution)
+npm audit fix --force
+```
+
+**Snyk Security Scanning:**
+```bash
+# Install Snyk
+npm install -g snyk
+
+# Authenticate
+snyk auth
+
+# Test for vulnerabilities
+snyk test
+
+# Monitor project continuously
+snyk monitor
+```
+
+#### Dependency Security Check:
+
+**Check for Outdated Dependencies:**
+```bash
+# Check outdated packages
+npm outdated
+
+# Update packages safely
+npm update
+
+# Check for major version updates
+npx npm-check-updates
+```
+
+### Step 4: Performance Analysis
+
+#### Bundle Size Analysis (React/Vue):
+
+**Webpack Bundle Analyzer:**
+```bash
+# Install bundle analyzer
+npm install --save-dev webpack-bundle-analyzer
+
+# Add script to package.json
+{
+  "scripts": {
+    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js"
+  }
+}
+
+# Run analysis
+npm run analyze
+```
+
+#### Lighthouse Performance Audit:
+
+**Automated Performance Testing:**
+```bash
+# Install Lighthouse CI
+npm install -g @lhci/cli
+
+# Run performance audit
+lhci autorun
+
+# Generate performance report
+lhci collect --url=http://localhost:3000
+```
+
+### Step 5: Code Complexity Analysis
+
+#### Cyclomatic Complexity Check:
+
+**JavaScript Complexity Analysis:**
+```bash
+# Install complexity analyzer
+npm install --save-dev complexity-report
+
+# Analyze complexity
+npx complexity-report src/ --output complexity-report.json
+```
+
+**Expected Output:**
+```json
+{
+  "functions": [
+    {
+      "name": "calculateTotal",
+      "complexity": 8,
+      "recommendation": "Consider breaking into smaller functions"
+    },
+    {
+      "name": "validateUser", 
+      "complexity": 15,
+      "recommendation": "HIGH COMPLEXITY - Refactor immediately"
+    }
+  ]
+}
+```
+
+### Step 6: Code Duplication Detection
+
+#### Duplicate Code Scanner:
+
+**JSCPD (JavaScript Copy/Paste Detector):**
+```bash
+# Install JSCPD
+npm install -g jscpd
+
+# Scan for duplicates
+jscpd src/
+
+# Generate detailed report
+jscpd src/ --reporters html --output ./reports
+```
+
+### Step 7: Test Coverage Analysis
+
+#### Coverage Reporting:
+
+**Jest Coverage (React/Node.js):**
+```bash
+# Run tests with coverage
+npm test -- --coverage
+
+# Generate detailed coverage report
+npm test -- --coverage --coverageReporters=html
+```
+
+**Expected Coverage Report:**
+```
+File                    | % Stmts | % Branch | % Funcs | % Lines |
+------------------------|---------|----------|---------|---------|
+All files              |   78.45  |   65.22  |   82.14 |   77.89 |
+ src/components        |   85.67  |   72.34  |   89.12 |   84.23 |
+  UserProfile.js       |   92.31  |   80.00  |   95.45 |   91.67 |
+  ShoppingCart.js      |   45.23  |   30.77  |   60.00 |   44.12 |
+```
+
+### Step 8: Accessibility Scanning
+
+#### A11y (Accessibility) Audit:
+
+**ESLint A11y Plugin:**
+```bash
+# Install accessibility linter
+npm install --save-dev eslint-plugin-jsx-a11y
+
+# Add to ESLint config
+{
+  "extends": ["plugin:jsx-a11y/recommended"],
+  "plugins": ["jsx-a11y"]
+}
+```
+
+**Axe Accessibility Testing:**
+```bash
+# Install axe-core
+npm install --save-dev @axe-core/cli
+
+# Run accessibility audit
+npx axe http://localhost:3000
+```
+
+### Step 9: Quality Metrics Dashboard
+
+#### Comprehensive Quality Report:
+
+**Quality Score Calculator:**
+```javascript
+// quality-calculator.js
+class QualityCalculator {
+  calculateOverallScore(metrics) {
+    const weights = {
+      security: 0.25,      // 25% weight
+      performance: 0.20,   // 20% weight
+      maintainability: 0.20, // 20% weight
+      reliability: 0.15,   // 15% weight
+      testCoverage: 0.10,  // 10% weight
+      accessibility: 0.10  // 10% weight
+    };
+
+    let totalScore = 0;
+    Object.keys(weights).forEach(metric => {
+      totalScore += (metrics[metric] || 0) * weights[metric];
+    });
+
+    return Math.round(totalScore);
+  }
+
+  generateQualityReport(projectPath) {
+    return {
+      overallScore: this.calculateOverallScore(metrics),
+      grade: this.getGrade(overallScore),
+      metrics: {
+        security: this.getSecurityScore(),
+        performance: this.getPerformanceScore(),
+        maintainability: this.getMaintainabilityScore(),
+        reliability: this.getReliabilityScore(),
+        testCoverage: this.getTestCoverageScore(),
+        accessibility: this.getAccessibilityScore()
+      },
+      recommendations: this.generateRecommendations()
+    };
+  }
+}
+```
+
+### Step 10: Automated Quality Gates
+
+#### Pre-commit Quality Checks:
+
+**Husky + Lint-staged Setup:**
+```bash
+# Install husky and lint-staged
+npm install --save-dev husky lint-staged
+
+# Initialize husky
+npx husky install
+
+# Add pre-commit hook
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+**Lint-staged Configuration (package.json):**
+```json
+{
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "jest --findRelatedTests --passWithNoTests"
+    ],
+    "*.{css,scss,md}": [
+      "prettier --write"
+    ]
+  }
+}
+```
+
+#### Continuous Quality Monitoring:
+
+**GitHub Actions Quality Workflow:**
+```yaml
+name: Code Quality
+
+on: [push, pull_request]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run ESLint
+      run: npm run lint
+      
+    - name: Run security audit
+      run: npm audit --audit-level high
+      
+    - name: Run tests with coverage
+      run: npm test -- --coverage
+      
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+```
+
+## Quality Scanning Checklist
+
+### ✅ Basic Quality Scan Complete When:
+- [ ] ESLint configured and running without errors
+- [ ] Security vulnerabilities identified and prioritized
+- [ ] Performance baseline established
+- [ ] Test coverage measured
+
+### ✅ Advanced Quality Analysis Complete When:
+- [ ] Code complexity analyzed and optimized
+- [ ] Duplicate code identified and removed
+- [ ] Accessibility issues found and fixed
+- [ ] Quality gates implemented in CI/CD
+
+### ✅ Production Ready When:
+- [ ] Overall quality score above 80%
+- [ ] No high-severity security vulnerabilities
+- [ ] Test coverage above 80%
+- [ ] Performance meets requirements
+
+## Common Quality Issues and Solutions
+
+### Issue: High Cyclomatic Complexity
+**Solutions:**
+1. Break large functions into smaller ones
+2. Use early returns to reduce nesting
+3. Extract complex logic into separate functions
+4. Use switch statements instead of long if-else chains
+
+### Issue: Security Vulnerabilities
+**Solutions:**
+1. Update dependencies to latest secure versions
+2. Use environment variables for sensitive data
+3. Implement input validation and sanitization
+4. Add security headers and HTTPS
+
+### Issue: Poor Performance
+**Solutions:**
+1. Optimize bundle size by removing unused code
+2. Implement code splitting and lazy loading
+3. Optimize images and assets
+4. Add caching strategies
+
+### Issue: Low Test Coverage
+**Solutions:**
+1. Write unit tests for critical functions
+2. Add integration tests for user workflows
+3. Implement end-to-end testing
+4. Set up automated testing in CI/CD
+
+## Usage Instructions
+
+To scan your project's code quality, ask:
+"Scan this project's code quality using the Code Quality Scanner and provide a comprehensive report with specific recommendations for improvement."
+
+This will analyze your code for security, performance, maintainability, and reliability issues with actionable recommendations.
+

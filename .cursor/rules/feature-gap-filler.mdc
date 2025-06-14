@@ -1,0 +1,618 @@
+---
+description: "Identify and complete missing functionality safely and systematically"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Feature Gap Filler
+
+You are helping someone with no coding experience identify missing functionality in their project and complete it safely without breaking existing features.
+
+## Feature Gap Analysis Process
+
+### Step 1: Understanding Feature Gaps
+
+#### What are Feature Gaps?
+Think of feature gaps like missing rooms in a house:
+- The foundation and some rooms exist (working features)
+- Some rooms are planned but not built (missing features)
+- Some rooms are half-built (incomplete features)
+- Some rooms need connecting hallways (integration gaps)
+
+#### Types of Feature Gaps:
+
+**🔴 Critical Gaps (Must Fix):**
+- Core functionality that users expect
+- Security features that protect user data
+- Essential user workflows that are broken
+- Integration points that prevent the app from working
+
+**🟡 Important Gaps (Should Fix):**
+- Features that improve user experience significantly
+- Functionality that competitors have
+- Features that increase user engagement
+- Performance improvements that users notice
+
+**🟢 Nice-to-Have Gaps (Could Fix Later):**
+- Advanced features that few users need
+- Cosmetic improvements
+- Optimization that users won't notice
+- Features that might be useful someday
+
+### Step 2: Gap Discovery Methods
+
+#### Method 1: User Journey Analysis
+
+**Map Complete User Workflows:**
+```markdown
+## User Journey: [Workflow Name]
+
+### Current State:
+1. User starts at: [Entry point]
+2. User can do: [Available actions]
+3. User gets stuck at: [Gap location]
+4. User expects to: [Missing functionality]
+5. User currently has to: [Workaround]
+
+### Ideal State:
+1. User starts at: [Entry point]
+2. User smoothly progresses through: [Complete workflow]
+3. User successfully completes: [End goal]
+4. User feels: [Positive experience]
+
+### Gap Analysis:
+- **Missing Step 1**: [What's missing and why it matters]
+- **Missing Step 2**: [What's missing and why it matters]
+- **Integration Gap**: [Where workflows don't connect]
+```
+
+**Example - E-commerce User Journey:**
+```markdown
+## User Journey: Purchase Product
+
+### Current State:
+1. User browses products ✅ (Working)
+2. User views product details ✅ (Working)
+3. User adds to cart ✅ (Working)
+4. User goes to checkout ❌ (Missing - no checkout page)
+5. User enters payment info ❌ (Missing - no payment system)
+6. User receives confirmation ❌ (Missing - no order confirmation)
+
+### Critical Gaps Identified:
+- **Checkout Process**: Users can't actually buy anything
+- **Payment Integration**: No way to process payments
+- **Order Management**: No system to track orders
+- **Email Notifications**: Users don't get purchase confirmations
+```
+
+#### Method 2: Competitive Feature Analysis
+
+**Compare with Similar Apps:**
+```markdown
+## Competitive Feature Analysis
+
+### Competitor 1: [Name]
+**Features they have that we don't:**
+- Feature A: [Description and user benefit]
+- Feature B: [Description and user benefit]
+- Feature C: [Description and user benefit]
+
+**Priority Assessment:**
+- Critical: [Features users expect in any app of this type]
+- Important: [Features that give competitive advantage]
+- Nice-to-have: [Advanced features for power users]
+
+### Our Feature Gaps:
+1. **[Gap Name]** - Priority: Critical
+   - What it does: [Functionality description]
+   - Why users need it: [User benefit]
+   - Impact of not having it: [What happens without it]
+
+2. **[Gap Name]** - Priority: Important
+   - What it does: [Functionality description]
+   - Why users need it: [User benefit]
+   - Impact of not having it: [What happens without it]
+```
+
+#### Method 3: Technical Integration Analysis
+
+**Identify System Integration Gaps:**
+```markdown
+## Integration Gap Analysis
+
+### Frontend ↔ Backend Gaps:
+- **Missing API Endpoints**: [List APIs that frontend needs but don't exist]
+- **Data Flow Issues**: [Where data doesn't flow properly between layers]
+- **Authentication Gaps**: [Where login/permissions don't work]
+
+### Database Gaps:
+- **Missing Tables**: [Data that needs to be stored but isn't]
+- **Incomplete Relationships**: [How data should connect but doesn't]
+- **Missing Indexes**: [Performance issues from missing database optimization]
+
+### External Service Gaps:
+- **Payment Processing**: [Missing payment gateway integration]
+- **Email Services**: [Missing email notification system]
+- **File Storage**: [Missing image/file upload capability]
+- **Analytics**: [Missing user behavior tracking]
+```
+
+### Step 3: Gap Prioritization Framework
+
+#### Priority Matrix:
+
+**Critical + High Impact (Do First):**
+- Features that prevent core functionality
+- Security gaps that expose user data
+- Integration issues that break user workflows
+- Performance issues that make app unusable
+
+**Important + Medium Impact (Do Next):**
+- Features that significantly improve user experience
+- Functionality that increases user engagement
+- Integration with popular external services
+- Performance optimizations users will notice
+
+**Nice-to-Have + Low Impact (Do Later):**
+- Advanced features for power users
+- Cosmetic improvements
+- Optimization that users won't notice
+- Features that might be useful someday
+
+#### Gap Assessment Template:
+
+```markdown
+## Feature Gap: [Gap Name]
+
+### Gap Details:
+**What's missing**: [Clear description of missing functionality]
+**Where it's needed**: [Specific location in app/workflow]
+**Who needs it**: [Which users are affected]
+**When it's needed**: [At what point in user journey]
+
+### Impact Assessment:
+**User Impact**: High/Medium/Low
+- How many users affected: [Percentage or number]
+- How often they encounter this gap: [Daily/Weekly/Monthly]
+- What they currently do instead: [Workaround or abandonment]
+
+**Business Impact**: High/Medium/Low
+- Revenue impact: [How it affects money]
+- User retention impact: [How it affects user loyalty]
+- Competitive impact: [How it affects market position]
+
+### Implementation Assessment:
+**Technical Complexity**: Simple/Medium/Complex
+**Time Estimate**: [Hours or days to implement]
+**Dependencies**: [What else needs to be built first]
+**Risk Level**: Low/Medium/High
+
+### Success Criteria:
+- [ ] [Specific measurable outcome 1]
+- [ ] [Specific measurable outcome 2]
+- [ ] [Specific measurable outcome 3]
+```
+
+### Step 4: Safe Gap Filling Strategies
+
+#### Strategy 1: Minimum Viable Feature (MVF)
+
+**Build the Simplest Version First:**
+```markdown
+## MVF Approach: User Authentication
+
+### Full Feature Vision:
+- Social media login (Google, Facebook, Twitter)
+- Two-factor authentication
+- Password strength requirements
+- Account recovery options
+- User profile management
+
+### Minimum Viable Feature (Build First):
+- Email and password registration
+- Basic login/logout
+- Simple password reset
+- Basic user session management
+
+### Why MVF First:
+- Gets core functionality working quickly
+- Allows users to start using the feature
+- Provides foundation for enhancements
+- Reduces risk of over-engineering
+```
+
+#### Strategy 2: Progressive Enhancement
+
+**Layer Features Incrementally:**
+```markdown
+## Progressive Enhancement: Shopping Cart
+
+### Layer 1 (Core): Basic Cart Functionality
+- Add items to cart
+- View cart contents
+- Remove items from cart
+- Calculate total price
+
+### Layer 2 (Enhanced): Improved Experience
+- Save cart between sessions
+- Update quantities
+- Apply discount codes
+- Show shipping costs
+
+### Layer 3 (Advanced): Power Features
+- Save multiple carts
+- Share cart with others
+- Wishlist integration
+- Recommended products
+
+### Implementation Plan:
+1. Build and test Layer 1 completely
+2. Deploy Layer 1 to users
+3. Build Layer 2 on top of working Layer 1
+4. Test Layer 2 doesn't break Layer 1
+5. Deploy Layer 2
+6. Repeat for Layer 3
+```
+
+#### Strategy 3: Parallel Development
+
+**Build New Features Alongside Existing:**
+```markdown
+## Parallel Development: Payment System
+
+### Current State:
+- Users can add items to cart
+- No way to actually purchase
+
+### Parallel Development Approach:
+1. **Keep existing cart working** while building payment
+2. **Create payment system separately** 
+3. **Test payment system independently**
+4. **Connect payment to cart only when both work**
+5. **Add feature flag** to enable/disable payment
+
+### Benefits:
+- Existing functionality never breaks
+- Can test new feature thoroughly
+- Easy to rollback if issues
+- Users can keep using app during development
+```
+
+### Step 5: Implementation Templates
+
+#### Template 1: Missing API Endpoint
+
+```javascript
+// Example: Missing user profile endpoint
+
+// 1. Define what the endpoint should do
+/**
+ * GET /api/user/profile
+ * Returns user profile information
+ * 
+ * Response:
+ * {
+ *   id: string,
+ *   name: string,
+ *   email: string,
+ *   avatar: string,
+ *   preferences: object
+ * }
+ */
+
+// 2. Create the endpoint
+app.get('/api/user/profile', authenticateUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      preferences: user.preferences
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// 3. Test the endpoint
+// Test with valid user
+// Test with invalid user
+// Test with no authentication
+// Test error handling
+```
+
+#### Template 2: Missing Frontend Component
+
+```jsx
+// Example: Missing user profile component
+
+// 1. Define component requirements
+/**
+ * UserProfile Component
+ * - Displays user information
+ * - Allows editing of profile
+ * - Handles profile picture upload
+ * - Shows loading and error states
+ */
+
+// 2. Create basic component structure
+import React, { useState, useEffect } from 'react';
+
+function UserProfile() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editing, setEditing] = useState(false);
+
+  // 3. Implement core functionality
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/user/profile');
+      if (!response.ok) throw new Error('Failed to fetch profile');
+      const userData = await response.json();
+      setUser(userData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 4. Handle different states
+  if (loading) return <div>Loading profile...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!user) return <div>No profile found</div>;
+
+  // 5. Render component
+  return (
+    <div className="user-profile">
+      <h2>User Profile</h2>
+      {editing ? (
+        <EditProfileForm user={user} onSave={handleSave} onCancel={() => setEditing(false)} />
+      ) : (
+        <ProfileDisplay user={user} onEdit={() => setEditing(true)} />
+      )}
+    </div>
+  );
+}
+```
+
+#### Template 3: Missing Database Integration
+
+```javascript
+// Example: Missing order tracking system
+
+// 1. Define data structure
+const orderSchema = {
+  id: 'string (unique)',
+  userId: 'string (foreign key)',
+  items: 'array of products',
+  total: 'number',
+  status: 'string (pending/processing/shipped/delivered)',
+  createdAt: 'timestamp',
+  updatedAt: 'timestamp'
+};
+
+// 2. Create database model
+const mongoose = require('mongoose');
+
+const orderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items: [{
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true }
+  }],
+  total: { type: Number, required: true },
+  status: { 
+    type: String, 
+    enum: ['pending', 'processing', 'shipped', 'delivered'],
+    default: 'pending'
+  }
+}, { timestamps: true });
+
+const Order = mongoose.model('Order', orderSchema);
+
+// 3. Create CRUD operations
+class OrderService {
+  async createOrder(userId, items) {
+    const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const order = new Order({ userId, items, total });
+    return await order.save();
+  }
+
+  async getOrdersByUser(userId) {
+    return await Order.find({ userId }).populate('items.productId');
+  }
+
+  async updateOrderStatus(orderId, status) {
+    return await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+  }
+}
+```
+
+### Step 6: Testing Gap Fills
+
+#### Testing Strategy for New Features:
+
+```markdown
+## Feature Testing Checklist
+
+### Unit Testing:
+- [ ] Individual functions work correctly
+- [ ] Edge cases handled properly
+- [ ] Error conditions managed gracefully
+- [ ] Input validation works
+
+### Integration Testing:
+- [ ] New feature integrates with existing features
+- [ ] Data flows correctly between components
+- [ ] API endpoints work with frontend
+- [ ] Database operations complete successfully
+
+### User Acceptance Testing:
+- [ ] Feature works as users expect
+- [ ] User workflow is intuitive
+- [ ] Error messages are helpful
+- [ ] Performance is acceptable
+
+### Regression Testing:
+- [ ] Existing features still work
+- [ ] No new bugs introduced
+- [ ] Performance hasn't degraded
+- [ ] Security hasn't been compromised
+```
+
+#### Automated Testing for Gap Fills:
+
+```javascript
+// Example: Testing new user profile feature
+
+describe('User Profile Feature', () => {
+  test('should fetch user profile successfully', async () => {
+    const mockUser = { id: '1', name: 'John Doe', email: 'john@example.com' };
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockUser
+    });
+
+    render(<UserProfile />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+    });
+  });
+
+  test('should handle profile fetch error', async () => {
+    fetch.mockRejectedValueOnce(new Error('Network error'));
+
+    render(<UserProfile />);
+    
+    await waitFor(() => {
+      expect(screen.getByText(/Error:/)).toBeInTheDocument();
+    });
+  });
+
+  test('should not break existing functionality', async () => {
+    // Test that adding profile doesn't break login, navigation, etc.
+    render(<App />);
+    
+    // Test existing features still work
+    expect(screen.getByText('Login')).toBeInTheDocument();
+    expect(screen.getByText('Home')).toBeInTheDocument();
+  });
+});
+```
+
+### Step 7: Gap Fill Documentation
+
+#### Documentation Template:
+
+```markdown
+# Feature Gap Fill: [Feature Name]
+
+## Gap Analysis
+**What was missing**: [Description of the gap]
+**Why it was needed**: [Business/user justification]
+**Impact of gap**: [What problems it caused]
+
+## Solution Implemented
+**Approach taken**: [MVF/Progressive/Parallel]
+**Features added**: [List of new functionality]
+**Integration points**: [How it connects to existing features]
+
+## Technical Implementation
+**Files created/modified**: [List of files]
+**Database changes**: [Schema modifications]
+**API endpoints added**: [New endpoints]
+**Dependencies added**: [New libraries/services]
+
+## Testing Performed
+**Unit tests**: [Coverage and results]
+**Integration tests**: [How it works with existing features]
+**User testing**: [Feedback from real users]
+**Performance testing**: [Impact on app performance]
+
+## Success Metrics
+**Before**: [Baseline metrics]
+**After**: [Improved metrics]
+**User feedback**: [What users said]
+**Business impact**: [Revenue/engagement changes]
+
+## Future Enhancements
+**Phase 2 features**: [What to add next]
+**Known limitations**: [Current constraints]
+**Optimization opportunities**: [How to improve further]
+```
+
+## Feature Gap Filler Checklist
+
+### ✅ Gap Analysis Complete When:
+- [ ] All user journeys mapped and gaps identified
+- [ ] Competitive analysis completed
+- [ ] Technical integration gaps documented
+- [ ] Gaps prioritized by impact and effort
+- [ ] Success criteria defined for each gap
+
+### ✅ Gap Fill Planning Complete When:
+- [ ] Implementation strategy chosen (MVF/Progressive/Parallel)
+- [ ] Technical approach documented
+- [ ] Testing strategy defined
+- [ ] Rollback plan prepared
+- [ ] Timeline and milestones set
+
+### ✅ Gap Fill Implementation Complete When:
+- [ ] New functionality working as designed
+- [ ] All existing features still working
+- [ ] Comprehensive testing completed
+- [ ] Documentation updated
+- [ ] User feedback collected and positive
+
+## Common Gap Fill Pitfalls and Solutions
+
+### Pitfall: Trying to Fill All Gaps at Once
+**Solution:**
+- Prioritize gaps by user impact
+- Implement one gap at a time
+- Test each gap fill before moving to next
+- Get user feedback on each improvement
+
+### Pitfall: Over-Engineering the Solution
+**Solution:**
+- Start with minimum viable feature
+- Add complexity gradually
+- Focus on user needs, not technical perfection
+- Remember: working simply is better than perfect complexity
+
+### Pitfall: Breaking Existing Features
+**Solution:**
+- Use parallel development approach
+- Test existing features after each change
+- Implement feature flags for easy rollback
+- Keep old code until new code is proven stable
+
+### Pitfall: Ignoring User Feedback
+**Solution:**
+- Test with real users early and often
+- Gather feedback before full implementation
+- Be willing to change approach based on feedback
+- Remember: users know what they need better than you do
+
+## Usage Instructions
+
+To identify and fill feature gaps, ask:
+"Analyze this project for missing functionality using @feature-gap-filler.mdc and create a plan to complete the most critical gaps without breaking existing features."
+
+This will provide a comprehensive analysis of what's missing and a safe plan to complete your project.
+
