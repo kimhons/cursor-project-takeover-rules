@@ -1,0 +1,1190 @@
+---
+description: "Efficiently manage context and memory in large codebases for better AI assistance and development workflow"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Context Memory Manager
+
+You are helping someone with no coding experience efficiently manage context and memory in large codebases to get better AI assistance and maintain productive development workflows.
+
+## Context Management Process
+
+### Step 1: Understanding Context Management
+
+#### What is Context Memory Management?
+Think of context management like organizing a massive library for a research project:
+- **Information Indexing**: Like creating a detailed catalog system for quick reference
+- **Relevance Filtering**: Like knowing which books are most important for your current research
+- **Memory Optimization**: Like keeping frequently used books on your desk, others on nearby shelves
+- **Context Switching**: Like efficiently moving between different research topics
+- **Knowledge Persistence**: Like maintaining notes and bookmarks for future reference
+- **Intelligent Retrieval**: Like having a librarian who knows exactly what you need
+
+#### Why Context Management Matters:
+- **AI Effectiveness**: Better context leads to more accurate and helpful AI responses
+- **Development Speed**: Quick access to relevant code and documentation
+- **Cognitive Load**: Reduces mental overhead when working with large codebases
+- **Team Collaboration**: Shared context understanding across team members
+- **Knowledge Retention**: Preserves important decisions and patterns
+- **Debugging Efficiency**: Faster problem identification and resolution
+
+#### Common Context Management Challenges:
+- **Information Overload**: Too much code to keep track of mentally
+- **Context Loss**: Losing track of what you were working on
+- **Irrelevant Information**: AI getting confused by unrelated code
+- **Memory Limitations**: Hitting token limits in AI conversations
+- **Knowledge Gaps**: Missing important context about project decisions
+- **Context Switching**: Losing productivity when moving between tasks
+
+### Step 2: Codebase Analysis and Mapping
+
+#### Intelligent Codebase Analyzer:
+
+**Comprehensive Codebase Mapper:**
+```javascript
+// codebase-analyzer.js
+class CodebaseAnalyzer {
+  constructor(projectPath) {
+    this.projectPath = projectPath;
+    this.codebaseMap = {
+      structure: {},
+      dependencies: {},
+      patterns: {},
+      hotspots: {},
+      documentation: {}
+    };
+  }
+
+  async analyzeCodebase() {
+    const analysis = {
+      structure: await this.analyzeProjectStructure(),
+      dependencies: await this.analyzeDependencies(),
+      patterns: await this.identifyPatterns(),
+      complexity: await this.analyzeComplexity(),
+      documentation: await this.analyzeDocumentation(),
+      context: await this.buildContextMap()
+    };
+
+    return this.generateCodebaseProfile(analysis);
+  }
+
+  async analyzeProjectStructure() {
+    const structure = {
+      directories: await this.scanDirectories(),
+      files: await this.scanFiles(),
+      modules: await this.identifyModules(),
+      components: await this.identifyComponents(),
+      services: await this.identifyServices()
+    };
+
+    return this.categorizeStructure(structure);
+  }
+
+  async scanFiles() {
+    const files = await this.getAllFiles();
+    const fileAnalysis = [];
+
+    for (const file of files) {
+      const analysis = {
+        path: file.path,
+        type: this.determineFileType(file),
+        size: file.size,
+        complexity: await this.analyzeFileComplexity(file),
+        dependencies: await this.extractFileDependencies(file),
+        exports: await this.extractFileExports(file),
+        importance: this.calculateFileImportance(file),
+        lastModified: file.lastModified,
+        changeFrequency: await this.calculateChangeFrequency(file)
+      };
+
+      fileAnalysis.push(analysis);
+    }
+
+    return fileAnalysis.sort((a, b) => b.importance - a.importance);
+  }
+
+  async identifyModules() {
+    const modules = [];
+    const packageFiles = await this.findPackageFiles();
+
+    for (const packageFile of packageFiles) {
+      const moduleInfo = {
+        name: packageFile.name,
+        path: packageFile.path,
+        dependencies: packageFile.dependencies,
+        exports: await this.analyzeModuleExports(packageFile),
+        purpose: await this.inferModulePurpose(packageFile),
+        interfaces: await this.extractModuleInterfaces(packageFile)
+      };
+
+      modules.push(moduleInfo);
+    }
+
+    return modules;
+  }
+
+  async analyzeDependencies() {
+    const dependencies = {
+      internal: await this.analyzeInternalDependencies(),
+      external: await this.analyzeExternalDependencies(),
+      circular: await this.detectCircularDependencies(),
+      unused: await this.detectUnusedDependencies(),
+      graph: await this.buildDependencyGraph()
+    };
+
+    return dependencies;
+  }
+
+  async analyzeInternalDependencies() {
+    const files = await this.getAllFiles();
+    const dependencies = new Map();
+
+    for (const file of files) {
+      const fileDeps = await this.extractFileDependencies(file);
+      const internalDeps = fileDeps.filter(dep => this.isInternalDependency(dep));
+      
+      dependencies.set(file.path, {
+        imports: internalDeps,
+        importedBy: [],
+        strength: this.calculateDependencyStrength(internalDeps)
+      });
+    }
+
+    // Calculate reverse dependencies
+    for (const [filePath, deps] of dependencies) {
+      for (const importPath of deps.imports) {
+        if (dependencies.has(importPath)) {
+          dependencies.get(importPath).importedBy.push(filePath);
+        }
+      }
+    }
+
+    return dependencies;
+  }
+
+  async identifyPatterns() {
+    const patterns = {
+      architectural: await this.identifyArchitecturalPatterns(),
+      design: await this.identifyDesignPatterns(),
+      naming: await this.analyzeNamingPatterns(),
+      structure: await this.analyzeStructuralPatterns(),
+      antiPatterns: await this.identifyAntiPatterns()
+    };
+
+    return patterns;
+  }
+
+  async identifyArchitecturalPatterns() {
+    const patterns = [];
+    
+    // Detect MVC pattern
+    if (await this.detectMVCPattern()) {
+      patterns.push({
+        type: 'MVC',
+        confidence: 0.9,
+        evidence: ['controllers/', 'models/', 'views/'],
+        description: 'Model-View-Controller architecture detected'
+      });
+    }
+
+    // Detect Component-based architecture
+    if (await this.detectComponentPattern()) {
+      patterns.push({
+        type: 'Component-Based',
+        confidence: 0.85,
+        evidence: ['components/', 'hooks/', 'context/'],
+        description: 'React component-based architecture detected'
+      });
+    }
+
+    // Detect Microservices pattern
+    if (await this.detectMicroservicesPattern()) {
+      patterns.push({
+        type: 'Microservices',
+        confidence: 0.8,
+        evidence: ['services/', 'api/', 'docker-compose.yml'],
+        description: 'Microservices architecture detected'
+      });
+    }
+
+    return patterns;
+  }
+
+  async buildContextMap() {
+    const contextMap = {
+      coreFiles: await this.identifyCoreFiles(),
+      entryPoints: await this.identifyEntryPoints(),
+      configFiles: await this.identifyConfigFiles(),
+      testFiles: await this.identifyTestFiles(),
+      documentationFiles: await this.identifyDocumentationFiles(),
+      relationships: await this.mapFileRelationships()
+    };
+
+    return this.optimizeContextMap(contextMap);
+  }
+
+  async identifyCoreFiles() {
+    const files = await this.getAllFiles();
+    const coreFiles = [];
+
+    for (const file of files) {
+      const importance = this.calculateFileImportance(file);
+      const centrality = await this.calculateFileCentrality(file);
+      const changeImpact = await this.calculateChangeImpact(file);
+
+      if (importance > 0.8 || centrality > 0.7 || changeImpact > 0.6) {
+        coreFiles.push({
+          path: file.path,
+          importance,
+          centrality,
+          changeImpact,
+          reason: this.explainCoreFileReason(file, importance, centrality, changeImpact)
+        });
+      }
+    }
+
+    return coreFiles.sort((a, b) => b.importance - a.importance);
+  }
+
+  calculateFileImportance(file) {
+    let importance = 0;
+
+    // Entry points are highly important
+    if (this.isEntryPoint(file)) importance += 0.4;
+    
+    // Configuration files are important
+    if (this.isConfigFile(file)) importance += 0.3;
+    
+    // Frequently imported files are important
+    const importCount = this.getImportCount(file);
+    importance += Math.min(importCount * 0.1, 0.3);
+    
+    // Recently modified files might be important
+    const daysSinceModified = this.getDaysSinceModified(file);
+    if (daysSinceModified < 7) importance += 0.1;
+    
+    // Large files might be important (but could also be problematic)
+    const sizeScore = Math.min(file.size / 10000, 0.2);
+    importance += sizeScore;
+
+    return Math.min(importance, 1.0);
+  }
+}
+```
+
+#### Context Optimization System:
+
+**Smart Context Optimizer:**
+```javascript
+// context-optimizer.js
+class ContextOptimizer {
+  constructor(codebaseAnalysis) {
+    this.codebase = codebaseAnalysis;
+    this.contextProfiles = new Map();
+  }
+
+  async optimizeContext(task, currentFiles = []) {
+    const optimization = {
+      relevantFiles: await this.identifyRelevantFiles(task, currentFiles),
+      contextPriority: await this.prioritizeContext(task),
+      memoryOptimization: await this.optimizeMemoryUsage(task),
+      focusAreas: await this.identifyFocusAreas(task),
+      excludePatterns: await this.identifyExcludePatterns(task)
+    };
+
+    return this.generateContextProfile(optimization);
+  }
+
+  async identifyRelevantFiles(task, currentFiles) {
+    const relevantFiles = [];
+    const taskKeywords = this.extractTaskKeywords(task);
+    
+    // Analyze current files for context
+    for (const file of currentFiles) {
+      const relevance = await this.calculateFileRelevance(file, taskKeywords);
+      if (relevance > 0.3) {
+        relevantFiles.push({
+          path: file,
+          relevance,
+          reason: this.explainRelevance(file, taskKeywords)
+        });
+      }
+    }
+
+    // Find related files through dependencies
+    const relatedFiles = await this.findRelatedFiles(currentFiles, taskKeywords);
+    relevantFiles.push(...relatedFiles);
+
+    // Find files by semantic similarity
+    const semanticFiles = await this.findSemanticallySimilarFiles(taskKeywords);
+    relevantFiles.push(...semanticFiles);
+
+    return this.deduplicateAndRank(relevantFiles);
+  }
+
+  async calculateFileRelevance(filePath, keywords) {
+    let relevance = 0;
+    const file = await this.getFileContent(filePath);
+    
+    // Keyword matching in file content
+    const keywordMatches = this.countKeywordMatches(file.content, keywords);
+    relevance += Math.min(keywordMatches * 0.1, 0.4);
+    
+    // File name relevance
+    const nameRelevance = this.calculateNameRelevance(filePath, keywords);
+    relevance += nameRelevance * 0.2;
+    
+    // Import/export relevance
+    const dependencyRelevance = await this.calculateDependencyRelevance(filePath, keywords);
+    relevance += dependencyRelevance * 0.2;
+    
+    // File type relevance
+    const typeRelevance = this.calculateTypeRelevance(filePath, keywords);
+    relevance += typeRelevance * 0.1;
+    
+    // Recent modification relevance
+    const recencyRelevance = this.calculateRecencyRelevance(file.lastModified);
+    relevance += recencyRelevance * 0.1;
+
+    return Math.min(relevance, 1.0);
+  }
+
+  async findRelatedFiles(currentFiles, keywords) {
+    const relatedFiles = [];
+    
+    for (const filePath of currentFiles) {
+      // Find files that import this file
+      const importers = await this.findFileImporters(filePath);
+      for (const importer of importers) {
+        const relevance = await this.calculateFileRelevance(importer, keywords);
+        if (relevance > 0.2) {
+          relatedFiles.push({
+            path: importer,
+            relevance: relevance * 0.8, // Slightly lower than direct relevance
+            reason: `Imports ${filePath}`
+          });
+        }
+      }
+      
+      // Find files that this file imports
+      const imports = await this.getFileImports(filePath);
+      for (const importPath of imports) {
+        const relevance = await this.calculateFileRelevance(importPath, keywords);
+        if (relevance > 0.2) {
+          relatedFiles.push({
+            path: importPath,
+            relevance: relevance * 0.9,
+            reason: `Imported by ${filePath}`
+          });
+        }
+      }
+    }
+
+    return relatedFiles;
+  }
+
+  async prioritizeContext(task) {
+    const priority = {
+      high: [],
+      medium: [],
+      low: [],
+      exclude: []
+    };
+
+    const taskType = this.classifyTask(task);
+    const files = await this.getAllRelevantFiles(task);
+
+    for (const file of files) {
+      const priorityLevel = await this.calculatePriorityLevel(file, taskType);
+      priority[priorityLevel].push(file);
+    }
+
+    return priority;
+  }
+
+  classifyTask(task) {
+    const taskLower = task.toLowerCase();
+    
+    if (taskLower.includes('bug') || taskLower.includes('fix') || taskLower.includes('error')) {
+      return 'debugging';
+    }
+    
+    if (taskLower.includes('feature') || taskLower.includes('add') || taskLower.includes('implement')) {
+      return 'feature_development';
+    }
+    
+    if (taskLower.includes('refactor') || taskLower.includes('optimize') || taskLower.includes('improve')) {
+      return 'refactoring';
+    }
+    
+    if (taskLower.includes('test') || taskLower.includes('spec')) {
+      return 'testing';
+    }
+    
+    if (taskLower.includes('document') || taskLower.includes('readme')) {
+      return 'documentation';
+    }
+
+    return 'general';
+  }
+
+  async optimizeMemoryUsage(task) {
+    const optimization = {
+      tokenBudget: 8000, // Conservative token limit
+      compressionStrategies: [],
+      chunkingStrategy: null,
+      priorityWeights: {}
+    };
+
+    // Calculate current context size
+    const currentSize = await this.calculateContextSize(task);
+    
+    if (currentSize > optimization.tokenBudget) {
+      // Apply compression strategies
+      optimization.compressionStrategies = [
+        'remove_comments',
+        'minify_whitespace',
+        'extract_signatures_only',
+        'summarize_large_files'
+      ];
+      
+      // Implement chunking if needed
+      optimization.chunkingStrategy = {
+        method: 'semantic_chunks',
+        maxChunkSize: 2000,
+        overlapSize: 200
+      };
+    }
+
+    return optimization;
+  }
+
+  async generateContextProfile(optimization) {
+    const profile = {
+      id: this.generateProfileId(),
+      timestamp: new Date(),
+      task: optimization.task,
+      files: {
+        included: optimization.relevantFiles.slice(0, 20), // Limit to top 20
+        excluded: optimization.excludePatterns,
+        priority: optimization.contextPriority
+      },
+      memory: optimization.memoryOptimization,
+      focus: optimization.focusAreas,
+      instructions: this.generateContextInstructions(optimization)
+    };
+
+    return profile;
+  }
+
+  generateContextInstructions(optimization) {
+    const instructions = [];
+    
+    // File inclusion instructions
+    instructions.push({
+      type: 'include',
+      description: 'Focus on these high-priority files',
+      files: optimization.contextPriority.high.map(f => f.path)
+    });
+    
+    // Exclusion instructions
+    if (optimization.excludePatterns.length > 0) {
+      instructions.push({
+        type: 'exclude',
+        description: 'Ignore these patterns to reduce noise',
+        patterns: optimization.excludePatterns
+      });
+    }
+    
+    // Memory optimization instructions
+    if (optimization.memoryOptimization.compressionStrategies.length > 0) {
+      instructions.push({
+        type: 'compress',
+        description: 'Apply these compression strategies',
+        strategies: optimization.memoryOptimization.compressionStrategies
+      });
+    }
+    
+    // Focus area instructions
+    instructions.push({
+      type: 'focus',
+      description: 'Pay special attention to these areas',
+      areas: optimization.focusAreas
+    });
+
+    return instructions;
+  }
+}
+```
+
+### Step 3: Intelligent Context Switching
+
+#### Context Switching Manager:
+
+**Smart Context Switcher:**
+```javascript
+// context-switcher.js
+class ContextSwitcher {
+  constructor() {
+    this.contextStack = [];
+    this.currentContext = null;
+    this.contextHistory = [];
+  }
+
+  async switchContext(newTask, preserveCurrent = true) {
+    const switching = {
+      previous: this.currentContext,
+      new: await this.buildNewContext(newTask),
+      transition: await this.planContextTransition(newTask),
+      preservation: preserveCurrent ? await this.preserveCurrentContext() : null
+    };
+
+    return this.executeContextSwitch(switching);
+  }
+
+  async buildNewContext(task) {
+    const contextBuilder = new ContextOptimizer(this.codebaseAnalysis);
+    const newContext = await contextBuilder.optimizeContext(task);
+    
+    // Enhance with task-specific optimizations
+    newContext.taskSpecific = await this.addTaskSpecificContext(task);
+    newContext.quickAccess = await this.buildQuickAccessMap(task);
+    newContext.breadcrumbs = await this.generateBreadcrumbs(task);
+    
+    return newContext;
+  }
+
+  async addTaskSpecificContext(task) {
+    const taskType = this.classifyTask(task);
+    const specificContext = {};
+
+    switch (taskType) {
+      case 'debugging':
+        specificContext.errorLogs = await this.getRecentErrorLogs();
+        specificContext.testFailures = await this.getFailingTests();
+        specificContext.recentChanges = await this.getRecentChanges();
+        break;
+        
+      case 'feature_development':
+        specificContext.similarFeatures = await this.findSimilarFeatures(task);
+        specificContext.designPatterns = await this.getRelevantPatterns(task);
+        specificContext.apiEndpoints = await this.getRelevantAPIs(task);
+        break;
+        
+      case 'refactoring':
+        specificContext.codeSmells = await this.identifyCodeSmells();
+        specificContext.testCoverage = await this.getTestCoverage();
+        specificContext.dependencies = await this.getRefactoringDependencies(task);
+        break;
+    }
+
+    return specificContext;
+  }
+
+  async planContextTransition(newTask) {
+    const transition = {
+      savePoints: await this.identifySavePoints(),
+      carryOver: await this.identifyCarryOverContext(newTask),
+      cleanup: await this.identifyCleanupItems(),
+      preparation: await this.identifyPreparationSteps(newTask)
+    };
+
+    return transition;
+  }
+
+  async identifyCarryOverContext(newTask) {
+    const carryOver = [];
+    
+    if (this.currentContext) {
+      // Carry over relevant files
+      const relevantFiles = this.currentContext.files.included.filter(file => 
+        this.isRelevantToNewTask(file, newTask)
+      );
+      carryOver.push(...relevantFiles);
+      
+      // Carry over important decisions or notes
+      if (this.currentContext.decisions) {
+        carryOver.push(...this.currentContext.decisions);
+      }
+      
+      // Carry over shared dependencies
+      const sharedDeps = await this.findSharedDependencies(newTask);
+      carryOver.push(...sharedDeps);
+    }
+
+    return carryOver;
+  }
+
+  async preserveCurrentContext() {
+    if (!this.currentContext) return null;
+
+    const preservation = {
+      snapshot: this.createContextSnapshot(),
+      resumeInstructions: this.generateResumeInstructions(),
+      bookmarks: this.extractBookmarks(),
+      progress: this.captureProgress()
+    };
+
+    // Store in context stack
+    this.contextStack.push(preservation);
+    
+    return preservation;
+  }
+
+  createContextSnapshot() {
+    return {
+      id: this.currentContext.id,
+      timestamp: new Date(),
+      task: this.currentContext.task,
+      files: [...this.currentContext.files.included],
+      focus: this.currentContext.focus,
+      state: this.captureCurrentState()
+    };
+  }
+
+  generateResumeInstructions() {
+    const instructions = [];
+    
+    if (this.currentContext.progress) {
+      instructions.push({
+        type: 'progress',
+        description: 'Continue from where you left off',
+        details: this.currentContext.progress
+      });
+    }
+    
+    if (this.currentContext.openQuestions) {
+      instructions.push({
+        type: 'questions',
+        description: 'Address these open questions',
+        questions: this.currentContext.openQuestions
+      });
+    }
+    
+    if (this.currentContext.nextSteps) {
+      instructions.push({
+        type: 'next_steps',
+        description: 'Planned next actions',
+        steps: this.currentContext.nextSteps
+      });
+    }
+
+    return instructions;
+  }
+
+  async executeContextSwitch(switching) {
+    // Save current context if needed
+    if (switching.preservation) {
+      await this.saveContext(switching.preservation);
+    }
+    
+    // Clean up current context
+    await this.cleanupContext(switching.transition.cleanup);
+    
+    // Prepare new context
+    await this.prepareContext(switching.transition.preparation);
+    
+    // Load new context
+    this.currentContext = switching.new;
+    this.contextHistory.push({
+      timestamp: new Date(),
+      from: switching.previous?.id,
+      to: switching.new.id,
+      task: switching.new.task
+    });
+    
+    return {
+      success: true,
+      newContext: switching.new,
+      transitionSummary: this.generateTransitionSummary(switching)
+    };
+  }
+}
+```
+
+### Step 4: Context Persistence and Learning
+
+#### Context Learning System:
+
+**Adaptive Context Learner:**
+```javascript
+// context-learner.js
+class ContextLearner {
+  constructor() {
+    this.learningData = {
+      patterns: new Map(),
+      preferences: new Map(),
+      effectiveness: new Map(),
+      feedback: []
+    };
+  }
+
+  async learnFromContext(contextSession) {
+    const learning = {
+      patterns: await this.extractPatterns(contextSession),
+      preferences: await this.updatePreferences(contextSession),
+      effectiveness: await this.measureEffectiveness(contextSession),
+      improvements: await this.identifyImprovements(contextSession)
+    };
+
+    return this.updateLearningModel(learning);
+  }
+
+  async extractPatterns(session) {
+    const patterns = [];
+    
+    // File access patterns
+    const filePatterns = this.analyzeFileAccessPatterns(session);
+    patterns.push(...filePatterns);
+    
+    // Task completion patterns
+    const taskPatterns = this.analyzeTaskCompletionPatterns(session);
+    patterns.push(...taskPatterns);
+    
+    // Context switching patterns
+    const switchingPatterns = this.analyzeContextSwitchingPatterns(session);
+    patterns.push(...switchingPatterns);
+    
+    // Error resolution patterns
+    const errorPatterns = this.analyzeErrorResolutionPatterns(session);
+    patterns.push(...errorPatterns);
+
+    return patterns;
+  }
+
+  analyzeFileAccessPatterns(session) {
+    const patterns = [];
+    const fileAccess = session.fileAccessLog;
+    
+    // Identify frequently accessed file combinations
+    const combinations = this.findFileAccessCombinations(fileAccess);
+    for (const combo of combinations) {
+      if (combo.frequency > 3) {
+        patterns.push({
+          type: 'file_combination',
+          files: combo.files,
+          frequency: combo.frequency,
+          context: combo.taskTypes,
+          confidence: this.calculatePatternConfidence(combo)
+        });
+      }
+    }
+    
+    // Identify sequential access patterns
+    const sequences = this.findFileAccessSequences(fileAccess);
+    for (const sequence of sequences) {
+      patterns.push({
+        type: 'access_sequence',
+        sequence: sequence.files,
+        probability: sequence.probability,
+        context: sequence.taskContext
+      });
+    }
+
+    return patterns;
+  }
+
+  async measureEffectiveness(session) {
+    const effectiveness = {
+      taskCompletion: this.measureTaskCompletionRate(session),
+      timeEfficiency: this.measureTimeEfficiency(session),
+      contextAccuracy: this.measureContextAccuracy(session),
+      userSatisfaction: this.measureUserSatisfaction(session),
+      errorReduction: this.measureErrorReduction(session)
+    };
+
+    return {
+      ...effectiveness,
+      overallScore: this.calculateOverallEffectiveness(effectiveness),
+      improvements: this.suggestEffectivenessImprovements(effectiveness)
+    };
+  }
+
+  async identifyImprovements(session) {
+    const improvements = [];
+    
+    // Context size optimization
+    if (session.contextSize > session.optimalSize * 1.2) {
+      improvements.push({
+        type: 'context_size',
+        description: 'Reduce context size for better performance',
+        recommendation: 'Apply more aggressive filtering',
+        expectedBenefit: 'Faster AI responses, reduced token usage'
+      });
+    }
+    
+    // File relevance optimization
+    const irrelevantFiles = session.files.filter(f => f.accessCount === 0);
+    if (irrelevantFiles.length > session.files.length * 0.3) {
+      improvements.push({
+        type: 'file_relevance',
+        description: 'Improve file relevance detection',
+        recommendation: 'Refine relevance scoring algorithm',
+        expectedBenefit: 'More focused context, better AI assistance'
+      });
+    }
+    
+    // Context switching optimization
+    if (session.contextSwitches > 5) {
+      improvements.push({
+        type: 'context_switching',
+        description: 'Reduce context switching overhead',
+        recommendation: 'Implement better context preservation',
+        expectedBenefit: 'Smoother workflow, less context loss'
+      });
+    }
+
+    return improvements;
+  }
+
+  async updateLearningModel(learning) {
+    // Update pattern recognition
+    for (const pattern of learning.patterns) {
+      this.updatePatternModel(pattern);
+    }
+    
+    // Update preference model
+    for (const [key, value] of learning.preferences) {
+      this.learningData.preferences.set(key, value);
+    }
+    
+    // Update effectiveness model
+    this.updateEffectivenessModel(learning.effectiveness);
+    
+    // Apply improvements
+    await this.applyImprovements(learning.improvements);
+    
+    return {
+      patternsLearned: learning.patterns.length,
+      preferencesUpdated: learning.preferences.size,
+      improvementsApplied: learning.improvements.length,
+      modelVersion: this.incrementModelVersion()
+    };
+  }
+
+  generateContextRecommendations(task) {
+    const recommendations = [];
+    
+    // Pattern-based recommendations
+    const patternRecs = this.getPatternBasedRecommendations(task);
+    recommendations.push(...patternRecs);
+    
+    // Preference-based recommendations
+    const prefRecs = this.getPreferenceBasedRecommendations(task);
+    recommendations.push(...prefRecs);
+    
+    // Effectiveness-based recommendations
+    const effRecs = this.getEffectivenessBasedRecommendations(task);
+    recommendations.push(...effRecs);
+
+    return this.rankRecommendations(recommendations);
+  }
+}
+```
+
+### Step 5: Context Automation and Workflows
+
+#### Automated Context Management:
+
+**Context Automation Engine:**
+```javascript
+// context-automation.js
+class ContextAutomationEngine {
+  constructor() {
+    this.automationRules = [];
+    this.workflows = new Map();
+    this.triggers = new Map();
+  }
+
+  async setupAutomation(projectConfig) {
+    const automation = {
+      rules: await this.createAutomationRules(projectConfig),
+      workflows: await this.setupWorkflows(projectConfig),
+      triggers: await this.setupTriggers(projectConfig),
+      monitoring: await this.setupMonitoring(projectConfig)
+    };
+
+    return this.activateAutomation(automation);
+  }
+
+  async createAutomationRules(config) {
+    const rules = [];
+    
+    // Auto-context switching rules
+    rules.push({
+      name: 'auto_debug_context',
+      trigger: 'error_detected',
+      action: 'switch_to_debug_context',
+      condition: (event) => event.type === 'error' && event.severity > 3,
+      priority: 'high'
+    });
+    
+    rules.push({
+      name: 'auto_test_context',
+      trigger: 'test_file_opened',
+      action: 'load_test_context',
+      condition: (event) => event.file.endsWith('.test.js') || event.file.endsWith('.spec.js'),
+      priority: 'medium'
+    });
+    
+    rules.push({
+      name: 'auto_feature_context',
+      trigger: 'feature_branch_checkout',
+      action: 'load_feature_context',
+      condition: (event) => event.branch.startsWith('feature/'),
+      priority: 'medium'
+    });
+    
+    // Context optimization rules
+    rules.push({
+      name: 'auto_context_cleanup',
+      trigger: 'context_size_exceeded',
+      action: 'optimize_context',
+      condition: (event) => event.contextSize > event.maxSize * 0.9,
+      priority: 'high'
+    });
+    
+    rules.push({
+      name: 'auto_relevance_update',
+      trigger: 'file_access_pattern_changed',
+      action: 'update_relevance_scores',
+      condition: (event) => event.patternChange > 0.3,
+      priority: 'low'
+    });
+
+    return rules;
+  }
+
+  async setupWorkflows(config) {
+    const workflows = new Map();
+    
+    // Debug workflow
+    workflows.set('debug_workflow', {
+      name: 'Debug Context Workflow',
+      steps: [
+        'identify_error_location',
+        'load_related_files',
+        'analyze_call_stack',
+        'load_test_files',
+        'prepare_debug_context'
+      ],
+      automation: true,
+      triggers: ['error_detected', 'debug_command_issued']
+    });
+    
+    // Feature development workflow
+    workflows.set('feature_workflow', {
+      name: 'Feature Development Workflow',
+      steps: [
+        'analyze_feature_requirements',
+        'identify_related_components',
+        'load_similar_features',
+        'prepare_development_context'
+      ],
+      automation: true,
+      triggers: ['feature_branch_created', 'feature_task_started']
+    });
+    
+    // Code review workflow
+    workflows.set('review_workflow', {
+      name: 'Code Review Workflow',
+      steps: [
+        'load_changed_files',
+        'identify_affected_components',
+        'load_related_tests',
+        'prepare_review_context'
+      ],
+      automation: true,
+      triggers: ['pull_request_opened', 'review_requested']
+    });
+
+    return workflows;
+  }
+
+  async executeWorkflow(workflowName, context) {
+    const workflow = this.workflows.get(workflowName);
+    if (!workflow) {
+      throw new Error(`Workflow ${workflowName} not found`);
+    }
+
+    const execution = {
+      workflow: workflowName,
+      startTime: new Date(),
+      steps: [],
+      context: context,
+      result: null
+    };
+
+    try {
+      for (const step of workflow.steps) {
+        const stepResult = await this.executeWorkflowStep(step, execution.context);
+        execution.steps.push({
+          name: step,
+          result: stepResult,
+          duration: stepResult.duration
+        });
+        
+        // Update context with step result
+        execution.context = this.mergeContext(execution.context, stepResult.context);
+      }
+      
+      execution.result = 'success';
+    } catch (error) {
+      execution.result = 'failed';
+      execution.error = error.message;
+    } finally {
+      execution.endTime = new Date();
+      execution.totalDuration = execution.endTime - execution.startTime;
+    }
+
+    return execution;
+  }
+
+  async executeWorkflowStep(stepName, context) {
+    const stepExecutors = {
+      identify_error_location: this.identifyErrorLocation,
+      load_related_files: this.loadRelatedFiles,
+      analyze_call_stack: this.analyzeCallStack,
+      load_test_files: this.loadTestFiles,
+      prepare_debug_context: this.prepareDebugContext,
+      analyze_feature_requirements: this.analyzeFeatureRequirements,
+      identify_related_components: this.identifyRelatedComponents,
+      load_similar_features: this.loadSimilarFeatures,
+      prepare_development_context: this.prepareDevelopmentContext
+    };
+
+    const executor = stepExecutors[stepName];
+    if (!executor) {
+      throw new Error(`Step executor ${stepName} not found`);
+    }
+
+    const startTime = Date.now();
+    const result = await executor.call(this, context);
+    const endTime = Date.now();
+
+    return {
+      ...result,
+      duration: endTime - startTime
+    };
+  }
+
+  async setupMonitoring(config) {
+    const monitoring = {
+      metrics: this.setupMetricsCollection(),
+      alerts: this.setupAlerts(),
+      reporting: this.setupReporting(),
+      optimization: this.setupOptimizationMonitoring()
+    };
+
+    return monitoring;
+  }
+
+  setupMetricsCollection() {
+    return {
+      contextSwitches: 0,
+      averageContextSize: 0,
+      contextEffectiveness: 0,
+      automationTriggers: 0,
+      workflowExecutions: 0,
+      userSatisfaction: 0
+    };
+  }
+
+  generateContextSummary(context) {
+    return {
+      id: context.id,
+      task: context.task,
+      filesIncluded: context.files.included.length,
+      focusAreas: context.focus.length,
+      memoryUsage: context.memory.usage,
+      effectiveness: context.effectiveness,
+      recommendations: context.recommendations.slice(0, 3), // Top 3
+      automation: {
+        rulesActive: this.automationRules.filter(r => r.active).length,
+        workflowsAvailable: this.workflows.size,
+        triggersConfigured: this.triggers.size
+      }
+    };
+  }
+}
+```
+
+## Context Memory Management Checklist
+
+### ✅ Codebase Analysis Complete When:
+- [ ] Project structure mapped and categorized
+- [ ] Dependencies analyzed and graphed
+- [ ] Architectural patterns identified
+- [ ] Core files and entry points identified
+- [ ] File importance and centrality calculated
+
+### ✅ Context Optimization Complete When:
+- [ ] Relevant files identified for current task
+- [ ] Context prioritized by importance and relevance
+- [ ] Memory usage optimized within token limits
+- [ ] Focus areas clearly defined
+- [ ] Exclusion patterns configured
+
+### ✅ Context Switching Complete When:
+- [ ] Context preservation mechanisms active
+- [ ] Smooth transition between tasks enabled
+- [ ] Context history maintained
+- [ ] Quick access maps generated
+- [ ] Breadcrumb navigation available
+
+### ✅ Learning System Complete When:
+- [ ] Pattern recognition active
+- [ ] User preferences learned and applied
+- [ ] Effectiveness metrics tracked
+- [ ] Continuous improvement implemented
+- [ ] Recommendations generated automatically
+
+### ✅ Automation Complete When:
+- [ ] Automation rules configured and active
+- [ ] Workflows defined for common tasks
+- [ ] Triggers set up for automatic context switching
+- [ ] Monitoring and metrics collection active
+- [ ] Performance optimization ongoing
+
+## Common Context Management Issues and Solutions
+
+### Issue: Information Overload
+**Solutions:**
+1. Implement intelligent filtering based on task relevance
+2. Use hierarchical context with priority levels
+3. Apply compression strategies for large files
+4. Focus on core files and entry points
+5. Exclude irrelevant patterns and directories
+
+### Issue: Context Loss During Task Switching
+**Solutions:**
+1. Implement context preservation and snapshots
+2. Create detailed resume instructions
+3. Maintain context history and breadcrumbs
+4. Use intelligent carry-over of relevant context
+5. Provide quick context restoration
+
+### Issue: Poor AI Assistance Due to Irrelevant Context
+**Solutions:**
+1. Improve relevance scoring algorithms
+2. Learn from user feedback and patterns
+3. Implement semantic similarity matching
+4. Use task-specific context optimization
+5. Continuously refine context selection
+
+### Issue: Memory and Token Limitations
+**Solutions:**
+1. Implement smart compression strategies
+2. Use chunking for large contexts
+3. Prioritize most important information
+4. Remove redundant or duplicate information
+5. Optimize context size dynamically
+
+## Usage Instructions
+
+To efficiently manage context and memory in large codebases, ask:
+"Optimize context management using @context-memory-manager.mdc for [specific task or workflow], focusing on [relevant files or areas] while maintaining [performance/accuracy/efficiency]."
+
+This will provide intelligent context optimization, automated switching, and continuous learning to improve your development workflow with AI assistance.
+

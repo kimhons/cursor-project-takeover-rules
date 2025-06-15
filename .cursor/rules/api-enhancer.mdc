@@ -1,0 +1,1252 @@
+---
+description: "Enhance API performance, reliability, and developer experience for better application integration"
+globs: ["*"]
+alwaysApply: false
+---
+
+# API Enhancer
+
+You are helping someone with no coding experience enhance API performance, reliability, and developer experience for better application integration and user satisfaction.
+
+## API Enhancement Process
+
+### Step 1: Understanding API Enhancement
+
+#### What is API Enhancement?
+Think of API enhancement like improving a restaurant's ordering system:
+- **Performance Optimization**: Like having faster kitchen service and delivery
+- **Reliability Improvement**: Like ensuring orders are never lost or incorrect
+- **Documentation Enhancement**: Like having clear, detailed menus with pictures
+- **Error Handling**: Like having polite staff who explain when items are unavailable
+- **Security Strengthening**: Like having proper payment processing and data protection
+- **Developer Experience**: Like making it easy for delivery apps to integrate with your restaurant
+
+#### Why API Enhancement Matters:
+- **User Experience**: Fast, reliable APIs mean responsive, smooth applications
+- **Developer Productivity**: Well-designed APIs are easier to integrate and maintain
+- **Business Growth**: Good APIs enable partnerships and third-party integrations
+- **System Reliability**: Enhanced APIs reduce crashes and downtime
+- **Cost Efficiency**: Optimized APIs use fewer server resources
+
+#### Common API Issues:
+- **Slow Response Times**: APIs taking too long to respond
+- **Poor Error Handling**: Unclear error messages and status codes
+- **Inconsistent Data Formats**: Different endpoints returning different structures
+- **Security Vulnerabilities**: Inadequate authentication and authorization
+- **Poor Documentation**: Missing or outdated API documentation
+- **Rate Limiting Issues**: No protection against API abuse
+
+### Step 2: API Performance Analysis
+
+#### API Performance Assessment:
+
+**Comprehensive API Analyzer:**
+```javascript
+// api-performance-analyzer.js
+class APIPerformanceAnalyzer {
+  constructor() {
+    this.metrics = {
+      responseTime: [],
+      throughput: 0,
+      errorRate: 0,
+      availability: 0
+    };
+  }
+
+  async analyzeAPIPerformance() {
+    const analysis = {
+      performanceMetrics: await this.collectPerformanceMetrics(),
+      endpointAnalysis: await this.analyzeEndpoints(),
+      securityAssessment: await this.assessSecurity(),
+      documentationReview: await this.reviewDocumentation(),
+      recommendations: []
+    };
+
+    return this.generateEnhancementPlan(analysis);
+  }
+
+  async collectPerformanceMetrics() {
+    const endpoints = await this.discoverEndpoints();
+    const metrics = {};
+
+    for (const endpoint of endpoints) {
+      metrics[endpoint.path] = await this.measureEndpointPerformance(endpoint);
+    }
+
+    return {
+      overallMetrics: this.calculateOverallMetrics(metrics),
+      endpointMetrics: metrics,
+      bottlenecks: this.identifyBottlenecks(metrics),
+      trends: await this.analyzeTrends()
+    };
+  }
+
+  async measureEndpointPerformance(endpoint) {
+    const measurements = [];
+    const testRequests = 10;
+
+    for (let i = 0; i < testRequests; i++) {
+      const startTime = Date.now();
+      
+      try {
+        const response = await this.makeTestRequest(endpoint);
+        const endTime = Date.now();
+        
+        measurements.push({
+          responseTime: endTime - startTime,
+          statusCode: response.status,
+          success: response.status < 400,
+          responseSize: JSON.stringify(response.data).length
+        });
+      } catch (error) {
+        measurements.push({
+          responseTime: 0,
+          statusCode: 0,
+          success: false,
+          error: error.message
+        });
+      }
+    }
+
+    return this.calculateEndpointMetrics(measurements);
+  }
+
+  calculateEndpointMetrics(measurements) {
+    const successfulRequests = measurements.filter(m => m.success);
+    const responseTimes = successfulRequests.map(m => m.responseTime);
+    
+    return {
+      averageResponseTime: this.average(responseTimes),
+      medianResponseTime: this.median(responseTimes),
+      p95ResponseTime: this.percentile(responseTimes, 95),
+      p99ResponseTime: this.percentile(responseTimes, 99),
+      successRate: (successfulRequests.length / measurements.length) * 100,
+      errorRate: ((measurements.length - successfulRequests.length) / measurements.length) * 100,
+      averageResponseSize: this.average(successfulRequests.map(m => m.responseSize)),
+      throughput: this.calculateThroughput(measurements)
+    };
+  }
+
+  async analyzeEndpoints() {
+    const endpoints = await this.discoverEndpoints();
+    const analysis = [];
+
+    for (const endpoint of endpoints) {
+      const endpointAnalysis = {
+        path: endpoint.path,
+        method: endpoint.method,
+        usage: await this.getEndpointUsage(endpoint),
+        performance: await this.measureEndpointPerformance(endpoint),
+        complexity: this.analyzeEndpointComplexity(endpoint),
+        issues: await this.identifyEndpointIssues(endpoint),
+        recommendations: []
+      };
+
+      // Generate specific recommendations
+      endpointAnalysis.recommendations = this.generateEndpointRecommendations(endpointAnalysis);
+      analysis.push(endpointAnalysis);
+    }
+
+    return analysis;
+  }
+
+  async identifyEndpointIssues(endpoint) {
+    const issues = [];
+    const performance = await this.measureEndpointPerformance(endpoint);
+
+    // Check for slow response times
+    if (performance.averageResponseTime > 1000) {
+      issues.push({
+        type: 'slow_response',
+        severity: 'high',
+        description: `Average response time: ${performance.averageResponseTime}ms (target: <500ms)`,
+        impact: 'User experience degradation'
+      });
+    }
+
+    // Check for high error rates
+    if (performance.errorRate > 5) {
+      issues.push({
+        type: 'high_error_rate',
+        severity: 'critical',
+        description: `Error rate: ${performance.errorRate}% (target: <1%)`,
+        impact: 'Application reliability issues'
+      });
+    }
+
+    // Check for inconsistent response times
+    const variability = performance.p99ResponseTime - performance.medianResponseTime;
+    if (variability > 2000) {
+      issues.push({
+        type: 'inconsistent_performance',
+        severity: 'medium',
+        description: `High response time variability: ${variability}ms`,
+        impact: 'Unpredictable user experience'
+      });
+    }
+
+    // Check for large response sizes
+    if (performance.averageResponseSize > 1024 * 1024) { // 1MB
+      issues.push({
+        type: 'large_response',
+        severity: 'medium',
+        description: `Large average response size: ${(performance.averageResponseSize / 1024 / 1024).toFixed(2)}MB`,
+        impact: 'Increased bandwidth usage and slower loading'
+      });
+    }
+
+    return issues;
+  }
+
+  generateEndpointRecommendations(analysis) {
+    const recommendations = [];
+
+    // Performance recommendations
+    if (analysis.performance.averageResponseTime > 500) {
+      recommendations.push({
+        type: 'performance',
+        priority: 'high',
+        title: 'Optimize Response Time',
+        description: 'Implement caching, database query optimization, or response compression',
+        implementation: [
+          'Add Redis caching for frequently requested data',
+          'Optimize database queries with proper indexing',
+          'Implement response compression (gzip)',
+          'Consider pagination for large datasets'
+        ],
+        expectedImprovement: '50-80% faster response times'
+      });
+    }
+
+    // Error handling recommendations
+    if (analysis.performance.errorRate > 1) {
+      recommendations.push({
+        type: 'reliability',
+        priority: 'critical',
+        title: 'Improve Error Handling',
+        description: 'Implement proper error responses and status codes',
+        implementation: [
+          'Add comprehensive input validation',
+          'Implement proper HTTP status codes',
+          'Add detailed error messages with error codes',
+          'Implement retry logic for transient failures'
+        ],
+        expectedImprovement: 'Reduced error rate to <1%'
+      });
+    }
+
+    // Security recommendations
+    recommendations.push({
+      type: 'security',
+      priority: 'high',
+      title: 'Enhance API Security',
+      description: 'Implement comprehensive security measures',
+      implementation: [
+        'Add rate limiting to prevent abuse',
+        'Implement proper authentication and authorization',
+        'Add input sanitization and validation',
+        'Enable HTTPS and security headers'
+      ],
+      expectedImprovement: 'Enterprise-grade security protection'
+    });
+
+    return recommendations;
+  }
+}
+```
+
+#### API Documentation Analyzer:
+
+**Documentation Quality Assessment:**
+```javascript
+// api-documentation-analyzer.js
+class APIDocumentationAnalyzer {
+  async analyzeDocumentation() {
+    const analysis = {
+      coverage: await this.assessDocumentationCoverage(),
+      quality: await this.assessDocumentationQuality(),
+      usability: await this.assessUsability(),
+      examples: await this.analyzeExamples(),
+      recommendations: []
+    };
+
+    return this.generateDocumentationPlan(analysis);
+  }
+
+  async assessDocumentationCoverage() {
+    const endpoints = await this.discoverEndpoints();
+    const documentedEndpoints = await this.getDocumentedEndpoints();
+    
+    const coverage = {
+      totalEndpoints: endpoints.length,
+      documentedEndpoints: documentedEndpoints.length,
+      coveragePercentage: (documentedEndpoints.length / endpoints.length) * 100,
+      missingDocumentation: endpoints.filter(ep => 
+        !documentedEndpoints.find(doc => doc.path === ep.path && doc.method === ep.method)
+      )
+    };
+
+    return coverage;
+  }
+
+  async assessDocumentationQuality() {
+    const documentation = await this.getExistingDocumentation();
+    const qualityMetrics = {
+      hasDescription: 0,
+      hasParameters: 0,
+      hasExamples: 0,
+      hasErrorCodes: 0,
+      hasAuthentication: 0
+    };
+
+    for (const doc of documentation) {
+      if (doc.description && doc.description.length > 50) qualityMetrics.hasDescription++;
+      if (doc.parameters && doc.parameters.length > 0) qualityMetrics.hasParameters++;
+      if (doc.examples && doc.examples.length > 0) qualityMetrics.hasExamples++;
+      if (doc.errorCodes && doc.errorCodes.length > 0) qualityMetrics.hasErrorCodes++;
+      if (doc.authentication) qualityMetrics.hasAuthentication++;
+    }
+
+    return {
+      totalDocuments: documentation.length,
+      qualityMetrics,
+      qualityScore: this.calculateQualityScore(qualityMetrics, documentation.length)
+    };
+  }
+
+  generateDocumentationPlan(analysis) {
+    const plan = {
+      currentState: analysis,
+      improvements: [],
+      implementation: {
+        phase1: [], // Critical documentation
+        phase2: [], // Enhanced documentation
+        phase3: []  // Advanced features
+      }
+    };
+
+    // Phase 1: Critical documentation
+    if (analysis.coverage.coveragePercentage < 80) {
+      plan.implementation.phase1.push({
+        task: 'Document all endpoints',
+        description: 'Create basic documentation for all API endpoints',
+        priority: 'critical',
+        estimatedTime: '2-4 hours'
+      });
+    }
+
+    // Phase 2: Enhanced documentation
+    if (analysis.quality.qualityScore < 70) {
+      plan.implementation.phase2.push({
+        task: 'Enhance documentation quality',
+        description: 'Add detailed descriptions, parameters, and examples',
+        priority: 'high',
+        estimatedTime: '4-6 hours'
+      });
+    }
+
+    // Phase 3: Advanced features
+    plan.implementation.phase3.push({
+      task: 'Interactive documentation',
+      description: 'Implement Swagger/OpenAPI with try-it-out functionality',
+      priority: 'medium',
+      estimatedTime: '2-3 hours'
+    });
+
+    return plan;
+  }
+}
+```
+
+### Step 3: API Performance Optimization
+
+#### Response Time Optimization:
+
+**API Performance Optimizer:**
+```javascript
+// api-performance-optimizer.js
+class APIPerformanceOptimizer {
+  constructor() {
+    this.optimizations = [];
+  }
+
+  async optimizeAPIPerformance() {
+    const optimizations = {
+      caching: await this.implementCaching(),
+      compression: await this.implementCompression(),
+      pagination: await this.implementPagination(),
+      queryOptimization: await this.optimizeQueries(),
+      responseOptimization: await this.optimizeResponses()
+    };
+
+    return this.generateOptimizationReport(optimizations);
+  }
+
+  async implementCaching() {
+    const cachingStrategy = {
+      responseCache: this.setupResponseCaching(),
+      databaseCache: this.setupDatabaseCaching(),
+      cdnCache: this.setupCDNCaching(),
+      configuration: this.generateCacheConfiguration()
+    };
+
+    return cachingStrategy;
+  }
+
+  setupResponseCaching() {
+    // Redis-based response caching
+    const cacheConfig = {
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: process.env.REDIS_PORT || 6379,
+        password: process.env.REDIS_PASSWORD,
+        db: 1, // Use separate DB for API cache
+        keyPrefix: 'api:cache:',
+        defaultTTL: 300 // 5 minutes
+      },
+      strategies: {
+        static: { ttl: 3600 }, // 1 hour for static data
+        dynamic: { ttl: 300 }, // 5 minutes for dynamic data
+        user: { ttl: 60 },     // 1 minute for user-specific data
+        realtime: { ttl: 10 }  // 10 seconds for real-time data
+      }
+    };
+
+    // Cache middleware implementation
+    const cacheMiddleware = (strategy = 'dynamic') => {
+      return async (req, res, next) => {
+        // Skip caching for non-GET requests
+        if (req.method !== 'GET') {
+          return next();
+        }
+
+        const cacheKey = this.generateCacheKey(req);
+        const cached = await this.getFromCache(cacheKey);
+
+        if (cached) {
+          // Cache hit
+          res.set('X-Cache', 'HIT');
+          return res.json(cached);
+        }
+
+        // Cache miss - continue to handler
+        const originalSend = res.json;
+        res.json = (data) => {
+          // Cache the response
+          this.setCache(cacheKey, data, cacheConfig.strategies[strategy].ttl);
+          res.set('X-Cache', 'MISS');
+          originalSend.call(res, data);
+        };
+
+        next();
+      };
+    };
+
+    return { config: cacheConfig, middleware: cacheMiddleware };
+  }
+
+  setupDatabaseCaching() {
+    // Query result caching
+    const queryCache = {
+      setup: () => {
+        // Implement query-level caching
+        const originalQuery = this.database.query;
+        
+        this.database.query = async (sql, params, options = {}) => {
+          if (options.skipCache) {
+            return originalQuery.call(this.database, sql, params);
+          }
+
+          const cacheKey = this.generateQueryCacheKey(sql, params);
+          const cached = await this.getFromCache(cacheKey);
+
+          if (cached) {
+            return cached;
+          }
+
+          const result = await originalQuery.call(this.database, sql, params);
+          
+          // Cache result if it's cacheable
+          if (this.isCacheableQuery(sql)) {
+            await this.setCache(cacheKey, result, 300); // 5 minutes
+          }
+
+          return result;
+        };
+      },
+      
+      invalidation: {
+        // Automatic cache invalidation on data changes
+        onInsert: (table) => this.invalidateTableCache(table),
+        onUpdate: (table) => this.invalidateTableCache(table),
+        onDelete: (table) => this.invalidateTableCache(table)
+      }
+    };
+
+    return queryCache;
+  }
+
+  async implementCompression() {
+    const compressionConfig = {
+      gzip: {
+        level: 6, // Balanced compression level
+        threshold: 1024, // Only compress responses > 1KB
+        filter: (req, res) => {
+          // Don't compress if client doesn't support it
+          if (!req.headers['accept-encoding']) return false;
+          
+          // Don't compress images or already compressed content
+          const contentType = res.getHeader('content-type');
+          if (contentType && (
+            contentType.includes('image/') ||
+            contentType.includes('video/') ||
+            contentType.includes('application/zip')
+          )) {
+            return false;
+          }
+          
+          return true;
+        }
+      },
+      
+      brotli: {
+        enabled: true,
+        quality: 4, // Balanced quality level
+        threshold: 1024
+      }
+    };
+
+    // Compression middleware
+    const compressionMiddleware = (req, res, next) => {
+      const acceptEncoding = req.headers['accept-encoding'] || '';
+      
+      if (acceptEncoding.includes('br')) {
+        // Use Brotli compression
+        res.set('Content-Encoding', 'br');
+        // Implement Brotli compression
+      } else if (acceptEncoding.includes('gzip')) {
+        // Use Gzip compression
+        res.set('Content-Encoding', 'gzip');
+        // Implement Gzip compression
+      }
+      
+      next();
+    };
+
+    return { config: compressionConfig, middleware: compressionMiddleware };
+  }
+
+  async implementPagination() {
+    const paginationConfig = {
+      defaultPageSize: 20,
+      maxPageSize: 100,
+      pageSizeParam: 'limit',
+      pageParam: 'page',
+      offsetParam: 'offset'
+    };
+
+    const paginationMiddleware = (req, res, next) => {
+      // Parse pagination parameters
+      const page = parseInt(req.query[paginationConfig.pageParam]) || 1;
+      const limit = Math.min(
+        parseInt(req.query[paginationConfig.pageSizeParam]) || paginationConfig.defaultPageSize,
+        paginationConfig.maxPageSize
+      );
+      const offset = (page - 1) * limit;
+
+      // Add pagination info to request
+      req.pagination = {
+        page,
+        limit,
+        offset,
+        generateResponse: (data, totalCount) => {
+          const totalPages = Math.ceil(totalCount / limit);
+          
+          return {
+            data,
+            pagination: {
+              page,
+              limit,
+              totalCount,
+              totalPages,
+              hasNext: page < totalPages,
+              hasPrev: page > 1,
+              nextPage: page < totalPages ? page + 1 : null,
+              prevPage: page > 1 ? page - 1 : null
+            }
+          };
+        }
+      };
+
+      next();
+    };
+
+    return { config: paginationConfig, middleware: paginationMiddleware };
+  }
+
+  async optimizeQueries() {
+    const queryOptimizations = {
+      indexOptimization: await this.optimizeIndexes(),
+      queryRewriting: await this.rewriteSlowQueries(),
+      connectionPooling: await this.optimizeConnectionPool(),
+      batchOperations: await this.implementBatchOperations()
+    };
+
+    return queryOptimizations;
+  }
+
+  async optimizeResponses() {
+    const responseOptimizations = {
+      fieldSelection: this.implementFieldSelection(),
+      dataTransformation: this.optimizeDataTransformation(),
+      responseStreaming: this.implementResponseStreaming(),
+      conditionalRequests: this.implementConditionalRequests()
+    };
+
+    return responseOptimizations;
+  }
+
+  implementFieldSelection() {
+    // Allow clients to specify which fields they want
+    const fieldSelectionMiddleware = (req, res, next) => {
+      const fields = req.query.fields;
+      
+      if (fields) {
+        const selectedFields = fields.split(',').map(f => f.trim());
+        req.selectedFields = selectedFields;
+        
+        // Override res.json to filter fields
+        const originalJson = res.json;
+        res.json = (data) => {
+          const filteredData = this.filterFields(data, selectedFields);
+          originalJson.call(res, filteredData);
+        };
+      }
+      
+      next();
+    };
+
+    return fieldSelectionMiddleware;
+  }
+
+  filterFields(data, fields) {
+    if (Array.isArray(data)) {
+      return data.map(item => this.filterObjectFields(item, fields));
+    } else if (typeof data === 'object' && data !== null) {
+      return this.filterObjectFields(data, fields);
+    }
+    return data;
+  }
+
+  filterObjectFields(obj, fields) {
+    const filtered = {};
+    for (const field of fields) {
+      if (obj.hasOwnProperty(field)) {
+        filtered[field] = obj[field];
+      }
+    }
+    return filtered;
+  }
+}
+```
+
+### Step 4: API Security Enhancement
+
+#### Security Implementation:
+
+**API Security Enhancer:**
+```javascript
+// api-security-enhancer.js
+class APISecurityEnhancer {
+  constructor() {
+    this.securityMiddleware = [];
+  }
+
+  async enhanceAPISecurity() {
+    const securityEnhancements = {
+      authentication: await this.implementAuthentication(),
+      authorization: await this.implementAuthorization(),
+      rateLimiting: await this.implementRateLimiting(),
+      inputValidation: await this.implementInputValidation(),
+      securityHeaders: await this.implementSecurityHeaders(),
+      encryption: await this.implementEncryption()
+    };
+
+    return this.generateSecurityReport(securityEnhancements);
+  }
+
+  async implementAuthentication() {
+    const authConfig = {
+      jwt: {
+        secret: process.env.JWT_SECRET || 'your-secret-key',
+        expiresIn: '24h',
+        issuer: 'your-api',
+        audience: 'your-app'
+      },
+      apiKey: {
+        headerName: 'X-API-Key',
+        queryParam: 'api_key',
+        validation: async (key) => {
+          // Validate API key against database
+          return await this.validateAPIKey(key);
+        }
+      },
+      oauth: {
+        providers: ['google', 'github', 'facebook'],
+        scopes: ['read', 'write', 'admin']
+      }
+    };
+
+    // JWT Authentication Middleware
+    const jwtAuthMiddleware = (req, res, next) => {
+      const token = this.extractToken(req);
+      
+      if (!token) {
+        return res.status(401).json({
+          error: 'Authentication required',
+          code: 'AUTH_TOKEN_MISSING'
+        });
+      }
+
+      try {
+        const decoded = jwt.verify(token, authConfig.jwt.secret);
+        req.user = decoded;
+        next();
+      } catch (error) {
+        return res.status(401).json({
+          error: 'Invalid or expired token',
+          code: 'AUTH_TOKEN_INVALID'
+        });
+      }
+    };
+
+    // API Key Authentication Middleware
+    const apiKeyAuthMiddleware = async (req, res, next) => {
+      const apiKey = req.headers[authConfig.apiKey.headerName.toLowerCase()] || 
+                    req.query[authConfig.apiKey.queryParam];
+      
+      if (!apiKey) {
+        return res.status(401).json({
+          error: 'API key required',
+          code: 'API_KEY_MISSING'
+        });
+      }
+
+      const isValid = await authConfig.apiKey.validation(apiKey);
+      if (!isValid) {
+        return res.status(401).json({
+          error: 'Invalid API key',
+          code: 'API_KEY_INVALID'
+        });
+      }
+
+      req.apiKey = apiKey;
+      next();
+    };
+
+    return { config: authConfig, jwtMiddleware: jwtAuthMiddleware, apiKeyMiddleware: apiKeyAuthMiddleware };
+  }
+
+  async implementRateLimiting() {
+    const rateLimitConfig = {
+      global: {
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 1000, // Limit each IP to 1000 requests per windowMs
+        message: 'Too many requests from this IP, please try again later'
+      },
+      authenticated: {
+        windowMs: 15 * 60 * 1000,
+        max: 5000, // Higher limit for authenticated users
+        keyGenerator: (req) => req.user?.id || req.ip
+      },
+      strict: {
+        windowMs: 60 * 1000, // 1 minute
+        max: 10, // Very strict for sensitive endpoints
+        skipSuccessfulRequests: false
+      }
+    };
+
+    // Rate limiting middleware
+    const rateLimitMiddleware = (config = rateLimitConfig.global) => {
+      const requests = new Map();
+      
+      return (req, res, next) => {
+        const key = config.keyGenerator ? config.keyGenerator(req) : req.ip;
+        const now = Date.now();
+        const windowStart = now - config.windowMs;
+        
+        // Clean old requests
+        if (requests.has(key)) {
+          const userRequests = requests.get(key).filter(time => time > windowStart);
+          requests.set(key, userRequests);
+        } else {
+          requests.set(key, []);
+        }
+        
+        const userRequests = requests.get(key);
+        
+        if (userRequests.length >= config.max) {
+          return res.status(429).json({
+            error: config.message,
+            code: 'RATE_LIMIT_EXCEEDED',
+            retryAfter: Math.ceil(config.windowMs / 1000)
+          });
+        }
+        
+        userRequests.push(now);
+        
+        // Add rate limit headers
+        res.set({
+          'X-RateLimit-Limit': config.max,
+          'X-RateLimit-Remaining': config.max - userRequests.length,
+          'X-RateLimit-Reset': new Date(now + config.windowMs).toISOString()
+        });
+        
+        next();
+      };
+    };
+
+    return { config: rateLimitConfig, middleware: rateLimitMiddleware };
+  }
+
+  async implementInputValidation() {
+    const validationRules = {
+      sanitization: {
+        trim: true,
+        escape: true,
+        removeNullBytes: true
+      },
+      validation: {
+        maxLength: 1000,
+        allowedCharacters: /^[a-zA-Z0-9\s\-_.,!?@#$%^&*()]+$/,
+        sqlInjectionPatterns: [
+          /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
+          /(--|\/\*|\*\/|;)/,
+          /(\b(OR|AND)\b.*=.*)/i
+        ],
+        xssPatterns: [
+          /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+          /javascript:/gi,
+          /on\w+\s*=/gi
+        ]
+      }
+    };
+
+    // Input validation middleware
+    const inputValidationMiddleware = (req, res, next) => {
+      const validateObject = (obj, path = '') => {
+        for (const [key, value] of Object.entries(obj)) {
+          const currentPath = path ? `${path}.${key}` : key;
+          
+          if (typeof value === 'string') {
+            // Check for SQL injection
+            for (const pattern of validationRules.validation.sqlInjectionPatterns) {
+              if (pattern.test(value)) {
+                return res.status(400).json({
+                  error: 'Invalid input detected',
+                  code: 'INVALID_INPUT',
+                  field: currentPath
+                });
+              }
+            }
+            
+            // Check for XSS
+            for (const pattern of validationRules.validation.xssPatterns) {
+              if (pattern.test(value)) {
+                return res.status(400).json({
+                  error: 'Invalid input detected',
+                  code: 'INVALID_INPUT',
+                  field: currentPath
+                });
+              }
+            }
+            
+            // Check length
+            if (value.length > validationRules.validation.maxLength) {
+              return res.status(400).json({
+                error: 'Input too long',
+                code: 'INPUT_TOO_LONG',
+                field: currentPath,
+                maxLength: validationRules.validation.maxLength
+              });
+            }
+            
+            // Sanitize
+            if (validationRules.sanitization.trim) {
+              obj[key] = value.trim();
+            }
+            if (validationRules.sanitization.escape) {
+              obj[key] = this.escapeHtml(obj[key]);
+            }
+          } else if (typeof value === 'object' && value !== null) {
+            validateObject(value, currentPath);
+          }
+        }
+      };
+
+      // Validate request body
+      if (req.body) {
+        validateObject(req.body);
+      }
+      
+      // Validate query parameters
+      if (req.query) {
+        validateObject(req.query);
+      }
+      
+      next();
+    };
+
+    return { rules: validationRules, middleware: inputValidationMiddleware };
+  }
+
+  async implementSecurityHeaders() {
+    const securityHeaders = {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Content-Security-Policy': "default-src 'self'",
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'geolocation=(), microphone=(), camera=()'
+    };
+
+    const securityHeadersMiddleware = (req, res, next) => {
+      // Set security headers
+      for (const [header, value] of Object.entries(securityHeaders)) {
+        res.set(header, value);
+      }
+      
+      // Remove server information
+      res.removeHeader('X-Powered-By');
+      
+      next();
+    };
+
+    return { headers: securityHeaders, middleware: securityHeadersMiddleware };
+  }
+
+  escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    
+    return text.replace(/[&<>"']/g, (m) => map[m]);
+  }
+}
+```
+
+### Step 5: API Documentation and Developer Experience
+
+#### Documentation Generation:
+
+**API Documentation Generator:**
+```javascript
+// api-documentation-generator.js
+class APIDocumentationGenerator {
+  constructor() {
+    this.documentation = {
+      info: {},
+      paths: {},
+      components: {}
+    };
+  }
+
+  async generateComprehensiveDocumentation() {
+    const documentation = {
+      openapi: await this.generateOpenAPISpec(),
+      interactive: await this.setupInteractiveDocumentation(),
+      examples: await this.generateExamples(),
+      sdks: await this.generateSDKs(),
+      testing: await this.setupAPITesting()
+    };
+
+    return this.createDocumentationSite(documentation);
+  }
+
+  async generateOpenAPISpec() {
+    const spec = {
+      openapi: '3.0.3',
+      info: {
+        title: 'Enhanced API',
+        version: '1.0.0',
+        description: 'Comprehensive API with enhanced performance, security, and developer experience',
+        contact: {
+          name: 'API Support',
+          email: 'api-support@yourcompany.com'
+        },
+        license: {
+          name: 'MIT',
+          url: 'https://opensource.org/licenses/MIT'
+        }
+      },
+      servers: [
+        {
+          url: 'https://api.yourcompany.com/v1',
+          description: 'Production server'
+        },
+        {
+          url: 'https://staging-api.yourcompany.com/v1',
+          description: 'Staging server'
+        }
+      ],
+      paths: await this.generatePathDocumentation(),
+      components: {
+        schemas: await this.generateSchemas(),
+        securitySchemes: this.generateSecuritySchemes(),
+        responses: this.generateCommonResponses(),
+        parameters: this.generateCommonParameters()
+      }
+    };
+
+    return spec;
+  }
+
+  async generatePathDocumentation() {
+    const endpoints = await this.discoverEndpoints();
+    const paths = {};
+
+    for (const endpoint of endpoints) {
+      const path = endpoint.path.replace(/:(\w+)/g, '{$1}'); // Convert :id to {id}
+      
+      if (!paths[path]) {
+        paths[path] = {};
+      }
+
+      paths[path][endpoint.method.toLowerCase()] = {
+        summary: this.generateSummary(endpoint),
+        description: this.generateDescription(endpoint),
+        tags: this.generateTags(endpoint),
+        parameters: await this.generateParameters(endpoint),
+        requestBody: await this.generateRequestBody(endpoint),
+        responses: await this.generateResponses(endpoint),
+        security: this.generateSecurity(endpoint),
+        examples: await this.generateEndpointExamples(endpoint)
+      };
+    }
+
+    return paths;
+  }
+
+  async generateEndpointExamples(endpoint) {
+    const examples = {
+      request: await this.generateRequestExample(endpoint),
+      responses: await this.generateResponseExamples(endpoint)
+    };
+
+    return examples;
+  }
+
+  async generateRequestExample(endpoint) {
+    const example = {
+      summary: `Example ${endpoint.method} request`,
+      value: {}
+    };
+
+    // Generate sample request based on endpoint
+    if (endpoint.method === 'POST' || endpoint.method === 'PUT') {
+      example.value = await this.generateSampleRequestBody(endpoint);
+    }
+
+    return example;
+  }
+
+  async setupInteractiveDocumentation() {
+    const swaggerUIConfig = {
+      swaggerOptions: {
+        url: '/api-docs/openapi.json',
+        docExpansion: 'list',
+        filter: true,
+        showRequestHeaders: true,
+        showCommonExtensions: true,
+        tryItOutEnabled: true
+      },
+      customCss: `
+        .swagger-ui .topbar { display: none; }
+        .swagger-ui .info { margin: 50px 0; }
+        .swagger-ui .scheme-container { background: #f7f7f7; padding: 20px; }
+      `,
+      customSiteTitle: 'API Documentation',
+      customfavIcon: '/favicon.ico'
+    };
+
+    // Setup Swagger UI middleware
+    const setupSwaggerUI = (app) => {
+      const swaggerUi = require('swagger-ui-express');
+      const swaggerDocument = this.documentation.openapi;
+
+      app.use('/api-docs', swaggerUi.serve);
+      app.get('/api-docs', swaggerUi.setup(swaggerDocument, swaggerUIConfig));
+      
+      // Serve OpenAPI spec as JSON
+      app.get('/api-docs/openapi.json', (req, res) => {
+        res.json(swaggerDocument);
+      });
+    };
+
+    return { config: swaggerUIConfig, setup: setupSwaggerUI };
+  }
+
+  async generateSDKs() {
+    const sdks = {
+      javascript: await this.generateJavaScriptSDK(),
+      python: await this.generatePythonSDK(),
+      curl: await this.generateCurlExamples()
+    };
+
+    return sdks;
+  }
+
+  async generateJavaScriptSDK() {
+    const sdk = `
+// API Client SDK
+class APIClient {
+  constructor(baseURL, apiKey) {
+    this.baseURL = baseURL;
+    this.apiKey = apiKey;
+    this.defaultHeaders = {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey
+    };
+  }
+
+  async request(method, endpoint, data = null) {
+    const url = \`\${this.baseURL}\${endpoint}\`;
+    const options = {
+      method,
+      headers: this.defaultHeaders
+    };
+
+    if (data) {
+      options.body = JSON.stringify(data);
+    }
+
+    try {
+      const response = await fetch(url, options);
+      
+      if (!response.ok) {
+        throw new Error(\`HTTP \${response.status}: \${response.statusText}\`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      throw new Error(\`API request failed: \${error.message}\`);
+    }
+  }
+
+  // Generated methods for each endpoint
+  ${await this.generateSDKMethods()}
+}
+
+// Usage example:
+const client = new APIClient('https://api.yourcompany.com/v1', 'your-api-key');
+
+// Example usage:
+// const users = await client.getUsers();
+// const user = await client.createUser({ name: 'John Doe', email: 'john@example.com' });
+`;
+
+    return sdk;
+  }
+
+  async generateSDKMethods() {
+    const endpoints = await this.discoverEndpoints();
+    const methods = [];
+
+    for (const endpoint of endpoints) {
+      const methodName = this.generateMethodName(endpoint);
+      const parameters = await this.generateMethodParameters(endpoint);
+      
+      methods.push(`
+  async ${methodName}(${parameters}) {
+    return await this.request('${endpoint.method}', '${endpoint.path}', ${endpoint.method === 'POST' || endpoint.method === 'PUT' ? 'data' : 'null'});
+  }`);
+    }
+
+    return methods.join('\n');
+  }
+}
+```
+
+## API Enhancement Checklist
+
+### ✅ Performance Optimization Complete When:
+- [ ] Response times under 500ms for 95% of requests
+- [ ] Caching implemented for appropriate endpoints
+- [ ] Database queries optimized with proper indexing
+- [ ] Response compression enabled
+- [ ] Pagination implemented for large datasets
+
+### ✅ Security Enhancement Complete When:
+- [ ] Authentication and authorization implemented
+- [ ] Rate limiting configured for all endpoints
+- [ ] Input validation and sanitization active
+- [ ] Security headers properly configured
+- [ ] HTTPS enforced with proper certificates
+
+### ✅ Documentation Complete When:
+- [ ] OpenAPI specification generated
+- [ ] Interactive documentation available
+- [ ] Code examples provided for all endpoints
+- [ ] SDK generated for popular languages
+- [ ] Error codes and responses documented
+
+### ✅ Developer Experience Complete When:
+- [ ] Consistent API design patterns
+- [ ] Clear error messages with error codes
+- [ ] Comprehensive testing suite available
+- [ ] Monitoring and analytics implemented
+- [ ] Versioning strategy established
+
+### ✅ Reliability Enhancement Complete When:
+- [ ] Error handling implemented for all scenarios
+- [ ] Retry logic for transient failures
+- [ ] Circuit breaker pattern for external dependencies
+- [ ] Health check endpoints available
+- [ ] Logging and monitoring active
+
+## Common API Issues and Solutions
+
+### Issue: Slow API Response Times
+**Solutions:**
+1. Implement Redis caching for frequently accessed data
+2. Optimize database queries with proper indexing
+3. Add response compression (gzip/brotli)
+4. Implement pagination for large datasets
+5. Use CDN for static content
+
+### Issue: Poor Error Handling
+**Solutions:**
+1. Implement consistent error response format
+2. Use appropriate HTTP status codes
+3. Provide detailed error messages with error codes
+4. Add request validation with clear feedback
+5. Implement proper logging for debugging
+
+### Issue: Security Vulnerabilities
+**Solutions:**
+1. Add authentication and authorization
+2. Implement rate limiting to prevent abuse
+3. Validate and sanitize all input data
+4. Use HTTPS with proper security headers
+5. Regular security audits and updates
+
+### Issue: Poor Documentation
+**Solutions:**
+1. Generate OpenAPI/Swagger documentation
+2. Provide interactive API explorer
+3. Include code examples in multiple languages
+4. Document all error codes and responses
+5. Keep documentation updated with code changes
+
+## Usage Instructions
+
+To enhance API performance and reliability comprehensively, ask:
+"Enhance API performance and developer experience using @api-enhancer.mdc, focusing on [specific area like performance optimization, security enhancement, or documentation improvement]."
+
+This will provide a complete API enhancement plan with performance optimization, security hardening, and improved developer experience.
+

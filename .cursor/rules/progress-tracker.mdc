@@ -1,0 +1,1255 @@
+---
+description: "Track development progress systematically across projects, features, and tasks with intelligent reporting and milestone management"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Progress Tracker
+
+You are helping someone with no coding experience systematically track development progress across projects, features, and tasks with intelligent reporting and milestone management.
+
+## Progress Tracking Process
+
+### Step 1: Understanding Progress Tracking
+
+#### What is Development Progress Tracking?
+Think of progress tracking like managing a complex construction project:
+- **Project Dashboard**: Like having a master control board showing all active projects
+- **Milestone Tracking**: Like marking completion of foundation, framing, roofing phases
+- **Task Management**: Like tracking individual work items and their completion status
+- **Time Estimation**: Like predicting when different phases will be completed
+- **Resource Allocation**: Like knowing who's working on what and when
+- **Quality Gates**: Like having inspections at key completion points
+
+#### Why Progress Tracking Matters:
+- **Visibility**: Clear understanding of what's done and what's remaining
+- **Planning**: Better estimation and resource allocation for future work
+- **Accountability**: Clear ownership and responsibility for deliverables
+- **Risk Management**: Early identification of delays and blockers
+- **Stakeholder Communication**: Regular updates on project status
+- **Continuous Improvement**: Learning from past performance to improve future estimates
+
+#### Common Progress Tracking Challenges:
+- **Manual Updates**: Time-consuming manual status updates
+- **Inconsistent Reporting**: Different formats and frequencies across projects
+- **Lack of Visibility**: Not knowing the real status of work in progress
+- **Poor Estimation**: Inaccurate time and effort estimates
+- **Scope Creep**: Untracked changes affecting project timelines
+- **Communication Gaps**: Stakeholders not informed of progress or issues
+
+### Step 2: Automated Progress Detection
+
+#### Intelligent Progress Analyzer:
+
+**Comprehensive Progress Detector:**
+```javascript
+// progress-detector.js
+class ProgressDetector {
+  constructor(projectContext) {
+    this.project = projectContext;
+    this.progressMetrics = {
+      codeCompletion: 0,
+      testCoverage: 0,
+      documentationStatus: 0,
+      deploymentReadiness: 0,
+      qualityScore: 0
+    };
+  }
+
+  async detectProgress() {
+    const progress = {
+      overall: await this.calculateOverallProgress(),
+      features: await this.analyzeFeatureProgress(),
+      tasks: await this.analyzeTaskProgress(),
+      milestones: await this.analyzeMilestoneProgress(),
+      quality: await this.analyzeQualityProgress(),
+      timeline: await this.analyzeTimelineProgress()
+    };
+
+    return this.generateProgressReport(progress);
+  }
+
+  async calculateOverallProgress() {
+    const metrics = {
+      codeCompletion: await this.calculateCodeCompletion(),
+      testCoverage: await this.calculateTestCoverage(),
+      documentation: await this.calculateDocumentationProgress(),
+      deployment: await this.calculateDeploymentReadiness(),
+      quality: await this.calculateQualityMetrics()
+    };
+
+    const weights = {
+      codeCompletion: 0.4,
+      testCoverage: 0.2,
+      documentation: 0.15,
+      deployment: 0.15,
+      quality: 0.1
+    };
+
+    const overallProgress = Object.keys(metrics).reduce((total, key) => {
+      return total + (metrics[key] * weights[key]);
+    }, 0);
+
+    return {
+      percentage: Math.round(overallProgress),
+      metrics: metrics,
+      breakdown: this.generateProgressBreakdown(metrics, weights),
+      status: this.determineProgressStatus(overallProgress)
+    };
+  }
+
+  async calculateCodeCompletion() {
+    const codeAnalysis = {
+      totalFiles: await this.countTotalFiles(),
+      implementedFiles: await this.countImplementedFiles(),
+      todoItems: await this.countTodoItems(),
+      stubFunctions: await this.countStubFunctions(),
+      missingFeatures: await this.identifyMissingFeatures()
+    };
+
+    // Calculate completion based on multiple factors
+    const fileCompletion = codeAnalysis.implementedFiles / codeAnalysis.totalFiles;
+    const todoCompletion = 1 - (codeAnalysis.todoItems / (codeAnalysis.todoItems + 100)); // Normalize
+    const stubCompletion = 1 - (codeAnalysis.stubFunctions / (codeAnalysis.stubFunctions + 50)); // Normalize
+    const featureCompletion = 1 - (codeAnalysis.missingFeatures.length / (codeAnalysis.missingFeatures.length + 10));
+
+    const completion = (fileCompletion * 0.4 + todoCompletion * 0.3 + stubCompletion * 0.2 + featureCompletion * 0.1) * 100;
+
+    return {
+      percentage: Math.round(completion),
+      details: codeAnalysis,
+      recommendations: this.generateCodeCompletionRecommendations(codeAnalysis)
+    };
+  }
+
+  async countImplementedFiles() {
+    const files = await this.getAllSourceFiles();
+    let implementedCount = 0;
+
+    for (const file of files) {
+      const implementation = await this.analyzeFileImplementation(file);
+      if (implementation.isImplemented) {
+        implementedCount++;
+      }
+    }
+
+    return implementedCount;
+  }
+
+  async analyzeFileImplementation(file) {
+    const content = await this.getFileContent(file);
+    const analysis = {
+      isImplemented: true,
+      completionLevel: 0,
+      issues: []
+    };
+
+    // Check for placeholder content
+    const placeholders = [
+      /TODO:/gi,
+      /FIXME:/gi,
+      /PLACEHOLDER/gi,
+      /NOT IMPLEMENTED/gi,
+      /throw new Error\(['"]Not implemented['"]\)/gi
+    ];
+
+    let placeholderCount = 0;
+    for (const placeholder of placeholders) {
+      const matches = content.match(placeholder);
+      if (matches) {
+        placeholderCount += matches.length;
+      }
+    }
+
+    // Check for stub functions
+    const stubPatterns = [
+      /function\s+\w+\s*\([^)]*\)\s*{\s*}/g,
+      /\w+\s*:\s*function\s*\([^)]*\)\s*{\s*}/g,
+      /=>\s*{\s*}/g
+    ];
+
+    let stubCount = 0;
+    for (const pattern of stubPatterns) {
+      const matches = content.match(pattern);
+      if (matches) {
+        stubCount += matches.length;
+      }
+    }
+
+    // Calculate completion level
+    const totalLines = content.split('\n').length;
+    const codeLines = this.countCodeLines(content);
+    const commentLines = this.countCommentLines(content);
+
+    if (codeLines < 10 && totalLines > 5) {
+      analysis.isImplemented = false;
+      analysis.issues.push('File appears to be mostly empty or placeholder');
+    }
+
+    if (placeholderCount > 0) {
+      analysis.issues.push(`${placeholderCount} placeholder items found`);
+      analysis.completionLevel -= placeholderCount * 10;
+    }
+
+    if (stubCount > 0) {
+      analysis.issues.push(`${stubCount} stub functions found`);
+      analysis.completionLevel -= stubCount * 15;
+    }
+
+    // Base completion on code density
+    analysis.completionLevel = Math.max(0, 100 - (placeholderCount * 10) - (stubCount * 15));
+
+    if (analysis.completionLevel < 50) {
+      analysis.isImplemented = false;
+    }
+
+    return analysis;
+  }
+
+  async analyzeFeatureProgress() {
+    const features = await this.identifyProjectFeatures();
+    const featureProgress = [];
+
+    for (const feature of features) {
+      const progress = {
+        name: feature.name,
+        description: feature.description,
+        status: await this.determineFeatureStatus(feature),
+        completion: await this.calculateFeatureCompletion(feature),
+        tasks: await this.getFeatureTasks(feature),
+        blockers: await this.identifyFeatureBlockers(feature),
+        timeline: await this.estimateFeatureTimeline(feature)
+      };
+
+      featureProgress.push(progress);
+    }
+
+    return featureProgress.sort((a, b) => b.completion.percentage - a.completion.percentage);
+  }
+
+  async determineFeatureStatus(feature) {
+    const completion = await this.calculateFeatureCompletion(feature);
+    const blockers = await this.identifyFeatureBlockers(feature);
+    
+    if (blockers.length > 0) {
+      return 'blocked';
+    }
+    
+    if (completion.percentage >= 100) {
+      return 'completed';
+    }
+    
+    if (completion.percentage >= 80) {
+      return 'near_completion';
+    }
+    
+    if (completion.percentage >= 20) {
+      return 'in_progress';
+    }
+    
+    if (completion.percentage > 0) {
+      return 'started';
+    }
+    
+    return 'not_started';
+  }
+
+  async calculateFeatureCompletion(feature) {
+    const components = {
+      backend: await this.analyzeBackendCompletion(feature),
+      frontend: await this.analyzeFrontendCompletion(feature),
+      tests: await this.analyzeTestCompletion(feature),
+      documentation: await this.analyzeDocumentationCompletion(feature),
+      integration: await this.analyzeIntegrationCompletion(feature)
+    };
+
+    const weights = {
+      backend: 0.3,
+      frontend: 0.3,
+      tests: 0.2,
+      documentation: 0.1,
+      integration: 0.1
+    };
+
+    const totalCompletion = Object.keys(components).reduce((total, key) => {
+      return total + (components[key].percentage * weights[key]);
+    }, 0);
+
+    return {
+      percentage: Math.round(totalCompletion),
+      components: components,
+      nextSteps: this.generateFeatureNextSteps(components),
+      estimatedCompletion: this.estimateFeatureCompletion(components)
+    };
+  }
+
+  async analyzeTaskProgress() {
+    const tasks = await this.identifyProjectTasks();
+    const taskProgress = [];
+
+    for (const task of tasks) {
+      const progress = {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        status: await this.determineTaskStatus(task),
+        completion: await this.calculateTaskCompletion(task),
+        assignee: task.assignee,
+        priority: task.priority,
+        estimatedHours: task.estimatedHours,
+        actualHours: await this.calculateActualHours(task),
+        dependencies: await this.getTaskDependencies(task),
+        blockers: await this.identifyTaskBlockers(task)
+      };
+
+      taskProgress.push(progress);
+    }
+
+    return this.categorizeTaskProgress(taskProgress);
+  }
+
+  categorizeTaskProgress(tasks) {
+    const categories = {
+      completed: tasks.filter(t => t.status === 'completed'),
+      inProgress: tasks.filter(t => t.status === 'in_progress'),
+      blocked: tasks.filter(t => t.status === 'blocked'),
+      notStarted: tasks.filter(t => t.status === 'not_started'),
+      overdue: tasks.filter(t => t.status === 'overdue')
+    };
+
+    return {
+      categories: categories,
+      summary: {
+        total: tasks.length,
+        completed: categories.completed.length,
+        inProgress: categories.inProgress.length,
+        blocked: categories.blocked.length,
+        completionRate: Math.round((categories.completed.length / tasks.length) * 100)
+      },
+      insights: this.generateTaskInsights(categories)
+    };
+  }
+
+  async analyzeMilestoneProgress() {
+    const milestones = await this.identifyProjectMilestones();
+    const milestoneProgress = [];
+
+    for (const milestone of milestones) {
+      const progress = {
+        name: milestone.name,
+        description: milestone.description,
+        targetDate: milestone.targetDate,
+        status: await this.determineMilestoneStatus(milestone),
+        completion: await this.calculateMilestoneCompletion(milestone),
+        dependencies: await this.getMilestoneDependencies(milestone),
+        risks: await this.identifyMilestoneRisks(milestone),
+        deliverables: await this.getMilestoneDeliverables(milestone)
+      };
+
+      milestoneProgress.push(progress);
+    }
+
+    return milestoneProgress.sort((a, b) => new Date(a.targetDate) - new Date(b.targetDate));
+  }
+
+  async calculateMilestoneCompletion(milestone) {
+    const deliverables = await this.getMilestoneDeliverables(milestone);
+    let totalCompletion = 0;
+
+    for (const deliverable of deliverables) {
+      const completion = await this.calculateDeliverableCompletion(deliverable);
+      totalCompletion += completion.percentage * deliverable.weight;
+    }
+
+    return {
+      percentage: Math.round(totalCompletion),
+      deliverables: deliverables,
+      criticalPath: await this.identifyCriticalPath(milestone),
+      riskFactors: await this.assessMilestoneRisks(milestone)
+    };
+  }
+}
+```
+
+#### Progress Visualization System:
+
+**Progress Dashboard Generator:**
+```javascript
+// progress-dashboard.js
+class ProgressDashboard {
+  constructor() {
+    this.dashboardConfig = {
+      refreshInterval: 300000, // 5 minutes
+      charts: [],
+      widgets: [],
+      alerts: []
+    };
+  }
+
+  async generateDashboard(progressData) {
+    const dashboard = {
+      overview: this.createOverviewWidget(progressData),
+      charts: await this.createProgressCharts(progressData),
+      widgets: await this.createProgressWidgets(progressData),
+      alerts: await this.createProgressAlerts(progressData),
+      reports: await this.createProgressReports(progressData)
+    };
+
+    return this.renderDashboard(dashboard);
+  }
+
+  createOverviewWidget(progressData) {
+    return {
+      type: 'overview',
+      title: 'Project Progress Overview',
+      data: {
+        overallProgress: progressData.overall.percentage,
+        status: progressData.overall.status,
+        completedFeatures: progressData.features.filter(f => f.status === 'completed').length,
+        totalFeatures: progressData.features.length,
+        completedTasks: progressData.tasks.summary.completed,
+        totalTasks: progressData.tasks.summary.total,
+        upcomingMilestones: progressData.milestones.filter(m => 
+          new Date(m.targetDate) > new Date() && 
+          new Date(m.targetDate) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        ).length
+      },
+      visualization: {
+        type: 'progress_ring',
+        color: this.getProgressColor(progressData.overall.percentage),
+        animation: true
+      }
+    };
+  }
+
+  async createProgressCharts(progressData) {
+    const charts = [];
+
+    // Feature completion chart
+    charts.push({
+      type: 'bar_chart',
+      title: 'Feature Completion Status',
+      data: progressData.features.map(feature => ({
+        name: feature.name,
+        completion: feature.completion.percentage,
+        status: feature.status
+      })),
+      config: {
+        xAxis: 'Feature',
+        yAxis: 'Completion %',
+        colorBy: 'status'
+      }
+    });
+
+    // Timeline chart
+    charts.push({
+      type: 'timeline',
+      title: 'Project Timeline',
+      data: progressData.milestones.map(milestone => ({
+        name: milestone.name,
+        start: milestone.startDate,
+        end: milestone.targetDate,
+        completion: milestone.completion.percentage,
+        status: milestone.status
+      })),
+      config: {
+        showProgress: true,
+        highlightCriticalPath: true
+      }
+    });
+
+    // Velocity chart
+    charts.push(await this.createVelocityChart(progressData));
+
+    // Burndown chart
+    charts.push(await this.createBurndownChart(progressData));
+
+    return charts;
+  }
+
+  async createVelocityChart(progressData) {
+    const velocityData = await this.calculateVelocityData();
+    
+    return {
+      type: 'line_chart',
+      title: 'Development Velocity',
+      data: velocityData.map(point => ({
+        date: point.date,
+        tasksCompleted: point.tasksCompleted,
+        storyPoints: point.storyPoints,
+        velocity: point.velocity
+      })),
+      config: {
+        xAxis: 'Date',
+        yAxis: 'Tasks/Story Points',
+        showTrend: true,
+        predictFuture: true
+      }
+    };
+  }
+
+  async createBurndownChart(progressData) {
+    const burndownData = await this.calculateBurndownData();
+    
+    return {
+      type: 'line_chart',
+      title: 'Sprint Burndown',
+      data: burndownData.map(point => ({
+        date: point.date,
+        remainingWork: point.remainingWork,
+        idealBurndown: point.idealBurndown,
+        actualBurndown: point.actualBurndown
+      })),
+      config: {
+        xAxis: 'Date',
+        yAxis: 'Remaining Work',
+        showIdealLine: true,
+        highlightDeviations: true
+      }
+    };
+  }
+
+  async createProgressWidgets(progressData) {
+    const widgets = [];
+
+    // Task completion widget
+    widgets.push({
+      type: 'metric',
+      title: 'Task Completion Rate',
+      value: progressData.tasks.summary.completionRate,
+      unit: '%',
+      trend: await this.calculateTaskCompletionTrend(),
+      color: this.getProgressColor(progressData.tasks.summary.completionRate)
+    });
+
+    // Code coverage widget
+    widgets.push({
+      type: 'metric',
+      title: 'Test Coverage',
+      value: progressData.overall.metrics.testCoverage.percentage,
+      unit: '%',
+      trend: await this.calculateCoverageTrend(),
+      color: this.getCoverageColor(progressData.overall.metrics.testCoverage.percentage)
+    });
+
+    // Quality score widget
+    widgets.push({
+      type: 'metric',
+      title: 'Code Quality Score',
+      value: progressData.quality.overallScore,
+      unit: '/100',
+      trend: await this.calculateQualityTrend(),
+      color: this.getQualityColor(progressData.quality.overallScore)
+    });
+
+    // Velocity widget
+    widgets.push({
+      type: 'metric',
+      title: 'Current Velocity',
+      value: await this.getCurrentVelocity(),
+      unit: 'tasks/week',
+      trend: await this.calculateVelocityTrend(),
+      color: 'blue'
+    });
+
+    return widgets;
+  }
+
+  async createProgressAlerts(progressData) {
+    const alerts = [];
+
+    // Milestone risk alerts
+    for (const milestone of progressData.milestones) {
+      if (milestone.risks && milestone.risks.length > 0) {
+        alerts.push({
+          type: 'warning',
+          title: `Milestone Risk: ${milestone.name}`,
+          message: `${milestone.risks.length} risk factors identified`,
+          severity: 'medium',
+          action: 'Review milestone risks and mitigation strategies'
+        });
+      }
+    }
+
+    // Blocked tasks alerts
+    const blockedTasks = progressData.tasks.categories.blocked;
+    if (blockedTasks.length > 0) {
+      alerts.push({
+        type: 'error',
+        title: 'Blocked Tasks',
+        message: `${blockedTasks.length} tasks are currently blocked`,
+        severity: 'high',
+        action: 'Review and resolve task blockers'
+      });
+    }
+
+    // Low velocity alert
+    const currentVelocity = await this.getCurrentVelocity();
+    const averageVelocity = await this.getAverageVelocity();
+    if (currentVelocity < averageVelocity * 0.7) {
+      alerts.push({
+        type: 'warning',
+        title: 'Low Velocity',
+        message: 'Current velocity is below average',
+        severity: 'medium',
+        action: 'Investigate velocity decrease and address bottlenecks'
+      });
+    }
+
+    return alerts;
+  }
+
+  renderDashboard(dashboard) {
+    return {
+      html: this.generateDashboardHTML(dashboard),
+      css: this.generateDashboardCSS(),
+      javascript: this.generateDashboardJS(dashboard),
+      config: this.dashboardConfig
+    };
+  }
+
+  generateDashboardHTML(dashboard) {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Progress Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="dashboard-header">
+            <h1>Project Progress Dashboard</h1>
+            <div class="last-updated">Last updated: ${new Date().toLocaleString()}</div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- Overview Section -->
+            <section class="overview-section">
+                ${this.renderOverviewWidget(dashboard.overview)}
+            </section>
+
+            <!-- Alerts Section -->
+            ${dashboard.alerts.length > 0 ? `
+            <section class="alerts-section">
+                <h2>Alerts</h2>
+                <div class="alerts-container">
+                    ${dashboard.alerts.map(alert => this.renderAlert(alert)).join('')}
+                </div>
+            </section>
+            ` : ''}
+
+            <!-- Widgets Section -->
+            <section class="widgets-section">
+                <h2>Key Metrics</h2>
+                <div class="widgets-container">
+                    ${dashboard.widgets.map(widget => this.renderWidget(widget)).join('')}
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <h2>Progress Charts</h2>
+                <div class="charts-container">
+                    ${dashboard.charts.map(chart => this.renderChart(chart)).join('')}
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
+`;
+  }
+}
+```
+
+### Step 3: Milestone and Timeline Management
+
+#### Intelligent Milestone Tracker:
+
+**Milestone Management System:**
+```javascript
+// milestone-tracker.js
+class MilestoneTracker {
+  constructor() {
+    this.milestones = new Map();
+    this.dependencies = new Map();
+    this.criticalPath = [];
+  }
+
+  async trackMilestones(projectData) {
+    const tracking = {
+      milestones: await this.analyzeMilestones(projectData),
+      timeline: await this.generateTimeline(projectData),
+      criticalPath: await this.calculateCriticalPath(projectData),
+      risks: await this.assessTimelineRisks(projectData),
+      recommendations: await this.generateTimelineRecommendations(projectData)
+    };
+
+    return this.generateMilestoneReport(tracking);
+  }
+
+  async analyzeMilestones(projectData) {
+    const milestones = [];
+    const projectMilestones = await this.identifyProjectMilestones(projectData);
+
+    for (const milestone of projectMilestones) {
+      const analysis = {
+        id: milestone.id,
+        name: milestone.name,
+        description: milestone.description,
+        targetDate: milestone.targetDate,
+        actualDate: milestone.actualDate,
+        status: await this.calculateMilestoneStatus(milestone),
+        completion: await this.calculateMilestoneCompletion(milestone),
+        dependencies: await this.getMilestoneDependencies(milestone),
+        deliverables: await this.getMilestoneDeliverables(milestone),
+        risks: await this.assessMilestoneRisks(milestone),
+        team: await this.getMilestoneTeam(milestone)
+      };
+
+      milestones.push(analysis);
+    }
+
+    return milestones.sort((a, b) => new Date(a.targetDate) - new Date(b.targetDate));
+  }
+
+  async calculateMilestoneStatus(milestone) {
+    const completion = await this.calculateMilestoneCompletion(milestone);
+    const currentDate = new Date();
+    const targetDate = new Date(milestone.targetDate);
+    const daysToTarget = Math.ceil((targetDate - currentDate) / (1000 * 60 * 60 * 24));
+
+    let status = 'on_track';
+
+    if (completion.percentage >= 100) {
+      status = 'completed';
+    } else if (daysToTarget < 0) {
+      status = 'overdue';
+    } else if (daysToTarget <= 7 && completion.percentage < 80) {
+      status = 'at_risk';
+    } else if (completion.percentage < 20 && daysToTarget <= 30) {
+      status = 'behind_schedule';
+    }
+
+    return {
+      status: status,
+      completion: completion.percentage,
+      daysToTarget: daysToTarget,
+      confidence: this.calculateConfidenceLevel(completion, daysToTarget),
+      recommendations: this.generateStatusRecommendations(status, completion, daysToTarget)
+    };
+  }
+
+  async generateTimeline(projectData) {
+    const timeline = {
+      start: await this.getProjectStartDate(projectData),
+      end: await this.getProjectEndDate(projectData),
+      phases: await this.identifyProjectPhases(projectData),
+      milestones: await this.getTimelineMilestones(projectData),
+      dependencies: await this.getTimelineDependencies(projectData),
+      resources: await this.getTimelineResources(projectData)
+    };
+
+    return this.optimizeTimeline(timeline);
+  }
+
+  async calculateCriticalPath(projectData) {
+    const tasks = await this.getAllProjectTasks(projectData);
+    const dependencies = await this.getTaskDependencies(tasks);
+    
+    // Build dependency graph
+    const graph = this.buildDependencyGraph(tasks, dependencies);
+    
+    // Calculate critical path using longest path algorithm
+    const criticalPath = this.findLongestPath(graph);
+    
+    return {
+      path: criticalPath,
+      duration: this.calculatePathDuration(criticalPath),
+      bottlenecks: this.identifyBottlenecks(criticalPath),
+      optimizations: this.suggestPathOptimizations(criticalPath)
+    };
+  }
+
+  findLongestPath(graph) {
+    const visited = new Set();
+    const distances = new Map();
+    const path = new Map();
+    
+    // Initialize distances
+    for (const node of graph.nodes) {
+      distances.set(node.id, -Infinity);
+    }
+    
+    // Find starting nodes (no dependencies)
+    const startNodes = graph.nodes.filter(node => 
+      !graph.edges.some(edge => edge.to === node.id)
+    );
+    
+    for (const startNode of startNodes) {
+      distances.set(startNode.id, 0);
+    }
+    
+    // Topological sort and longest path calculation
+    const sortedNodes = this.topologicalSort(graph);
+    
+    for (const node of sortedNodes) {
+      const nodeDistance = distances.get(node.id);
+      
+      if (nodeDistance !== -Infinity) {
+        const outgoingEdges = graph.edges.filter(edge => edge.from === node.id);
+        
+        for (const edge of outgoingEdges) {
+          const newDistance = nodeDistance + edge.weight;
+          
+          if (newDistance > distances.get(edge.to)) {
+            distances.set(edge.to, newDistance);
+            path.set(edge.to, node.id);
+          }
+        }
+      }
+    }
+    
+    // Reconstruct longest path
+    const endNode = this.findEndNode(graph, distances);
+    return this.reconstructPath(path, endNode);
+  }
+
+  async assessTimelineRisks(projectData) {
+    const risks = [];
+    
+    // Resource availability risks
+    const resourceRisks = await this.assessResourceRisks(projectData);
+    risks.push(...resourceRisks);
+    
+    // Dependency risks
+    const dependencyRisks = await this.assessDependencyRisks(projectData);
+    risks.push(...dependencyRisks);
+    
+    // Scope change risks
+    const scopeRisks = await this.assessScopeRisks(projectData);
+    risks.push(...scopeRisks);
+    
+    // Technical risks
+    const technicalRisks = await this.assessTechnicalRisks(projectData);
+    risks.push(...technicalRisks);
+    
+    return this.prioritizeRisks(risks);
+  }
+
+  prioritizeRisks(risks) {
+    return risks
+      .map(risk => ({
+        ...risk,
+        priority: this.calculateRiskPriority(risk)
+      }))
+      .sort((a, b) => b.priority - a.priority);
+  }
+
+  calculateRiskPriority(risk) {
+    const impactWeight = {
+      low: 1,
+      medium: 3,
+      high: 5,
+      critical: 7
+    };
+    
+    const probabilityWeight = {
+      low: 0.2,
+      medium: 0.5,
+      high: 0.8,
+      critical: 1.0
+    };
+    
+    return impactWeight[risk.impact] * probabilityWeight[risk.probability];
+  }
+}
+```
+
+### Step 4: Automated Reporting and Notifications
+
+#### Progress Reporting System:
+
+**Automated Report Generator:**
+```javascript
+// progress-reporter.js
+class ProgressReporter {
+  constructor() {
+    this.reportTemplates = new Map();
+    this.notificationChannels = [];
+    this.reportSchedule = new Map();
+  }
+
+  async generateProgressReport(progressData, reportType = 'comprehensive') {
+    const report = {
+      metadata: this.generateReportMetadata(reportType),
+      executive: await this.generateExecutiveSummary(progressData),
+      detailed: await this.generateDetailedAnalysis(progressData),
+      insights: await this.generateInsights(progressData),
+      recommendations: await this.generateRecommendations(progressData),
+      appendices: await this.generateAppendices(progressData)
+    };
+
+    return this.formatReport(report, reportType);
+  }
+
+  async generateExecutiveSummary(progressData) {
+    const summary = {
+      overallStatus: this.summarizeOverallStatus(progressData),
+      keyAchievements: await this.identifyKeyAchievements(progressData),
+      majorChallenges: await this.identifyMajorChallenges(progressData),
+      upcomingMilestones: this.getUpcomingMilestones(progressData),
+      resourceStatus: await this.summarizeResourceStatus(progressData),
+      riskSummary: this.summarizeRisks(progressData)
+    };
+
+    return summary;
+  }
+
+  summarizeOverallStatus(progressData) {
+    const status = progressData.overall.status;
+    const percentage = progressData.overall.percentage;
+    
+    let statusDescription = '';
+    let healthColor = 'green';
+    
+    if (percentage >= 90) {
+      statusDescription = 'Project is nearing completion with excellent progress.';
+      healthColor = 'green';
+    } else if (percentage >= 70) {
+      statusDescription = 'Project is progressing well with good momentum.';
+      healthColor = 'green';
+    } else if (percentage >= 50) {
+      statusDescription = 'Project is making steady progress with some areas needing attention.';
+      healthColor = 'yellow';
+    } else if (percentage >= 30) {
+      statusDescription = 'Project progress is below expectations and requires intervention.';
+      healthColor = 'orange';
+    } else {
+      statusDescription = 'Project is significantly behind schedule and needs immediate attention.';
+      healthColor = 'red';
+    }
+    
+    return {
+      percentage: percentage,
+      status: status,
+      description: statusDescription,
+      healthColor: healthColor,
+      trend: this.calculateProgressTrend(progressData),
+      projectedCompletion: this.projectCompletionDate(progressData)
+    };
+  }
+
+  async identifyKeyAchievements(progressData) {
+    const achievements = [];
+    
+    // Completed milestones
+    const completedMilestones = progressData.milestones.filter(m => m.status === 'completed');
+    for (const milestone of completedMilestones) {
+      achievements.push({
+        type: 'milestone',
+        title: `Completed: ${milestone.name}`,
+        description: milestone.description,
+        date: milestone.actualDate,
+        impact: 'high'
+      });
+    }
+    
+    // Completed features
+    const completedFeatures = progressData.features.filter(f => f.status === 'completed');
+    for (const feature of completedFeatures) {
+      achievements.push({
+        type: 'feature',
+        title: `Feature Complete: ${feature.name}`,
+        description: feature.description,
+        date: feature.completionDate,
+        impact: 'medium'
+      });
+    }
+    
+    // Quality improvements
+    if (progressData.quality.overallScore > 80) {
+      achievements.push({
+        type: 'quality',
+        title: 'High Code Quality Achieved',
+        description: `Code quality score of ${progressData.quality.overallScore}/100`,
+        date: new Date(),
+        impact: 'medium'
+      });
+    }
+    
+    return achievements.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
+
+  async generateDetailedAnalysis(progressData) {
+    const analysis = {
+      featureAnalysis: this.analyzeFeatureProgress(progressData.features),
+      taskAnalysis: this.analyzeTaskProgress(progressData.tasks),
+      milestoneAnalysis: this.analyzeMilestoneProgress(progressData.milestones),
+      qualityAnalysis: this.analyzeQualityMetrics(progressData.quality),
+      timelineAnalysis: this.analyzeTimelineProgress(progressData.timeline),
+      resourceAnalysis: await this.analyzeResourceUtilization(progressData)
+    };
+
+    return analysis;
+  }
+
+  analyzeFeatureProgress(features) {
+    const analysis = {
+      total: features.length,
+      completed: features.filter(f => f.status === 'completed').length,
+      inProgress: features.filter(f => f.status === 'in_progress').length,
+      blocked: features.filter(f => f.status === 'blocked').length,
+      notStarted: features.filter(f => f.status === 'not_started').length
+    };
+
+    analysis.completionRate = Math.round((analysis.completed / analysis.total) * 100);
+    analysis.insights = this.generateFeatureInsights(features);
+    analysis.recommendations = this.generateFeatureRecommendations(features);
+
+    return analysis;
+  }
+
+  async generateInsights(progressData) {
+    const insights = [];
+    
+    // Velocity insights
+    const velocityInsight = await this.generateVelocityInsight(progressData);
+    if (velocityInsight) insights.push(velocityInsight);
+    
+    // Quality insights
+    const qualityInsight = this.generateQualityInsight(progressData);
+    if (qualityInsight) insights.push(qualityInsight);
+    
+    // Risk insights
+    const riskInsight = this.generateRiskInsight(progressData);
+    if (riskInsight) insights.push(riskInsight);
+    
+    // Resource insights
+    const resourceInsight = await this.generateResourceInsight(progressData);
+    if (resourceInsight) insights.push(resourceInsight);
+    
+    return insights;
+  }
+
+  async setupAutomatedReporting(config) {
+    const automation = {
+      schedules: this.setupReportSchedules(config),
+      notifications: this.setupNotifications(config),
+      triggers: this.setupReportTriggers(config),
+      distribution: this.setupReportDistribution(config)
+    };
+
+    return this.activateReportingAutomation(automation);
+  }
+
+  setupReportSchedules(config) {
+    const schedules = [];
+    
+    // Daily status reports
+    schedules.push({
+      name: 'daily_status',
+      frequency: 'daily',
+      time: '09:00',
+      recipients: config.dailyRecipients,
+      template: 'daily_summary'
+    });
+    
+    // Weekly progress reports
+    schedules.push({
+      name: 'weekly_progress',
+      frequency: 'weekly',
+      day: 'friday',
+      time: '17:00',
+      recipients: config.weeklyRecipients,
+      template: 'weekly_comprehensive'
+    });
+    
+    // Monthly executive reports
+    schedules.push({
+      name: 'monthly_executive',
+      frequency: 'monthly',
+      day: 'last_friday',
+      time: '16:00',
+      recipients: config.executiveRecipients,
+      template: 'executive_summary'
+    });
+
+    return schedules;
+  }
+
+  formatReport(report, reportType) {
+    const formatters = {
+      html: this.formatHTMLReport,
+      pdf: this.formatPDFReport,
+      json: this.formatJSONReport,
+      markdown: this.formatMarkdownReport
+    };
+
+    const formatter = formatters[reportType] || formatters.html;
+    return formatter.call(this, report);
+  }
+
+  formatMarkdownReport(report) {
+    return `
+# Project Progress Report
+
+**Generated:** ${report.metadata.generatedAt}
+**Report Type:** ${report.metadata.type}
+**Period:** ${report.metadata.period}
+
+## Executive Summary
+
+### Overall Status
+- **Progress:** ${report.executive.overallStatus.percentage}%
+- **Status:** ${report.executive.overallStatus.status}
+- **Health:** ${report.executive.overallStatus.healthColor}
+- **Trend:** ${report.executive.overallStatus.trend}
+
+${report.executive.overallStatus.description}
+
+### Key Achievements
+${report.executive.keyAchievements.map(achievement => `
+- **${achievement.title}** (${achievement.date})
+  ${achievement.description}
+`).join('')}
+
+### Major Challenges
+${report.executive.majorChallenges.map(challenge => `
+- **${challenge.title}**
+  ${challenge.description}
+  *Impact:* ${challenge.impact}
+`).join('')}
+
+## Detailed Analysis
+
+### Feature Progress
+- **Total Features:** ${report.detailed.featureAnalysis.total}
+- **Completed:** ${report.detailed.featureAnalysis.completed}
+- **In Progress:** ${report.detailed.featureAnalysis.inProgress}
+- **Blocked:** ${report.detailed.featureAnalysis.blocked}
+- **Completion Rate:** ${report.detailed.featureAnalysis.completionRate}%
+
+### Task Progress
+- **Total Tasks:** ${report.detailed.taskAnalysis.total}
+- **Completed:** ${report.detailed.taskAnalysis.completed}
+- **In Progress:** ${report.detailed.taskAnalysis.inProgress}
+- **Blocked:** ${report.detailed.taskAnalysis.blocked}
+
+### Quality Metrics
+- **Overall Score:** ${report.detailed.qualityAnalysis.overallScore}/100
+- **Test Coverage:** ${report.detailed.qualityAnalysis.testCoverage}%
+- **Code Quality:** ${report.detailed.qualityAnalysis.codeQuality}/100
+
+## Insights and Recommendations
+
+### Key Insights
+${report.insights.map(insight => `
+#### ${insight.title}
+${insight.description}
+
+**Impact:** ${insight.impact}
+**Confidence:** ${insight.confidence}
+`).join('')}
+
+### Recommendations
+${report.recommendations.map(rec => `
+#### ${rec.title}
+${rec.description}
+
+**Priority:** ${rec.priority}
+**Effort:** ${rec.effort}
+**Expected Benefit:** ${rec.expectedBenefit}
+`).join('')}
+
+---
+*Report generated automatically by Progress Tracker*
+`;
+  }
+}
+```
+
+## Progress Tracking Checklist
+
+### ✅ Progress Detection Complete When:
+- [ ] Overall progress calculation implemented
+- [ ] Feature completion tracking active
+- [ ] Task progress monitoring enabled
+- [ ] Milestone status tracking configured
+- [ ] Quality metrics integrated
+
+### ✅ Dashboard Setup Complete When:
+- [ ] Progress visualization dashboard created
+- [ ] Real-time metrics widgets configured
+- [ ] Progress charts and graphs implemented
+- [ ] Alert system for risks and blockers active
+- [ ] Mobile-responsive dashboard available
+
+### ✅ Milestone Tracking Complete When:
+- [ ] Milestone dependencies mapped
+- [ ] Critical path analysis implemented
+- [ ] Timeline risk assessment active
+- [ ] Resource allocation tracking enabled
+- [ ] Milestone completion prediction available
+
+### ✅ Automated Reporting Complete When:
+- [ ] Report generation automated
+- [ ] Scheduled reporting configured
+- [ ] Stakeholder notification system active
+- [ ] Multiple report formats available
+- [ ] Historical progress tracking enabled
+
+### ✅ Continuous Improvement Complete When:
+- [ ] Progress pattern analysis implemented
+- [ ] Velocity tracking and prediction active
+- [ ] Bottleneck identification automated
+- [ ] Optimization recommendations generated
+- [ ] Learning from past projects enabled
+
+## Common Progress Tracking Issues and Solutions
+
+### Issue: Inaccurate Progress Estimates
+**Solutions:**
+1. Implement multiple progress indicators
+2. Use historical data for better estimation
+3. Regular calibration of progress metrics
+4. Include quality metrics in progress calculation
+5. Account for technical debt and rework
+
+### Issue: Poor Visibility into Actual Status
+**Solutions:**
+1. Automate progress detection from code changes
+2. Integrate with development tools and workflows
+3. Real-time dashboard with live updates
+4. Regular automated status collection
+5. Multiple data sources for validation
+
+### Issue: Delayed Problem Detection
+**Solutions:**
+1. Implement early warning systems
+2. Predictive analytics for risk identification
+3. Real-time monitoring and alerts
+4. Regular automated health checks
+5. Proactive bottleneck detection
+
+### Issue: Inconsistent Reporting
+**Solutions:**
+1. Standardize reporting templates and formats
+2. Automate report generation and distribution
+3. Consistent metrics across all projects
+4. Regular reporting schedule and cadence
+5. Stakeholder-specific report customization
+
+## Usage Instructions
+
+To systematically track development progress with intelligent reporting, ask:
+"Track project progress using @progress-tracker.mdc for [project/feature/milestone], generating [daily/weekly/monthly] reports with focus on [completion/quality/timeline/risks]."
+
+This will provide comprehensive progress tracking, automated reporting, and intelligent insights to keep your projects on track and stakeholders informed.
+
