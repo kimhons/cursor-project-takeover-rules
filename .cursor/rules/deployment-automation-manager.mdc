@@ -1,0 +1,1254 @@
+---
+description: "Automate deployment processes with one-click deployment, CI/CD pipelines, and multi-environment management"
+globs: ["*"]
+alwaysApply: false
+---
+
+# Deployment Automation Manager
+
+You are helping someone with no coding experience automate their deployment processes to deploy applications quickly, safely, and consistently across multiple environments.
+
+## Deployment Automation Process
+
+### Step 1: Understanding Deployment Automation
+
+#### What is Deployment Automation?
+Think of deployment automation like having a professional moving company:
+- **One-Click Deployment**: Like pressing a button to have everything moved and set up perfectly
+- **CI/CD Pipeline**: Like having an assembly line that automatically builds and delivers your product
+- **Environment Management**: Like having separate houses for testing, staging, and living
+- **Rollback Capability**: Like having a time machine to undo changes if something goes wrong
+- **Health Monitoring**: Like having security cameras to make sure everything is working
+- **Zero-Downtime Deployment**: Like renovating your house while still living in it
+
+#### Why Deployment Automation Matters:
+- **Consistency**: Every deployment follows the exact same process
+- **Speed**: Deploy in minutes instead of hours or days
+- **Safety**: Automated testing prevents broken deployments
+- **Reliability**: Reduce human errors and deployment failures
+- **Scalability**: Deploy to multiple environments simultaneously
+- **Confidence**: Know that deployments will work every time
+
+#### Common Deployment Challenges:
+- **Manual Processes**: Time-consuming and error-prone manual deployments
+- **Environment Differences**: Code works locally but fails in production
+- **Downtime**: Applications go offline during deployments
+- **Rollback Complexity**: Difficult to undo problematic deployments
+- **Configuration Management**: Managing different settings for different environments
+- **Dependency Issues**: Missing or incompatible dependencies in production
+
+### Step 2: Automated Deployment Pipeline Setup
+
+#### Intelligent Deployment Manager:
+
+**Universal Deployment System:**
+```javascript
+// deployment-automation-manager.js
+class DeploymentAutomationManager {
+  constructor(projectPath) {
+    this.projectPath = projectPath;
+    this.deploymentConfig = {
+      environments: ['development', 'staging', 'production'],
+      strategy: 'blue-green',
+      healthChecks: true,
+      rollbackEnabled: true,
+      notifications: true
+    };
+    this.activeDeployments = new Map();
+  }
+
+  async setupDeploymentAutomation() {
+    const setup = {
+      projectAnalysis: await this.analyzeProject(),
+      environments: await this.setupEnvironments(),
+      pipeline: await this.createDeploymentPipeline(),
+      monitoring: await this.setupDeploymentMonitoring(),
+      rollback: await this.setupRollbackSystem(),
+      notifications: await this.setupNotifications()
+    };
+
+    return this.activateDeploymentSystem(setup);
+  }
+
+  async analyzeProject() {
+    const analysis = {
+      projectType: 'unknown',
+      framework: 'unknown',
+      buildSystem: 'unknown',
+      dependencies: [],
+      deploymentTargets: [],
+      confidence: 0
+    };
+
+    // Read package.json for Node.js projects
+    const packageJson = await this.readPackageJson();
+    if (packageJson) {
+      analysis.projectType = 'nodejs';
+      analysis.confidence = 0.8;
+
+      // Detect framework
+      if (packageJson.dependencies?.react || packageJson.dependencies?.['@types/react']) {
+        analysis.framework = 'react';
+        analysis.deploymentTargets.push('static', 'vercel', 'netlify');
+        analysis.confidence = 0.9;
+      } else if (packageJson.dependencies?.next) {
+        analysis.framework = 'nextjs';
+        analysis.deploymentTargets.push('vercel', 'netlify', 'aws');
+        analysis.confidence = 0.95;
+      } else if (packageJson.dependencies?.vue) {
+        analysis.framework = 'vue';
+        analysis.deploymentTargets.push('static', 'netlify', 'vercel');
+        analysis.confidence = 0.9;
+      } else if (packageJson.dependencies?.express) {
+        analysis.framework = 'express';
+        analysis.deploymentTargets.push('heroku', 'aws', 'digitalocean');
+        analysis.confidence = 0.9;
+      }
+
+      // Detect build system
+      if (packageJson.devDependencies?.vite) {
+        analysis.buildSystem = 'vite';
+      } else if (packageJson.devDependencies?.webpack) {
+        analysis.buildSystem = 'webpack';
+      } else if (packageJson.scripts?.build) {
+        analysis.buildSystem = 'npm';
+      }
+
+      analysis.dependencies = Object.keys(packageJson.dependencies || {});
+    }
+
+    // Check for Python projects
+    const pythonFiles = await this.findFiles(['requirements.txt', 'setup.py', 'pyproject.toml']);
+    if (pythonFiles.length > 0) {
+      analysis.projectType = 'python';
+      analysis.deploymentTargets.push('heroku', 'aws', 'digitalocean');
+      analysis.confidence = 0.8;
+
+      // Detect Flask
+      const requirements = await this.readRequirements();
+      if (requirements.includes('flask')) {
+        analysis.framework = 'flask';
+        analysis.confidence = 0.9;
+      } else if (requirements.includes('django')) {
+        analysis.framework = 'django';
+        analysis.confidence = 0.9;
+      }
+    }
+
+    // Check for static HTML projects
+    const htmlFiles = await this.findFiles(['index.html', '*.html']);
+    if (htmlFiles.length > 0 && analysis.projectType === 'unknown') {
+      analysis.projectType = 'static';
+      analysis.framework = 'html';
+      analysis.deploymentTargets.push('netlify', 'vercel', 'github-pages');
+      analysis.confidence = 0.7;
+    }
+
+    return analysis;
+  }
+
+  async setupEnvironments() {
+    const environments = {
+      development: {
+        name: 'development',
+        url: 'http://localhost:3000',
+        branch: 'develop',
+        autoDeployment: true,
+        healthChecks: false,
+        notifications: false
+      },
+      staging: {
+        name: 'staging',
+        url: null, // Will be set during deployment
+        branch: 'staging',
+        autoDeployment: true,
+        healthChecks: true,
+        notifications: true,
+        requiresApproval: false
+      },
+      production: {
+        name: 'production',
+        url: null, // Will be set during deployment
+        branch: 'main',
+        autoDeployment: false,
+        healthChecks: true,
+        notifications: true,
+        requiresApproval: true,
+        rollbackEnabled: true
+      }
+    };
+
+    // Create environment-specific configuration files
+    for (const [envName, envConfig] of Object.entries(environments)) {
+      await this.createEnvironmentConfig(envName, envConfig);
+    }
+
+    return environments;
+  }
+
+  async createEnvironmentConfig(envName, envConfig) {
+    const configContent = {
+      environment: envName,
+      deployment: {
+        strategy: envName === 'production' ? 'blue-green' : 'rolling',
+        healthChecks: envConfig.healthChecks,
+        rollback: envConfig.rollbackEnabled || false,
+        notifications: envConfig.notifications
+      },
+      build: {
+        command: await this.detectBuildCommand(),
+        outputDirectory: await this.detectOutputDirectory(),
+        environmentVariables: await this.getEnvironmentVariables(envName)
+      },
+      monitoring: {
+        enabled: envConfig.healthChecks,
+        endpoints: ['/health', '/api/health'],
+        timeout: 30000,
+        retries: 3
+      }
+    };
+
+    // Write environment configuration
+    const configPath = `.deployment/${envName}.json`;
+    await this.writeFile(configPath, JSON.stringify(configContent, null, 2));
+
+    return configContent;
+  }
+
+  async createDeploymentPipeline() {
+    const pipeline = {
+      stages: [
+        {
+          name: 'build',
+          steps: await this.createBuildSteps(),
+          parallel: false,
+          required: true
+        },
+        {
+          name: 'test',
+          steps: await this.createTestSteps(),
+          parallel: true,
+          required: true
+        },
+        {
+          name: 'security',
+          steps: await this.createSecuritySteps(),
+          parallel: true,
+          required: true
+        },
+        {
+          name: 'deploy-staging',
+          steps: await this.createDeploymentSteps('staging'),
+          parallel: false,
+          required: true,
+          trigger: 'automatic'
+        },
+        {
+          name: 'deploy-production',
+          steps: await this.createDeploymentSteps('production'),
+          parallel: false,
+          required: true,
+          trigger: 'manual'
+        }
+      ],
+      triggers: {
+        push: ['develop', 'staging', 'main'],
+        pullRequest: ['main'],
+        schedule: null
+      },
+      notifications: {
+        success: ['email', 'slack'],
+        failure: ['email', 'slack', 'sms'],
+        started: ['slack']
+      }
+    };
+
+    // Create GitHub Actions workflow
+    await this.createGitHubActionsWorkflow(pipeline);
+
+    // Create deployment scripts
+    await this.createDeploymentScripts(pipeline);
+
+    return pipeline;
+  }
+
+  async createBuildSteps() {
+    const projectAnalysis = await this.analyzeProject();
+    const steps = [];
+
+    // Setup step
+    steps.push({
+      name: 'Setup Environment',
+      action: 'setup',
+      config: {
+        node: projectAnalysis.projectType === 'nodejs' ? '18' : null,
+        python: projectAnalysis.projectType === 'python' ? '3.9' : null,
+        cache: true
+      }
+    });
+
+    // Install dependencies
+    if (projectAnalysis.projectType === 'nodejs') {
+      steps.push({
+        name: 'Install Dependencies',
+        action: 'run',
+        command: 'npm ci',
+        cache: {
+          key: 'npm-${{ hashFiles(\'package-lock.json\') }}',
+          paths: ['node_modules']
+        }
+      });
+    } else if (projectAnalysis.projectType === 'python') {
+      steps.push({
+        name: 'Install Dependencies',
+        action: 'run',
+        command: 'pip install -r requirements.txt',
+        cache: {
+          key: 'pip-${{ hashFiles(\'requirements.txt\') }}',
+          paths: ['~/.cache/pip']
+        }
+      });
+    }
+
+    // Build step
+    const buildCommand = await this.detectBuildCommand();
+    if (buildCommand) {
+      steps.push({
+        name: 'Build Application',
+        action: 'run',
+        command: buildCommand,
+        artifacts: {
+          name: 'build-artifacts',
+          path: await this.detectOutputDirectory()
+        }
+      });
+    }
+
+    return steps;
+  }
+
+  async createTestSteps() {
+    const steps = [];
+
+    // Unit tests
+    steps.push({
+      name: 'Run Unit Tests',
+      action: 'run',
+      command: 'npm test -- --coverage',
+      coverage: {
+        enabled: true,
+        threshold: 80,
+        reports: ['lcov', 'text']
+      }
+    });
+
+    // Linting
+    steps.push({
+      name: 'Code Linting',
+      action: 'run',
+      command: 'npm run lint',
+      continueOnError: false
+    });
+
+    // Type checking (if TypeScript)
+    const hasTypeScript = await this.hasTypeScript();
+    if (hasTypeScript) {
+      steps.push({
+        name: 'Type Checking',
+        action: 'run',
+        command: 'npm run type-check',
+        continueOnError: false
+      });
+    }
+
+    // Integration tests
+    steps.push({
+      name: 'Integration Tests',
+      action: 'run',
+      command: 'npm run test:integration',
+      services: ['database', 'redis'],
+      continueOnError: true
+    });
+
+    return steps;
+  }
+
+  async createSecuritySteps() {
+    const steps = [];
+
+    // Dependency audit
+    steps.push({
+      name: 'Security Audit',
+      action: 'run',
+      command: 'npm audit --audit-level moderate',
+      continueOnError: true
+    });
+
+    // SAST scanning
+    steps.push({
+      name: 'Static Security Analysis',
+      action: 'security-scan',
+      tool: 'codeql',
+      languages: ['javascript', 'typescript'],
+      continueOnError: true
+    });
+
+    // License checking
+    steps.push({
+      name: 'License Compliance',
+      action: 'run',
+      command: 'npm run license-check',
+      continueOnError: true
+    });
+
+    return steps;
+  }
+
+  async createDeploymentSteps(environment) {
+    const steps = [];
+
+    // Pre-deployment health check
+    steps.push({
+      name: 'Pre-deployment Health Check',
+      action: 'health-check',
+      environment: environment,
+      endpoints: ['/health', '/api/status'],
+      timeout: 30000
+    });
+
+    // Deploy application
+    steps.push({
+      name: 'Deploy Application',
+      action: 'deploy',
+      environment: environment,
+      strategy: environment === 'production' ? 'blue-green' : 'rolling',
+      healthChecks: true,
+      rollbackOnFailure: true
+    });
+
+    // Post-deployment verification
+    steps.push({
+      name: 'Post-deployment Verification',
+      action: 'verify',
+      environment: environment,
+      tests: [
+        'smoke-tests',
+        'health-checks',
+        'performance-tests'
+      ],
+      timeout: 300000
+    });
+
+    // Update deployment status
+    steps.push({
+      name: 'Update Deployment Status',
+      action: 'notify',
+      environment: environment,
+      channels: ['slack', 'email'],
+      includeMetrics: true
+    });
+
+    return steps;
+  }
+
+  async createGitHubActionsWorkflow(pipeline) {
+    const workflow = {
+      name: 'Deployment Pipeline',
+      on: {
+        push: {
+          branches: pipeline.triggers.push
+        },
+        pull_request: {
+          branches: pipeline.triggers.pullRequest
+        }
+      },
+      env: {
+        NODE_VERSION: '18',
+        DEPLOYMENT_TIMEOUT: '1800'
+      },
+      jobs: {}
+    };
+
+    // Create jobs for each pipeline stage
+    for (const stage of pipeline.stages) {
+      const jobName = stage.name.replace('-', '_');
+      
+      workflow.jobs[jobName] = {
+        'runs-on': 'ubuntu-latest',
+        needs: this.getJobDependencies(stage, pipeline),
+        if: this.getJobCondition(stage),
+        steps: [
+          {
+            name: 'Checkout Code',
+            uses: 'actions/checkout@v3'
+          },
+          ...this.convertStepsToGitHubActions(stage.steps)
+        ]
+      };
+    }
+
+    // Write workflow file
+    const workflowPath = '.github/workflows/deployment.yml';
+    const workflowYaml = this.convertToYaml(workflow);
+    await this.writeFile(workflowPath, workflowYaml);
+
+    return workflow;
+  }
+
+  convertStepsToGitHubActions(steps) {
+    return steps.map(step => {
+      switch (step.action) {
+        case 'setup':
+          return {
+            name: step.name,
+            uses: step.config.node ? 'actions/setup-node@v3' : 'actions/setup-python@v3',
+            with: {
+              'node-version': step.config.node,
+              'python-version': step.config.python,
+              cache: step.config.cache ? 'npm' : undefined
+            }
+          };
+          
+        case 'run':
+          return {
+            name: step.name,
+            run: step.command,
+            'continue-on-error': step.continueOnError || false
+          };
+          
+        case 'deploy':
+          return {
+            name: step.name,
+            uses: './.github/actions/deploy',
+            with: {
+              environment: step.environment,
+              strategy: step.strategy
+            },
+            env: {
+              DEPLOYMENT_TOKEN: '${{ secrets.DEPLOYMENT_TOKEN }}'
+            }
+          };
+          
+        default:
+          return {
+            name: step.name,
+            run: `echo "Executing ${step.action}"`
+          };
+      }
+    });
+  }
+
+  async setupDeploymentMonitoring() {
+    const monitoring = {
+      healthChecks: {
+        enabled: true,
+        endpoints: ['/health', '/api/status', '/metrics'],
+        interval: 30000,
+        timeout: 10000,
+        retries: 3
+      },
+      metrics: {
+        enabled: true,
+        provider: 'prometheus',
+        endpoints: ['/metrics'],
+        alerts: [
+          {
+            name: 'High Error Rate',
+            condition: 'error_rate > 5%',
+            duration: '5m',
+            severity: 'critical'
+          },
+          {
+            name: 'High Response Time',
+            condition: 'response_time > 2s',
+            duration: '10m',
+            severity: 'warning'
+          }
+        ]
+      },
+      logging: {
+        enabled: true,
+        level: 'info',
+        format: 'json',
+        aggregation: 'elasticsearch'
+      }
+    };
+
+    // Create monitoring configuration
+    await this.createMonitoringConfig(monitoring);
+
+    // Setup health check endpoints
+    await this.createHealthCheckEndpoints();
+
+    // Configure alerting
+    await this.setupAlerting(monitoring.metrics.alerts);
+
+    return monitoring;
+  }
+
+  async createHealthCheckEndpoints() {
+    const healthCheckCode = `
+// health-check.js
+const express = require('express');
+const router = express.Router();
+
+// Basic health check
+router.get('/health', (req, res) => {
+  const healthCheck = {
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: process.env.npm_package_version || '1.0.0'
+  };
+
+  try {
+    // Add database connectivity check
+    // Add external service checks
+    // Add memory/CPU checks
+    
+    res.status(200).json(healthCheck);
+  } catch (error) {
+    healthCheck.status = 'ERROR';
+    healthCheck.error = error.message;
+    res.status(503).json(healthCheck);
+  }
+});
+
+// Detailed status check
+router.get('/api/status', async (req, res) => {
+  const status = {
+    application: {
+      status: 'healthy',
+      version: process.env.npm_package_version,
+      environment: process.env.NODE_ENV,
+      uptime: process.uptime()
+    },
+    dependencies: {
+      database: await checkDatabase(),
+      redis: await checkRedis(),
+      externalAPIs: await checkExternalAPIs()
+    },
+    system: {
+      memory: process.memoryUsage(),
+      cpu: process.cpuUsage(),
+      platform: process.platform,
+      nodeVersion: process.version
+    }
+  };
+
+  const isHealthy = Object.values(status.dependencies).every(dep => dep.status === 'healthy');
+  
+  res.status(isHealthy ? 200 : 503).json(status);
+});
+
+async function checkDatabase() {
+  try {
+    // Database connectivity check
+    return { status: 'healthy', responseTime: '< 100ms' };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+
+async function checkRedis() {
+  try {
+    // Redis connectivity check
+    return { status: 'healthy', responseTime: '< 50ms' };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+
+async function checkExternalAPIs() {
+  try {
+    // External API checks
+    return { status: 'healthy', responseTime: '< 200ms' };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+
+module.exports = router;
+`;
+
+    await this.writeFile('src/routes/health.js', healthCheckCode);
+    return true;
+  }
+
+  async setupRollbackSystem() {
+    const rollback = {
+      enabled: true,
+      strategy: 'blue-green',
+      automaticTriggers: [
+        'health-check-failure',
+        'high-error-rate',
+        'performance-degradation'
+      ],
+      manualTriggers: true,
+      retentionPeriod: '7d',
+      notifications: true
+    };
+
+    // Create rollback scripts
+    const rollbackScript = `
+#!/bin/bash
+# rollback.sh - Automated rollback script
+
+set -e
+
+ENVIRONMENT=\${1:-staging}
+VERSION=\${2:-previous}
+
+echo "Starting rollback for environment: \$ENVIRONMENT to version: \$VERSION"
+
+# Get previous deployment version
+if [ "\$VERSION" = "previous" ]; then
+  VERSION=\$(get_previous_version \$ENVIRONMENT)
+fi
+
+echo "Rolling back to version: \$VERSION"
+
+# Perform rollback based on deployment strategy
+case "\$DEPLOYMENT_STRATEGY" in
+  "blue-green")
+    perform_blue_green_rollback \$ENVIRONMENT \$VERSION
+    ;;
+  "rolling")
+    perform_rolling_rollback \$ENVIRONMENT \$VERSION
+    ;;
+  *)
+    echo "Unknown deployment strategy: \$DEPLOYMENT_STRATEGY"
+    exit 1
+    ;;
+esac
+
+# Verify rollback success
+verify_rollback \$ENVIRONMENT \$VERSION
+
+echo "Rollback completed successfully"
+
+function get_previous_version() {
+  local env=\$1
+  # Implementation to get previous version
+  echo "v1.0.0"
+}
+
+function perform_blue_green_rollback() {
+  local env=\$1
+  local version=\$2
+  
+  echo "Performing blue-green rollback..."
+  # Switch traffic back to previous version
+  # Update load balancer configuration
+  # Verify health checks
+}
+
+function perform_rolling_rollback() {
+  local env=\$1
+  local version=\$2
+  
+  echo "Performing rolling rollback..."
+  # Gradually rollback instances
+  # Monitor health during rollback
+}
+
+function verify_rollback() {
+  local env=\$1
+  local version=\$2
+  
+  echo "Verifying rollback..."
+  # Run health checks
+  # Verify application functionality
+  # Check performance metrics
+}
+`;
+
+    await this.writeFile('scripts/rollback.sh', rollbackScript);
+    await this.makeExecutable('scripts/rollback.sh');
+
+    return rollback;
+  }
+
+  async setupNotifications() {
+    const notifications = {
+      channels: {
+        email: {
+          enabled: true,
+          recipients: ['team@company.com'],
+          events: ['deployment-success', 'deployment-failure', 'rollback']
+        },
+        slack: {
+          enabled: true,
+          webhook: process.env.SLACK_WEBHOOK_URL,
+          channel: '#deployments',
+          events: ['deployment-started', 'deployment-success', 'deployment-failure']
+        },
+        sms: {
+          enabled: false,
+          provider: 'twilio',
+          recipients: ['+1234567890'],
+          events: ['deployment-failure', 'rollback']
+        }
+      },
+      templates: {
+        'deployment-success': {
+          title: '✅ Deployment Successful',
+          message: 'Deployment to {{environment}} completed successfully',
+          includeMetrics: true
+        },
+        'deployment-failure': {
+          title: '❌ Deployment Failed',
+          message: 'Deployment to {{environment}} failed: {{error}}',
+          includeLogs: true
+        },
+        'rollback': {
+          title: '🔄 Rollback Initiated',
+          message: 'Rollback initiated for {{environment}} due to {{reason}}',
+          includeMetrics: true
+        }
+      }
+    };
+
+    // Create notification service
+    const notificationService = `
+// notification-service.js
+class NotificationService {
+  constructor(config) {
+    this.config = config;
+  }
+
+  async sendNotification(event, data) {
+    const template = this.config.templates[event];
+    if (!template) return;
+
+    const message = this.renderTemplate(template.message, data);
+    const title = this.renderTemplate(template.title, data);
+
+    // Send to all enabled channels
+    for (const [channel, channelConfig] of Object.entries(this.config.channels)) {
+      if (channelConfig.enabled && channelConfig.events.includes(event)) {
+        await this.sendToChannel(channel, { title, message, data });
+      }
+    }
+  }
+
+  async sendToChannel(channel, notification) {
+    switch (channel) {
+      case 'slack':
+        await this.sendSlackNotification(notification);
+        break;
+      case 'email':
+        await this.sendEmailNotification(notification);
+        break;
+      case 'sms':
+        await this.sendSMSNotification(notification);
+        break;
+    }
+  }
+
+  async sendSlackNotification(notification) {
+    const webhook = this.config.channels.slack.webhook;
+    if (!webhook) return;
+
+    const payload = {
+      text: notification.title,
+      attachments: [{
+        color: this.getColorForNotification(notification),
+        text: notification.message,
+        fields: this.formatMetrics(notification.data)
+      }]
+    };
+
+    // Send to Slack webhook
+    await fetch(webhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  renderTemplate(template, data) {
+    return template.replace(/{{(\w+)}}/g, (match, key) => data[key] || match);
+  }
+
+  getColorForNotification(notification) {
+    if (notification.title.includes('✅')) return 'good';
+    if (notification.title.includes('❌')) return 'danger';
+    if (notification.title.includes('🔄')) return 'warning';
+    return '#36a64f';
+  }
+
+  formatMetrics(data) {
+    if (!data.metrics) return [];
+    
+    return Object.entries(data.metrics).map(([key, value]) => ({
+      title: key,
+      value: value,
+      short: true
+    }));
+  }
+}
+
+module.exports = NotificationService;
+`;
+
+    await this.writeFile('src/services/notification-service.js', notificationService);
+
+    return notifications;
+  }
+
+  async activateDeploymentSystem(setup) {
+    const deploymentSystem = {
+      id: this.generateDeploymentId(),
+      status: 'active',
+      environments: setup.environments,
+      pipeline: setup.pipeline,
+      monitoring: setup.monitoring,
+      rollback: setup.rollback,
+      notifications: setup.notifications,
+      createdAt: new Date(),
+      lastDeployment: null
+    };
+
+    // Create deployment dashboard
+    const dashboard = await this.createDeploymentDashboard(deploymentSystem);
+
+    // Setup automated triggers
+    await this.setupAutomatedTriggers(deploymentSystem);
+
+    // Initialize monitoring
+    await this.initializeMonitoring(deploymentSystem);
+
+    return {
+      success: true,
+      system: deploymentSystem,
+      dashboard: dashboard,
+      instructions: this.generateDeploymentInstructions(deploymentSystem)
+    };
+  }
+
+  async createDeploymentDashboard(system) {
+    const dashboardHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .environments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .environment-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .environment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .environment-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-healthy { background: #d4edda; color: #155724; }
+        .status-deploying { background: #fff3cd; color: #856404; }
+        .status-failed { background: #f8d7da; color: #721c24; }
+        .deploy-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .deploy-button:hover {
+            background: #0056b3;
+        }
+        .deploy-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .metric {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+        .deployment-history {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .deployment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .deployment-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Deployment Dashboard</h1>
+            <p>Monitor and manage deployments across all environments</p>
+        </div>
+
+        <div class="environments" id="environments">
+            <!-- Environments will be populated here -->
+        </div>
+
+        <div class="deployment-history">
+            <h2>Recent Deployments</h2>
+            <div id="deploymentHistory">
+                <!-- Deployment history will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard JavaScript
+        const dashboard = {
+            updateEnvironments: function(environments) {
+                const container = document.getElementById('environments');
+                container.innerHTML = Object.entries(environments).map(([name, env]) => \`
+                    <div class="environment-card">
+                        <div class="environment-header">
+                            <div class="environment-name">\${name.toUpperCase()}</div>
+                            <div class="status-badge status-\${env.status}">\${env.status}</div>
+                        </div>
+                        <div><strong>URL:</strong> \${env.url || 'Not deployed'}</div>
+                        <div><strong>Branch:</strong> \${env.branch}</div>
+                        <div><strong>Last Deploy:</strong> \${env.lastDeploy || 'Never'}</div>
+                        <button class="deploy-button" onclick="deployToEnvironment('\${name}')" 
+                                \${env.status === 'deploying' ? 'disabled' : ''}>
+                            \${env.status === 'deploying' ? 'Deploying...' : 'Deploy'}
+                        </button>
+                        <div class="metrics">
+                            <div class="metric">
+                                <div class="metric-value">\${env.metrics?.uptime || '99.9%'}</div>
+                                <div class="metric-label">Uptime</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">\${env.metrics?.responseTime || '150ms'}</div>
+                                <div class="metric-label">Response Time</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">\${env.metrics?.errorRate || '0.1%'}</div>
+                                <div class="metric-label">Error Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                \`).join('');
+            },
+
+            updateDeploymentHistory: function(deployments) {
+                const container = document.getElementById('deploymentHistory');
+                container.innerHTML = deployments.map(deployment => \`
+                    <div class="deployment-item">
+                        <div>
+                            <strong>\${deployment.environment}</strong> - \${deployment.version}
+                            <br><small>\${deployment.timestamp}</small>
+                        </div>
+                        <div class="status-badge status-\${deployment.status}">\${deployment.status}</div>
+                    </div>
+                \`).join('');
+            }
+        };
+
+        function deployToEnvironment(environment) {
+            if (confirm(\`Deploy to \${environment}?\`)) {
+                fetch(\`/api/deploy/\${environment}\`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(\`Deployment to \${environment} \${data.success ? 'started' : 'failed'}\`);
+                        location.reload();
+                    })
+                    .catch(error => {
+                        alert(\`Deployment failed: \${error.message}\`);
+                    });
+            }
+        }
+
+        // Auto-refresh dashboard every 30 seconds
+        setInterval(() => {
+            fetch('/api/dashboard-data')
+                .then(response => response.json())
+                .then(data => {
+                    dashboard.updateEnvironments(data.environments);
+                    dashboard.updateDeploymentHistory(data.deployments);
+                })
+                .catch(console.error);
+        }, 30000);
+
+        // Initial load
+        dashboard.updateEnvironments({
+            development: { status: 'healthy', url: 'http://localhost:3000', branch: 'develop', lastDeploy: '2 hours ago' },
+            staging: { status: 'healthy', url: 'https://staging.example.com', branch: 'staging', lastDeploy: '1 day ago' },
+            production: { status: 'healthy', url: 'https://example.com', branch: 'main', lastDeploy: '3 days ago' }
+        });
+    </script>
+</body>
+</html>
+`;
+
+    await this.writeFile('deployment-dashboard.html', dashboardHTML);
+    return { path: 'deployment-dashboard.html', url: '/deployment-dashboard' };
+  }
+
+  generateDeploymentInstructions(system) {
+    return {
+      quickStart: [
+        'Review the deployment configuration in .deployment/ directory',
+        'Commit your changes to trigger the deployment pipeline',
+        'Monitor deployment progress in the GitHub Actions tab',
+        'Access the deployment dashboard for real-time status',
+        'Use the rollback script if issues are detected'
+      ],
+      commands: {
+        deploy: 'git push origin main  # Triggers production deployment',
+        rollback: './scripts/rollback.sh production previous',
+        status: 'curl https://your-app.com/health',
+        logs: 'kubectl logs -f deployment/your-app'
+      },
+      dashboard: 'Open deployment-dashboard.html in your browser',
+      monitoring: 'Health checks available at /health and /api/status'
+    };
+  }
+}
+```
+
+## Deployment Automation Checklist
+
+### ✅ Pipeline Setup Complete When:
+- [ ] Project type and framework automatically detected
+- [ ] Environment configurations created for dev/staging/production
+- [ ] GitHub Actions workflow configured with all stages
+- [ ] Build, test, and security steps implemented
+- [ ] Deployment strategies configured (blue-green, rolling)
+
+### ✅ Monitoring & Health Checks Complete When:
+- [ ] Health check endpoints implemented (/health, /api/status)
+- [ ] Deployment monitoring configured with alerts
+- [ ] Performance metrics tracking enabled
+- [ ] Error rate and uptime monitoring active
+- [ ] Notification system configured for all channels
+
+### ✅ Rollback System Complete When:
+- [ ] Automated rollback triggers configured
+- [ ] Manual rollback scripts created and tested
+- [ ] Previous version retention system implemented
+- [ ] Rollback verification procedures in place
+- [ ] Emergency rollback procedures documented
+
+### ✅ Security & Compliance Complete When:
+- [ ] Security scanning integrated into pipeline
+- [ ] Dependency vulnerability checks enabled
+- [ ] License compliance verification active
+- [ ] Environment variable management secured
+- [ ] Access controls and permissions configured
+
+### ✅ Dashboard & Reporting Complete When:
+- [ ] Deployment dashboard accessible and functional
+- [ ] Real-time environment status monitoring
+- [ ] Deployment history tracking and visualization
+- [ ] Performance metrics display
+- [ ] One-click deployment capabilities
+
+## Common Deployment Issues and Solutions
+
+### Issue: Deployment Failures
+**Solutions:**
+1. Implement comprehensive pre-deployment testing
+2. Use staging environment for validation
+3. Configure automatic rollback on failure
+4. Add detailed logging and error reporting
+5. Implement gradual rollout strategies
+
+### Issue: Environment Configuration Drift
+**Solutions:**
+1. Use infrastructure as code (IaC)
+2. Implement configuration validation
+3. Automate environment provisioning
+4. Use environment-specific configuration files
+5. Regular environment auditing and synchronization
+
+### Issue: Slow Deployment Times
+**Solutions:**
+1. Optimize build processes with caching
+2. Use parallel deployment strategies
+3. Implement incremental deployments
+4. Optimize Docker image layers
+5. Use CDN for static asset deployment
+
+### Issue: Rollback Complexity
+**Solutions:**
+1. Implement blue-green deployment strategy
+2. Maintain database migration rollback scripts
+3. Use feature flags for gradual rollouts
+4. Implement automated rollback triggers
+5. Regular rollback procedure testing
+
+## Usage Instructions
+
+To set up deployment automation for consistent, safe deployments, ask:
+"Set up deployment automation using @deployment-automation-manager.mdc for [project type], enabling [deployment strategy] with monitoring and rollback capabilities."
+
+This will provide one-click deployments, automated testing, health monitoring, and emergency rollback capabilities to ensure reliable, consistent deployments across all environments.
+
